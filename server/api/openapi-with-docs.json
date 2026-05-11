@@ -303,14 +303,18 @@
       "LoginDto": {
         "type": "object",
         "additionalProperties": false,
+        "required": [
+          "username",
+          "password"
+        ],
         "properties": {
           "username": {
             "type": "string",
-            "nullable": true
+            "minLength": 1
           },
           "password": {
             "type": "string",
-            "nullable": true
+            "minLength": 1
           }
         }
       },
@@ -460,18 +464,12 @@
       "JobApplicationCreateDto": {
         "type": "object",
         "additionalProperties": false,
-        "required": [
-          "companyName",
-          "position"
-        ],
         "properties": {
           "companyName": {
-            "type": "string",
-            "minLength": 1
+            "type": "string"
           },
           "position": {
-            "type": "string",
-            "minLength": 1
+            "type": "string"
           },
           "status": {
             "$ref": "#/components/schemas/JobApplicationStatus"
@@ -481,18 +479,12 @@
       "JobApplicationUpdateDto": {
         "type": "object",
         "additionalProperties": false,
-        "required": [
-          "companyName",
-          "position"
-        ],
         "properties": {
           "companyName": {
-            "type": "string",
-            "minLength": 1
+            "type": "string"
           },
           "position": {
-            "type": "string",
-            "minLength": 1
+            "type": "string"
           },
           "status": {
             "$ref": "#/components/schemas/JobApplicationStatus"
