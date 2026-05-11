@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useState, type FormEvent } from "react";
 import { login as loginRequest } from "../api/accountApi";
 import { useAuth } from "../context/AuthContext";
@@ -11,6 +12,10 @@ const LoginPage = () => {
 
   const { login: storeToken } = useAuth();
   const navigate = useNavigate();
+
+  const showLoginFailure = () => {
+    alert("Login failed.")
+  }
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -26,11 +31,16 @@ const LoginPage = () => {
         storeToken(authData.token);
         navigate("/");
       } else {
-        alert("Token alınamadı!");
+        showLoginFailure();
       }
     } catch (error) {
       console.error("Giriş Hatası:", error);
-      alert("Kullanıcı adı veya şifre hatalı!");
+
+      if (axios.isAxiosError(error) && error.response?.status === 401) {
+        alert("Kullanıcı adı veya şifre hatalı!");
+      } else {
+        showLoginFailure();
+      }
     } finally {
       setLoading(false);
     }

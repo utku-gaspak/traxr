@@ -74,4 +74,35 @@ describe('LoginPage', () => {
 
     alertSpy.mockRestore()
   })
+
+  it('LoginPage_InvalidResponse_HandlesGracefully', async () => {
+    const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {})
+    server.use(
+      http.post(
+        `${finalUrl}/api/account/login`,
+        () =>
+          new HttpResponse('{"token":', {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
+      ),
+    )
+
+    renderLoginPage()
+
+    fireEvent.change(screen.getByPlaceholderText('Kullanıcı Adı'), {
+      target: { value: 'utku' },
+    })
+    fireEvent.change(screen.getByPlaceholderText('Şifre'), {
+      target: { value: 'Password1!' },
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Giriş Yap' }))
+
+    await waitFor(() => {
+      expect(alertSpy).toHaveBeenCalledWith('Login failed.')
+    })
+    expect(localStorage.getItem('token')).toBeNull()
+
+    alertSpy.mockRestore()
+  })
 })

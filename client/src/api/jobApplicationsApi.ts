@@ -1,4 +1,5 @@
 import axios from "axios";
+import { notifyAuthTokenCleared } from "../authEvents";
 import { finalUrl } from "../baseUrl";
 import type {
   JobApplication,
@@ -35,6 +36,19 @@ jobApplicationsApi.interceptors.request.use((config) => {
 
   return config;
 });
+
+jobApplicationsApi.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
+      // Treat any jobs API 401 as an invalid session and force the app back through the login flow.
+      localStorage.removeItem(tokenKey);
+      notifyAuthTokenCleared();
+    }
+
+    return Promise.reject(error);
+  }
+);
 
 export const listJobApplications = async () => {
   const response = await jobApplicationsApi.get<JobApplication[]>("");

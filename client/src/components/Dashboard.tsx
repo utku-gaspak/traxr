@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import {
@@ -21,6 +22,21 @@ const formatAppliedDate = (isoDate: string) =>
     year: "numeric",
   }).format(new Date(isoDate));
 
+const getLoadApplicationsErrorMessage = (error: unknown) => {
+  // Keep server-side failures and connectivity failures distinct so the UI can suggest the right next step.
+  if (axios.isAxiosError(error)) {
+    if (!error.response) {
+      return "Could not reach the server. Check your connection and try again.";
+    }
+
+    if (error.response.status >= 500) {
+      return "Something went wrong. Please try again.";
+    }
+  }
+
+  return "Could not load job applications.";
+};
+
 const Dashboard = () => {
   const { logout } = useAuth();
   const [applications, setApplications] = useState<JobApplication[]>([]);
@@ -36,7 +52,7 @@ const Dashboard = () => {
         setApplications(items);
       } catch (error) {
         console.error("Load job applications failed:", error);
-        setErrorMessage("Could not load job applications.");
+        setErrorMessage(getLoadApplicationsErrorMessage(error));
       } finally {
         setIsLoading(false);
       }

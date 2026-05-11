@@ -23,6 +23,15 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        {/* Keep unknown routes flowing through the protected root instead of rendering a dead end. */}
         <Route path="*" element={<Navigate to="/" replace />} />
         <Route path="/register" element={<RegisterPage />} />
       </Routes>

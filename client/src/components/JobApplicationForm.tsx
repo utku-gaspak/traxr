@@ -14,6 +14,11 @@ interface JobApplicationFormProps {
   onCancelEdit: () => void;
 }
 
+interface ValidationErrors {
+  companyName?: string;
+  position?: string;
+}
+
 const initialFormState: JobApplicationCreateInput = {
   companyName: "",
   position: "",
@@ -29,6 +34,7 @@ const JobApplicationForm = ({
   const [form, setForm] = useState<JobApplicationCreateInput>(initialFormState);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
 
   useEffect(() => {
     if (editingApplication) {
@@ -42,12 +48,30 @@ const JobApplicationForm = ({
     }
 
     setErrorMessage(null);
+    setValidationErrors({});
   }, [editingApplication]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setIsSubmitting(true);
     setErrorMessage(null);
+
+    const nextValidationErrors: ValidationErrors = {};
+
+    if (!form.companyName.trim()) {
+      nextValidationErrors.companyName = "Company name is required.";
+    }
+
+    if (!form.position.trim()) {
+      nextValidationErrors.position = "Position is required.";
+    }
+
+    if (Object.keys(nextValidationErrors).length > 0) {
+      setValidationErrors(nextValidationErrors);
+      return;
+    }
+
+    setValidationErrors({});
+    setIsSubmitting(true);
 
     try {
       if (editingApplication) {
@@ -79,25 +103,39 @@ const JobApplicationForm = ({
         </div>
       </div>
 
-      <form className="job-form" onSubmit={handleSubmit}>
+      <form className="job-form" noValidate onSubmit={handleSubmit}>
         <label className="field">
           <span>Company Name</span>
           <input
             value={form.companyName}
-            onChange={(event) => setForm((current) => ({ ...current, companyName: event.target.value }))}
+            onChange={(event) => {
+              const value = event.target.value;
+              setForm((current) => ({ ...current, companyName: value }));
+              setValidationErrors((current) => ({ ...current, companyName: undefined }));
+            }}
             placeholder="Example: Stripe"
             required
           />
+          {validationErrors.companyName ? (
+            <span className="form-error">{validationErrors.companyName}</span>
+          ) : null}
         </label>
 
         <label className="field">
           <span>Position</span>
           <input
             value={form.position}
-            onChange={(event) => setForm((current) => ({ ...current, position: event.target.value }))}
+            onChange={(event) => {
+              const value = event.target.value;
+              setForm((current) => ({ ...current, position: value }));
+              setValidationErrors((current) => ({ ...current, position: undefined }));
+            }}
             placeholder="Example: Backend Engineer"
             required
           />
+          {validationErrors.position ? (
+            <span className="form-error">{validationErrors.position}</span>
+          ) : null}
         </label>
 
         <label className="field">

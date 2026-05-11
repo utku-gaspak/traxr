@@ -16,6 +16,8 @@ interface CreateJobApplicationBody {
 interface MockApiState {
   loginRequests: LoginRequestBody[]
   createJobApplicationRequests: CreateJobApplicationBody[]
+  updateJobApplicationRequests: Array<{ id: string; body: CreateJobApplicationBody & { dateApplied: string } }>
+  deleteJobApplicationRequests: string[]
   jobApplications: JobApplication[]
 }
 
@@ -41,12 +43,16 @@ const defaultJobs: JobApplication[] = [
 export const mockApiState: MockApiState = {
   loginRequests: [],
   createJobApplicationRequests: [],
+  updateJobApplicationRequests: [],
+  deleteJobApplicationRequests: [],
   jobApplications: [...defaultJobs],
 }
 
 export const resetMockApiState = () => {
   mockApiState.loginRequests = []
   mockApiState.createJobApplicationRequests = []
+  mockApiState.updateJobApplicationRequests = []
+  mockApiState.deleteJobApplicationRequests = []
   mockApiState.jobApplications = [...defaultJobs]
 }
 
@@ -81,5 +87,36 @@ export const handlers = [
 
     mockApiState.jobApplications = [createdApplication, ...mockApiState.jobApplications]
     return HttpResponse.json(createdApplication, { status: 201 })
+  }),
+
+  http.put(`${finalUrl}/api/jobapplications/:id`, async ({ params, request }) => {
+    const body = (await request.json()) as CreateJobApplicationBody & { dateApplied: string }
+    const id = String(params.id)
+
+    mockApiState.updateJobApplicationRequests.push({ id, body })
+    mockApiState.jobApplications = mockApiState.jobApplications.map((application) =>
+      application.id === id
+        ? {
+            ...application,
+            companyName: body.companyName,
+            position: body.position,
+            status: body.status,
+            dateApplied: body.dateApplied,
+          }
+        : application,
+    )
+
+    return HttpResponse.json(null, { status: 204 })
+  }),
+
+  http.delete(`${finalUrl}/api/jobapplications/:id`, ({ params }) => {
+    const id = String(params.id)
+
+    mockApiState.deleteJobApplicationRequests.push(id)
+    mockApiState.jobApplications = mockApiState.jobApplications.filter(
+      (application) => application.id !== id,
+    )
+
+    return HttpResponse.json(null, { status: 204 })
   }),
 ]
