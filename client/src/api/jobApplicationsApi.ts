@@ -1,4 +1,5 @@
 import axios from "axios";
+import { AxiosHeaders } from "axios";
 import { notifyAuthTokenCleared } from "../authEvents";
 import { finalUrl } from "../baseUrl";
 import type {
@@ -28,10 +29,11 @@ jobApplicationsApi.interceptors.request.use((config) => {
   const token = cleanToken(localStorage.getItem(tokenKey));
 
   if (token) {
-    config.headers = {
-      ...config.headers,
-      Authorization: `Bearer ${token}`,
-    };
+    const headers =
+      config.headers instanceof AxiosHeaders ? config.headers : new AxiosHeaders(config.headers);
+
+    headers.set("Authorization", `Bearer ${token}`);
+    config.headers = headers;
   }
 
   return config;

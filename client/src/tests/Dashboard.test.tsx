@@ -107,11 +107,11 @@ describe('Dashboard', () => {
     })
     fireEvent.click(screen.getByRole('button', { name: 'Save Changes' }))
 
-    expect(await screen.findByText('Offer')).toBeInTheDocument()
     await waitFor(() => {
       expect(mockApiState.updateJobApplicationRequests).toHaveLength(1)
       expect(mockApiState.updateJobApplicationRequests[0]?.id).toBe('job-1')
     })
+    expect(screen.getAllByText('Offer').length).toBeGreaterThan(0)
   })
 
   it('JobApplication_Delete_RemovesFromList', async () => {
@@ -132,6 +132,7 @@ describe('Dashboard', () => {
 
     expect(await screen.findByText('Acme')).toBeInTheDocument()
 
+    fireEvent.click(screen.getByRole('button', { name: 'New Application' }))
     fireEvent.click(screen.getByRole('button', { name: 'Add Application' }))
 
     expect(await screen.findByText('Company name is required.')).toBeInTheDocument()
@@ -161,6 +162,7 @@ describe('Dashboard', () => {
     renderDashboard()
 
     expect(await screen.findByText('Acme')).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'New Application' }))
 
     fireEvent.change(screen.getByPlaceholderText('Example: Stripe'), {
       target: { value: 'Stripe' },

@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { Toaster } from "sonner";
 import { useAuth } from "./context/AuthContext";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
@@ -13,6 +14,14 @@ const ProtectedRoute = ({ children }: { children: ReactNode }) => {
 function App() {
   return (
     <BrowserRouter>
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          className:
+            "rounded-none border border-[color:var(--color-primary)] bg-[color:var(--color-card)] text-[color:var(--color-foreground)] shadow-lg",
+          descriptionClassName: "text-[color:var(--color-muted-foreground)]",
+        }}
+      />
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route

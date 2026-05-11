@@ -1,9 +1,12 @@
-export enum JobApplicationStatus {
-  Applied = 0,
-  Interviewing = 1,
-  Rejected = 2,
-  Offer = 3,
-}
+export const JobApplicationStatus = {
+  Applied: 0,
+  Interviewing: 1,
+  Rejected: 2,
+  Offer: 3,
+} as const;
+
+export type JobApplicationStatus =
+  (typeof JobApplicationStatus)[keyof typeof JobApplicationStatus];
 
 export interface JobApplication {
   id: string;
@@ -33,3 +36,10 @@ export const jobApplicationStatusLabels: Record<JobApplicationStatus, string> = 
   [JobApplicationStatus.Rejected]: "Rejected",
   [JobApplicationStatus.Offer]: "Offer",
 };
+
+export const jobApplicationStatusOrder = [
+  JobApplicationStatus.Applied,
+  JobApplicationStatus.Interviewing,
+  JobApplicationStatus.Rejected,
+  JobApplicationStatus.Offer,
+] as const;

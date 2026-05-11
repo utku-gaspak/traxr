@@ -308,8 +308,8 @@ export interface RegisterDto {
 }
 
 export interface LoginDto {
-    username?: string | undefined;
-    password?: string | undefined;
+    username: string;
+    password: string;
 }
 
 export interface JobApplication {
@@ -355,14 +355,14 @@ export interface AppUser extends IdentityUser {
 }
 
 export interface JobApplicationCreateDto {
-    companyName: string;
-    position: string;
+    companyName?: string;
+    position?: string;
     status?: JobApplicationStatus;
 }
 
 export interface JobApplicationUpdateDto {
-    companyName: string;
-    position: string;
+    companyName?: string;
+    position?: string;
     status?: JobApplicationStatus;
     dateApplied?: string;
 }

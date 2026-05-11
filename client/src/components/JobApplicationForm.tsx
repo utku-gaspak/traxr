@@ -1,4 +1,6 @@
 import { useEffect, useState, type FormEvent } from "react";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
 import {
   JobApplicationStatus,
   jobApplicationStatusLabels,
@@ -12,6 +14,7 @@ interface JobApplicationFormProps {
   onUpdate: (id: string, input: JobApplicationUpdateInput) => Promise<void>;
   editingApplication: JobApplication | null;
   onCancelEdit: () => void;
+  onSuccess: () => void;
 }
 
 interface ValidationErrors {
@@ -30,6 +33,7 @@ const JobApplicationForm = ({
   onUpdate,
   editingApplication,
   onCancelEdit,
+  onSuccess,
 }: JobApplicationFormProps) => {
   const [form, setForm] = useState<JobApplicationCreateInput>(initialFormState);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -81,11 +85,12 @@ const JobApplicationForm = ({
           status: form.status,
           dateApplied: editingApplication.dateApplied,
         });
-        onCancelEdit();
       } else {
         await onCreate(form);
         setForm(initialFormState);
       }
+
+      onSuccess();
     } catch (error) {
       console.error("Save job application failed:", error);
       setErrorMessage("Could not save the application. Check the form and try again.");
@@ -95,84 +100,87 @@ const JobApplicationForm = ({
   };
 
   return (
-    <section className="panel panel-form">
-      <div className="panel-header">
-        <div>
-          <p className="eyebrow">{editingApplication ? "Edit application" : "New application"}</p>
-          <h2>{editingApplication ? "Update job application" : "Add a job application"}</h2>
-        </div>
+    <form className="grid gap-5 p-6" noValidate onSubmit={handleSubmit}>
+      <label className="grid gap-2">
+        <span className="text-sm font-semibold uppercase tracking-[0.12em] text-[color:var(--color-muted-foreground)]">
+          Company Name
+        </span>
+        <Input
+          aria-label="Company Name"
+          value={form.companyName}
+          onChange={(event) => {
+            const value = event.target.value;
+            setForm((current) => ({ ...current, companyName: value }));
+            setValidationErrors((current) => ({ ...current, companyName: undefined }));
+          }}
+          placeholder="Example: Stripe"
+          required
+        />
+        {validationErrors.companyName ? (
+          <span className="text-sm text-[color:var(--color-danger)]">{validationErrors.companyName}</span>
+        ) : null}
+      </label>
+
+      <label className="grid gap-2">
+        <span className="text-sm font-semibold uppercase tracking-[0.12em] text-[color:var(--color-muted-foreground)]">
+          Position
+        </span>
+        <Input
+          aria-label="Position"
+          value={form.position}
+          onChange={(event) => {
+            const value = event.target.value;
+            setForm((current) => ({ ...current, position: value }));
+            setValidationErrors((current) => ({ ...current, position: undefined }));
+          }}
+          placeholder="Example: Backend Engineer"
+          required
+        />
+        {validationErrors.position ? (
+          <span className="text-sm text-[color:var(--color-danger)]">{validationErrors.position}</span>
+        ) : null}
+      </label>
+
+      <label className="grid gap-2">
+        <span className="text-sm font-semibold uppercase tracking-[0.12em] text-[color:var(--color-muted-foreground)]">
+          Status
+        </span>
+        <select
+          aria-label="Status"
+          className="h-11 rounded-none border border-[color:var(--color-border)] bg-[color:var(--color-input)] px-3 py-2 text-sm shadow-sm outline-none transition-colors focus:border-[color:var(--color-primary)] focus:ring-2 focus:ring-[color:var(--color-ring)]"
+          value={form.status}
+          onChange={(event) =>
+            setForm((current) => ({
+              ...current,
+              status: Number(event.target.value) as JobApplicationStatus,
+            }))
+          }
+        >
+          {Object.values(JobApplicationStatus)
+            .filter((value): value is JobApplicationStatus => typeof value === "number")
+            .map((value) => (
+              <option key={value} value={value}>
+                {jobApplicationStatusLabels[value]}
+              </option>
+            ))}
+        </select>
+      </label>
+
+      {errorMessage ? (
+        <p className="border border-[color:var(--color-danger)] bg-[color:var(--color-danger-soft)] px-3 py-2 text-sm text-[color:var(--color-danger)]">
+          {errorMessage}
+        </p>
+      ) : null}
+
+      <div className="flex flex-wrap gap-3 pt-2">
+        <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? "Saving..." : editingApplication ? "Save Changes" : "Add Application"}
+        </Button>
+        <Button variant="ghost" type="button" onClick={onCancelEdit}>
+          Cancel
+        </Button>
       </div>
-
-      <form className="job-form" noValidate onSubmit={handleSubmit}>
-        <label className="field">
-          <span>Company Name</span>
-          <input
-            value={form.companyName}
-            onChange={(event) => {
-              const value = event.target.value;
-              setForm((current) => ({ ...current, companyName: value }));
-              setValidationErrors((current) => ({ ...current, companyName: undefined }));
-            }}
-            placeholder="Example: Stripe"
-            required
-          />
-          {validationErrors.companyName ? (
-            <span className="form-error">{validationErrors.companyName}</span>
-          ) : null}
-        </label>
-
-        <label className="field">
-          <span>Position</span>
-          <input
-            value={form.position}
-            onChange={(event) => {
-              const value = event.target.value;
-              setForm((current) => ({ ...current, position: value }));
-              setValidationErrors((current) => ({ ...current, position: undefined }));
-            }}
-            placeholder="Example: Backend Engineer"
-            required
-          />
-          {validationErrors.position ? (
-            <span className="form-error">{validationErrors.position}</span>
-          ) : null}
-        </label>
-
-        <label className="field">
-          <span>Status</span>
-          <select
-            value={form.status}
-            onChange={(event) =>
-              setForm((current) => ({
-                ...current,
-                status: Number(event.target.value) as JobApplicationStatus,
-              }))
-            }
-          >
-            {Object.values(JobApplicationStatus)
-              .filter((value): value is JobApplicationStatus => typeof value === "number")
-              .map((value) => (
-                <option key={value} value={value}>
-                  {jobApplicationStatusLabels[value]}
-                </option>
-              ))}
-          </select>
-        </label>
-
-        {errorMessage ? <p className="form-error">{errorMessage}</p> : null}
-
-        <div className="form-actions">
-          <button className="primary-button" type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Saving..." : editingApplication ? "Save Changes" : "Add Application"}
-          </button>
-          {editingApplication ? (
-            <button className="ghost-button" type="button" onClick={onCancelEdit}>
-              Cancel
-            </button>
-          ) : null}
-        </div>
-      </form>
-    </section>
+    </form>
   );
 };
 

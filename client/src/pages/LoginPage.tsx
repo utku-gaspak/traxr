@@ -1,9 +1,12 @@
 import axios from "axios";
+import { BriefcaseBusiness, ChevronRight } from "lucide-react";
 import { useState, type FormEvent } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { login as loginRequest } from "../api/accountApi";
+import { Button } from "../components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
+import { Input } from "../components/ui/input";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
@@ -14,8 +17,8 @@ const LoginPage = () => {
   const navigate = useNavigate();
 
   const showLoginFailure = () => {
-    alert("Login failed.")
-  }
+    alert("Login failed.");
+  };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -46,49 +49,76 @@ const LoginPage = () => {
     }
   };
   return (
-    <div style={{ maxWidth: "400px", margin: "100px auto", textAlign: "center", fontFamily: "sans-serif" }}>
-      <h2>Job Tracker Login</h2>
-      <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: "10px" }}>
-          <input
-            type="text"
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-            style={{ width: "100%", padding: "10px", borderRadius: "4px", border: "1px solid #ccc" }}
-          />
-        </div>
-        <div style={{ marginBottom: "15px" }}>
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            style={{ width: "100%", padding: "10px", borderRadius: "4px", border: "1px solid #ccc" }}
-          />
-        </div>
-        <button
-          type="submit"
-          disabled={loading}
-          style={{
-            width: "100%",
-            padding: "12px",
-            backgroundColor: loading ? "#ccc" : "#007bff",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer"
-          }}
-        >
-          {loading ? "Signing in..." : "Sign In"}
-        </button>
-        <p style={{ marginTop: "15px", fontSize: "14px" }}>
-          Need an account? <Link to="/register" style={{ color: "#007bff", textDecoration: "none" }}>Create one now</Link>
-        </p>
-      </form>
-    </div>
+    <main className="min-h-screen px-4 py-10 md:px-8">
+      <div className="mx-auto grid min-h-[calc(100vh-5rem)] max-w-6xl items-center gap-8 lg:grid-cols-[1.1fr_0.9fr]">
+        <section className="border border-[color:var(--color-border)] bg-[color:rgba(255,255,255,0.44)] p-8 shadow-[var(--shadow-panel)]">
+          <p className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--color-primary)]">
+            Job Application Tracker
+          </p>
+          <h1 className="max-w-[12ch] text-5xl leading-[0.92] text-[color:var(--color-foreground)] md:text-6xl">
+            Boutique tracking for a demanding search.
+          </h1>
+          <p className="mt-5 max-w-xl text-base text-[color:var(--color-muted-foreground)]">
+            Keep every application, interview, and offer in one refined board built for deliberate work.
+          </p>
+          <div className="mt-8 flex items-center gap-4 text-sm uppercase tracking-[0.14em] text-[color:var(--color-muted-foreground)]">
+            <span className="inline-flex items-center gap-2">
+              <BriefcaseBusiness className="h-4 w-4 text-[color:var(--color-primary)]" />
+              JWT Auth
+            </span>
+            <span className="h-px w-8 bg-[color:var(--color-border-strong)]" />
+            <span>Status Board</span>
+          </div>
+        </section>
+
+        <Card className="border-[color:var(--color-border-strong)] bg-[color:rgba(255,255,255,0.86)]">
+          <CardHeader className="border-b border-[color:var(--color-primary)] bg-[color:var(--color-primary-soft)]">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[color:var(--color-primary)]">
+              Secure Access
+            </p>
+            <CardTitle>Job Tracker Login</CardTitle>
+          </CardHeader>
+          <CardContent className="pt-6">
+            <form className="grid gap-4" onSubmit={handleSubmit}>
+              <div className="grid gap-2">
+                <label className="text-sm font-semibold uppercase tracking-[0.12em] text-[color:var(--color-muted-foreground)]">
+                  Username
+                </label>
+                <Input
+                  type="text"
+                  placeholder="Username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="grid gap-2">
+                <label className="text-sm font-semibold uppercase tracking-[0.12em] text-[color:var(--color-muted-foreground)]">
+                  Password
+                </label>
+                <Input
+                  type="password"
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </div>
+              <Button type="submit" disabled={loading} className="mt-2 w-full">
+                {loading ? "Signing in..." : "Sign In"}
+              </Button>
+              <p className="text-sm text-[color:var(--color-muted-foreground)]">
+                Need an account?{" "}
+                <Link className="inline-flex items-center gap-1 text-[color:var(--color-primary)]" to="/register">
+                  Create one now
+                  <ChevronRight className="h-3.5 w-3.5" />
+                </Link>
+              </p>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
+    </main>
   );
 };
 
