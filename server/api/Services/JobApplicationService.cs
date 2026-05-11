@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using api.Data;
 using api.Dto;
 using api.Exceptions;
@@ -10,6 +11,8 @@ public class JobApplicationService(AppDbContext dbContext) : IJobApplicationServ
 {
     public async Task<JobApplication> CreateAsync(JobApplicationCreateDto dto, string userId)
     {
+        ValidateCreateRequest(dto, userId);
+
         var jobApplication = new JobApplication
         {
             Id = Guid.NewGuid().ToString(),
@@ -27,6 +30,8 @@ public class JobApplicationService(AppDbContext dbContext) : IJobApplicationServ
 
     public async Task<List<JobApplication>> GetAllAsync(string userId)
     {
+        ValidateUserId(userId);
+
         return await dbContext
             .JobApplications.Where(jobApplication => jobApplication.UserId == userId)
             .OrderByDescending(jobApplication => jobApplication.DateApplied)
@@ -35,6 +40,9 @@ public class JobApplicationService(AppDbContext dbContext) : IJobApplicationServ
 
     public async Task<JobApplication> GetByIdAsync(string id, string userId)
     {
+        ValidateId(id);
+        ValidateUserId(userId);
+
         return await dbContext.JobApplications.FirstOrDefaultAsync(jobApplication =>
                 jobApplication.Id == id && jobApplication.UserId == userId
             ) ?? throw new NotFoundException("Job application could not be found");
@@ -42,6 +50,9 @@ public class JobApplicationService(AppDbContext dbContext) : IJobApplicationServ
 
     public async Task UpdateAsync(string id, JobApplicationUpdateDto dto, string userId)
     {
+        ValidateId(id);
+        ValidateUpdateRequest(dto, userId);
+
         var jobApplication = await dbContext.JobApplications.FirstOrDefaultAsync(current =>
                 current.Id == id && current.UserId == userId
             ) ?? throw new NotFoundException("Job application could not be found");
@@ -56,6 +67,9 @@ public class JobApplicationService(AppDbContext dbContext) : IJobApplicationServ
 
     public async Task<bool> DeleteAsync(string id, string userId)
     {
+        ValidateId(id);
+        ValidateUserId(userId);
+
         var jobApplication = await dbContext.JobApplications.FirstOrDefaultAsync(current =>
             current.Id == id && current.UserId == userId
         );
@@ -66,5 +80,43 @@ public class JobApplicationService(AppDbContext dbContext) : IJobApplicationServ
         dbContext.JobApplications.Remove(jobApplication);
         await dbContext.SaveChangesAsync();
         return true;
+    }
+
+    private static void ValidateCreateRequest(JobApplicationCreateDto? dto, string userId)
+    {
+        if (dto is null)
+            throw new ValidationException("Job application payload is required.");
+
+        ValidateUserId(userId);
+        ValidateRequiredText(dto.CompanyName, nameof(dto.CompanyName));
+        ValidateRequiredText(dto.Position, nameof(dto.Position));
+    }
+
+    private static void ValidateUpdateRequest(JobApplicationUpdateDto? dto, string userId)
+    {
+        if (dto is null)
+            throw new ValidationException("Job application payload is required.");
+
+        ValidateUserId(userId);
+        ValidateRequiredText(dto.CompanyName, nameof(dto.CompanyName));
+        ValidateRequiredText(dto.Position, nameof(dto.Position));
+    }
+
+    private static void ValidateId(string id)
+    {
+        if (string.IsNullOrWhiteSpace(id))
+            throw new ValidationException("Id is required.");
+    }
+
+    private static void ValidateUserId(string userId)
+    {
+        if (string.IsNullOrWhiteSpace(userId))
+            throw new ValidationException("UserId is required.");
+    }
+
+    private static void ValidateRequiredText(string value, string fieldName)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            throw new ValidationException($"{fieldName} is required.");
     }
 }
