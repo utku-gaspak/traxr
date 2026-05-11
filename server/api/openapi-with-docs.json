@@ -201,9 +201,10 @@
           "200": {
             "description": "",
             "content": {
-              "application/json": {
+              "application/octet-stream": {
                 "schema": {
-                  "$ref": "#/components/schemas/JobApplication"
+                  "type": "string",
+                  "format": "binary"
                 }
               }
             }

@@ -183,7 +183,8 @@ p {
 
 .primary-button,
 .secondary-button,
-.text-button {
+.text-button,
+.ghost-button {
   border: 0;
   cursor: pointer;
   transition: transform 120ms ease, opacity 120ms ease, background-color 120ms ease;
@@ -191,13 +192,15 @@ p {
 
 .primary-button:hover,
 .secondary-button:hover,
-.text-button:hover {
+.text-button:hover,
+.ghost-button:hover {
   transform: translateY(-1px);
 }
 
 .primary-button:disabled,
 .secondary-button:disabled,
-.text-button:disabled {
+.text-button:disabled,
+.ghost-button:disabled {
   opacity: 0.65;
   cursor: not-allowed;
   transform: none;
@@ -219,10 +222,21 @@ p {
   font-weight: 700;
 }
 
+.secondary-inline {
+  padding-inline: 14px;
+}
+
 .text-button {
   padding: 10px 0;
   background: transparent;
   color: var(--danger);
+  font-weight: 700;
+}
+
+.ghost-button {
+  padding: 10px 0;
+  background: transparent;
+  color: var(--muted);
   font-weight: 700;
 }
 
@@ -246,6 +260,12 @@ p {
 
 .application-main {
   min-width: 0;
+}
+
+.application-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .application-heading {
@@ -306,6 +326,13 @@ p {
   padding: 14px 16px;
 }
 
+.form-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
 .callout {
   background: rgba(31, 31, 27, 0.04);
   color: var(--muted);
@@ -337,7 +364,9 @@ p {
   }
 
   .application-card,
-  .application-heading {
+  .application-heading,
+  .application-actions {
     flex-direction: column;
+    align-items: flex-start;
   }
 }

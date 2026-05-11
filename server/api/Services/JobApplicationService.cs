@@ -40,11 +40,7 @@ public class JobApplicationService(AppDbContext dbContext) : IJobApplicationServ
             ) ?? throw new NotFoundException("Job application could not be found");
     }
 
-    public async Task<JobApplication> UpdateAsync(
-        string id,
-        JobApplicationUpdateDto dto,
-        string userId
-    )
+    public async Task UpdateAsync(string id, JobApplicationUpdateDto dto, string userId)
     {
         var jobApplication = await dbContext.JobApplications.FirstOrDefaultAsync(current =>
                 current.Id == id && current.UserId == userId
@@ -56,7 +52,6 @@ public class JobApplicationService(AppDbContext dbContext) : IJobApplicationServ
         jobApplication.DateApplied = dto.DateApplied;
 
         await dbContext.SaveChangesAsync();
-        return jobApplication;
     }
 
     public async Task<bool> DeleteAsync(string id, string userId)

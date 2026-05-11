@@ -1,6 +1,10 @@
 import axios from "axios";
 import { finalUrl } from "../baseUrl";
-import type { JobApplication, JobApplicationCreateInput } from "../types";
+import type {
+  JobApplication,
+  JobApplicationCreateInput,
+  JobApplicationUpdateInput,
+} from "../types";
 
 const tokenKey = "token";
 
@@ -45,6 +49,15 @@ export const createJobApplication = async (input: JobApplicationCreateInput) => 
   });
 
   return response.data;
+};
+
+export const updateJobApplication = async (id: string, input: JobApplicationUpdateInput) => {
+  await jobApplicationsApi.put(`/${id}`, {
+    companyName: input.companyName,
+    position: input.position,
+    status: input.status,
+    dateApplied: input.dateApplied,
+  });
 };
 
 export const deleteJobApplication = async (id: string) => {

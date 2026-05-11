@@ -1,8 +1,18 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import { createJobApplication, deleteJobApplication, listJobApplications } from "../api/jobApplicationsApi";
+import {
+  createJobApplication,
+  deleteJobApplication,
+  listJobApplications,
+  updateJobApplication,
+} from "../api/jobApplicationsApi";
 import JobApplicationForm from "./JobApplicationForm";
-import { jobApplicationStatusLabels, type JobApplication, type JobApplicationCreateInput } from "../types";
+import {
+  jobApplicationStatusLabels,
+  type JobApplication,
+  type JobApplicationCreateInput,
+  type JobApplicationUpdateInput,
+} from "../types";
 
 const formatAppliedDate = (isoDate: string) =>
   new Intl.DateTimeFormat("en-US", {
@@ -16,6 +26,7 @@ const Dashboard = () => {
   const [applications, setApplications] = useState<JobApplication[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [editingApplication, setEditingApplication] = useState<JobApplication | null>(null);
 
   useEffect(() => {
     const loadApplications = async () => {
@@ -44,10 +55,28 @@ const Dashboard = () => {
     try {
       await deleteJobApplication(id);
       setApplications((current) => current.filter((application) => application.id !== id));
+      setEditingApplication((current) => (current?.id === id ? null : current));
     } catch (error) {
       console.error("Delete job application failed:", error);
       setErrorMessage("Could not delete the application.");
     }
+  };
+
+  const handleUpdate = async (id: string, input: JobApplicationUpdateInput) => {
+    await updateJobApplication(id, input);
+    setApplications((current) =>
+      current.map((application) =>
+        application.id === id
+          ? {
+              ...application,
+              companyName: input.companyName,
+              position: input.position,
+              status: input.status,
+              dateApplied: input.dateApplied,
+            }
+          : application
+      )
+    );
   };
 
   return (
@@ -73,7 +102,12 @@ const Dashboard = () => {
       </section>
 
       <section className="dashboard-grid">
-        <JobApplicationForm onCreate={handleCreate} />
+        <JobApplicationForm
+          onCreate={handleCreate}
+          onUpdate={handleUpdate}
+          editingApplication={editingApplication}
+          onCancelEdit={() => setEditingApplication(null)}
+        />
 
         <section className="panel panel-list">
           <div className="panel-header">
@@ -112,13 +146,18 @@ const Dashboard = () => {
                   </p>
                 </div>
 
-                <button
-                  className="text-button"
-                  onClick={() => void handleDelete(application.id)}
-                  type="button"
-                >
-                  Delete
-                </button>
+                <div className="application-actions">
+                  <button
+                    className="secondary-button secondary-inline"
+                    onClick={() => setEditingApplication(application)}
+                    type="button"
+                  >
+                    Edit
+                  </button>
+                  <button className="text-button" onClick={() => void handleDelete(application.id)} type="button">
+                    Delete
+                  </button>
+                </div>
               </article>
             ))}
           </div>

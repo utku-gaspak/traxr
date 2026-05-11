@@ -46,7 +46,7 @@ public class JobApplicationsController(IJobApplicationService service) : Control
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult<JobApplication>> Update(
+    public async Task<IActionResult> Update(
         [FromRoute] string id,
         [FromBody] JobApplicationUpdateDto dto
     )
@@ -55,8 +55,8 @@ public class JobApplicationsController(IJobApplicationService service) : Control
         if (userId == null)
             return Unauthorized();
 
-        var jobApplication = await service.UpdateAsync(id, dto, userId);
-        return Ok(jobApplication);
+        await service.UpdateAsync(id, dto, userId);
+        return NoContent();
     }
 
     [HttpDelete("{id}")]

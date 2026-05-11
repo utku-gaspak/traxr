@@ -1,8 +1,17 @@
-import { useState, type FormEvent } from "react";
-import { JobApplicationStatus, jobApplicationStatusLabels, type JobApplication, type JobApplicationCreateInput } from "../types";
+import { useEffect, useState, type FormEvent } from "react";
+import {
+  JobApplicationStatus,
+  jobApplicationStatusLabels,
+  type JobApplication,
+  type JobApplicationCreateInput,
+  type JobApplicationUpdateInput,
+} from "../types";
 
 interface JobApplicationFormProps {
   onCreate: (input: JobApplicationCreateInput) => Promise<JobApplication>;
+  onUpdate: (id: string, input: JobApplicationUpdateInput) => Promise<void>;
+  editingApplication: JobApplication | null;
+  onCancelEdit: () => void;
 }
 
 const initialFormState: JobApplicationCreateInput = {
@@ -11,10 +20,29 @@ const initialFormState: JobApplicationCreateInput = {
   status: JobApplicationStatus.Applied,
 };
 
-const JobApplicationForm = ({ onCreate }: JobApplicationFormProps) => {
+const JobApplicationForm = ({
+  onCreate,
+  onUpdate,
+  editingApplication,
+  onCancelEdit,
+}: JobApplicationFormProps) => {
   const [form, setForm] = useState<JobApplicationCreateInput>(initialFormState);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (editingApplication) {
+      setForm({
+        companyName: editingApplication.companyName,
+        position: editingApplication.position,
+        status: editingApplication.status,
+      });
+    } else {
+      setForm(initialFormState);
+    }
+
+    setErrorMessage(null);
+  }, [editingApplication]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -22,10 +50,20 @@ const JobApplicationForm = ({ onCreate }: JobApplicationFormProps) => {
     setErrorMessage(null);
 
     try {
-      await onCreate(form);
-      setForm(initialFormState);
+      if (editingApplication) {
+        await onUpdate(editingApplication.id, {
+          companyName: form.companyName,
+          position: form.position,
+          status: form.status,
+          dateApplied: editingApplication.dateApplied,
+        });
+        onCancelEdit();
+      } else {
+        await onCreate(form);
+        setForm(initialFormState);
+      }
     } catch (error) {
-      console.error("Create job application failed:", error);
+      console.error("Save job application failed:", error);
       setErrorMessage("Could not save the application. Check the form and try again.");
     } finally {
       setIsSubmitting(false);
@@ -36,8 +74,8 @@ const JobApplicationForm = ({ onCreate }: JobApplicationFormProps) => {
     <section className="panel panel-form">
       <div className="panel-header">
         <div>
-          <p className="eyebrow">New application</p>
-          <h2>Add a job application</h2>
+          <p className="eyebrow">{editingApplication ? "Edit application" : "New application"}</p>
+          <h2>{editingApplication ? "Update job application" : "Add a job application"}</h2>
         </div>
       </div>
 
@@ -85,9 +123,16 @@ const JobApplicationForm = ({ onCreate }: JobApplicationFormProps) => {
 
         {errorMessage ? <p className="form-error">{errorMessage}</p> : null}
 
-        <button className="primary-button" type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Saving..." : "Add Application"}
-        </button>
+        <div className="form-actions">
+          <button className="primary-button" type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "Saving..." : editingApplication ? "Save Changes" : "Add Application"}
+          </button>
+          {editingApplication ? (
+            <button className="ghost-button" type="button" onClick={onCancelEdit}>
+              Cancel
+            </button>
+          ) : null}
+        </div>
       </form>
     </section>
   );

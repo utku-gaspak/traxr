@@ -20,6 +20,13 @@ export interface JobApplicationCreateInput {
   status: JobApplicationStatus;
 }
 
+export interface JobApplicationUpdateInput {
+  companyName: string;
+  position: string;
+  status: JobApplicationStatus;
+  dateApplied: string;
+}
+
 export const jobApplicationStatusLabels: Record<JobApplicationStatus, string> = {
   [JobApplicationStatus.Applied]: "Applied",
   [JobApplicationStatus.Interviewing]: "Interviewing",
