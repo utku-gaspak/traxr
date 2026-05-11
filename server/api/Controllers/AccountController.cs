@@ -16,7 +16,7 @@ public class AccountController(
 ) : ControllerBase
 {
     [HttpPost("register")]
-    [ProducesResponseType(typeof(NewUserDto), StatusCodes.Status200OK)] // Dönüş tipini buraya yazdık
+    [ProducesResponseType(typeof(NewUserDto), StatusCodes.Status200OK)]
     public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
     {
         try
@@ -29,13 +29,10 @@ public class AccountController(
                 UserName = registerDto.Username,
                 Email = registerDto.Email,
             };
-            //userManager interacts with user db via CRUD.
-            // Şifreyi kendimiz hash'lemiyoruz, Identity arka planda güvenli şekilde hallediyor.
             var createdUser = await userManager.CreateAsync(appUser, registerDto.Password!);
 
             if (createdUser.Succeeded)
             {
-                // Kullanıcı başarıyla oluştuysa hemen ona bir anahtar veriyoruz
                 return Ok(
                     new NewUserDto
                     {
@@ -55,14 +52,13 @@ public class AccountController(
     }
 
     [HttpPost("login")]
-    [Produces("application/json")] // <--- NSwag'e "Ben JSON dönüyorum" de
-    [ProducesResponseType(typeof(NewUserDto), StatusCodes.Status200OK)] // <[ProducesResponseType(typeof(NewUserDto), StatusCodes.Status200OK)] // <--- BU SATIR KRİTİ[ProducesResponseType(typeof(NewUserDto), StatusCodes.Status200OK)] // <--- BU SATIR KRİTİKK--- BU SATIR KRİTİK
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(NewUserDto), StatusCodes.Status200OK)]
     public async Task<IActionResult> Login(LoginDto loginDto)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        // 1. Kullanıcıyı veritabanında bul (Email veya Username ile)
         var user = await userManager.Users.FirstOrDefaultAsync(x =>
             x.UserName == loginDto.Username
         );
@@ -70,14 +66,11 @@ public class AccountController(
         if (user == null)
             return Unauthorized("Geçersiz kullanıcı adı!");
 
-        //signInManager Session ve password verifizieren.
-        // 2. Şifreyi kontrol et
         var result = await signInManager.CheckPasswordSignInAsync(user, loginDto.Password!, false);
 
         if (!result.Succeeded)
             return Unauthorized("Kullanıcı adı veya şifre hatalı!");
 
-        // 3. Her şey tamamsa yeni bir Token üret ve kullanıcıya dön
         return Ok(
             new NewUserDto
             {

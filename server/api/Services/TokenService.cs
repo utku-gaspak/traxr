@@ -7,7 +7,6 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace api.Services;
 
-//parantez icindeki parametre tum sinif icinde kullanilabilir hale gelir
 public class TokenService(IConfiguration config) : ITokenService
 {
     private readonly SymmetricSecurityKey _key = CreateSigningKey(config["JWT:SigningKey"]);
@@ -27,10 +26,11 @@ public class TokenService(IConfiguration config) : ITokenService
             Subject = new ClaimsIdentity(claims),
             Expires = DateTime.Now.AddDays(7),
             SigningCredentials = creds,
-            Issuer = config["JWT:Issuer"], // _config yerine doğrudan parametreyi kullanıyoruz
+            Issuer = config["JWT:Issuer"],
             Audience = config["JWT:Audience"],
         };
         var tokenHandler = new JwtSecurityTokenHandler();
+        // Preserve ClaimTypes.NameIdentifier in the emitted JWT instead of remapping it to "nameid".
         tokenHandler.OutboundClaimTypeMap.Clear();
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);

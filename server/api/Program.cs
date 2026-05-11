@@ -14,6 +14,7 @@ using NSwag;
 using NSwag.Generation.Processors.Security;
 
 Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = true;
+// Keep JWT claim types unchanged so NameIdentifier round-trips between token creation and auth.
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
 var builder = WebApplication.CreateBuilder(args);
@@ -107,6 +108,7 @@ builder
         {
             OnMessageReceived = context =>
             {
+                // Normalize bearer tokens because copied/generated headers may contain embedded whitespace.
                 var authHeader = context.Request.Headers.Authorization.ToString();
 
                 if (

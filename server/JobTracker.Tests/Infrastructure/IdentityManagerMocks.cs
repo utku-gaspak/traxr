@@ -26,6 +26,7 @@ public static class IdentityManagerMocks
         UserManager<AppUser> userManager
     )
     {
+        // SignInManager needs the full collaborator graph even when tests only stub CheckPasswordSignInAsync.
         return new Mock<SignInManager<AppUser>>(
             userManager,
             Mock.Of<IHttpContextAccessor>(),

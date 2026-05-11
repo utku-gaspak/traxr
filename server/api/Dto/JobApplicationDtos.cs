@@ -3,6 +3,7 @@ using api.Models;
 
 namespace api.Dto;
 
+// Use property-targeted attributes so ASP.NET model validation and OpenAPI mark these fields as required.
 public record JobApplicationCreateDto(
     [property: Required] string CompanyName,
     [property: Required] string Position,

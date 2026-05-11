@@ -39,6 +39,7 @@ public class ApiApplicationFactory : WebApplicationFactory<Program>
 
         builder.ConfigureTestServices(services =>
         {
+            // These tests exercise auth/startup behavior, so swap out the data-backed service to avoid DB/provider coupling.
             services.RemoveAll<IJobApplicationService>();
             services.AddScoped<IJobApplicationService, EmptyJobApplicationService>();
         });

@@ -1,6 +1,6 @@
 import { createContext, useState, useContext } from "react";
-import type { ReactNode } from "react"; // 'type' anahtar kelimesini ekledik
-// 1. Context'in şeklini belirleyelim
+import type { ReactNode } from "react";
+
 interface AuthContextType {
   token: string | null;
   isLoggedIn: boolean;
@@ -8,12 +8,10 @@ interface AuthContextType {
   logout: () => void;
 }
 
-// 2. Boş bir context oluşturuyoruz
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// 3. Sağlayıcı (Provider) bileşenimiz
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  // İlk açılışta localStorage'a bakıyoruz (Hydration)
+  // Read the persisted token during the initial render so auth state survives refreshes.
   const [token, setToken] = useState<string | null>(localStorage.getItem("token"));
 
   const login = (newToken: string) => {
@@ -28,7 +26,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const value = {
     token,
-    isLoggedIn: !!token, // Token varsa true, yoksa false
+    isLoggedIn: !!token,
     login,
     logout,
   };
@@ -36,7 +34,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
-// 4. Custom Hook: Diğer bileşenlerde kullanırken kolaylık sağlar
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {

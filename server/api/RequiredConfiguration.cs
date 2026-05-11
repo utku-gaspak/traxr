@@ -2,6 +2,7 @@ namespace api;
 
 public static class RequiredConfiguration
 {
+    // Centralize required startup config checks so they stay testable outside Program.cs bootstrapping.
     public static string GetDefaultConnection(IConfiguration configuration)
     {
         var defaultConnection = configuration.GetConnectionString("DefaultConnection");
