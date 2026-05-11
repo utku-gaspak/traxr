@@ -1,0 +1,508 @@
+{
+  "x-generator": "NSwag v14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))",
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Job Application Tracker API",
+    "description": "JWT-protected API for tracking job applications.",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/account/register": {
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "operationId": "Account_Register",
+        "requestBody": {
+          "x-name": "registerDto",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterDto"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NewUserDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/account/login": {
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "operationId": "Account_Login",
+        "requestBody": {
+          "x-name": "loginDto",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDto"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NewUserDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/JobApplications": {
+      "get": {
+        "tags": [
+          "JobApplications"
+        ],
+        "operationId": "JobApplications_GetAll",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/JobApplication"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "JobApplications"
+        ],
+        "operationId": "JobApplications_Create",
+        "requestBody": {
+          "x-name": "dto",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobApplicationCreateDto"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobApplication"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/JobApplications/{id}": {
+      "get": {
+        "tags": [
+          "JobApplications"
+        ],
+        "operationId": "JobApplications_GetById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobApplication"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "JobApplications"
+        ],
+        "operationId": "JobApplications_Update",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "dto",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobApplicationUpdateDto"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobApplication"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "JobApplications"
+        ],
+        "operationId": "JobApplications_Delete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "NewUserDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "userName": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "token": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "RegisterDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "username",
+          "email",
+          "password"
+        ],
+        "properties": {
+          "username": {
+            "type": "string",
+            "maxLength": 20,
+            "minLength": 3
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "minLength": 1
+          },
+          "password": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 6,
+            "pattern": "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{6,}$"
+          }
+        }
+      },
+      "LoginDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "username": {
+            "type": "string",
+            "nullable": true
+          },
+          "password": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "JobApplication": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "companyName",
+          "position"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "companyName": {
+            "type": "string",
+            "minLength": 1
+          },
+          "position": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "$ref": "#/components/schemas/JobApplicationStatus"
+          },
+          "dateApplied": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "user": {
+            "$ref": "#/components/schemas/AppUser"
+          }
+        }
+      },
+      "JobApplicationStatus": {
+        "type": "integer",
+        "description": "",
+        "x-enumNames": [
+          "Applied",
+          "Interviewing",
+          "Rejected",
+          "Offer"
+        ],
+        "enum": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      "AppUser": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IdentityUser"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "jobApplications": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/JobApplication"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "IdentityUser": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IdentityUserOfString"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false
+          }
+        ]
+      },
+      "IdentityUserOfString": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "userName": {
+            "type": "string",
+            "nullable": true
+          },
+          "normalizedUserName": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "normalizedEmail": {
+            "type": "string",
+            "nullable": true
+          },
+          "emailConfirmed": {
+            "type": "boolean"
+          },
+          "passwordHash": {
+            "type": "string",
+            "nullable": true
+          },
+          "securityStamp": {
+            "type": "string",
+            "nullable": true
+          },
+          "concurrencyStamp": {
+            "type": "string",
+            "nullable": true
+          },
+          "phoneNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "phoneNumberConfirmed": {
+            "type": "boolean"
+          },
+          "twoFactorEnabled": {
+            "type": "boolean"
+          },
+          "lockoutEnd": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "lockoutEnabled": {
+            "type": "boolean"
+          },
+          "accessFailedCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "JobApplicationCreateDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "companyName": {
+            "type": "string"
+          },
+          "position": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/JobApplicationStatus"
+          }
+        }
+      },
+      "JobApplicationUpdateDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "companyName": {
+            "type": "string"
+          },
+          "position": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/JobApplicationStatus"
+          },
+          "dateApplied": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "JWT": {
+        "type": "apiKey",
+        "description": "Use: Bearer {your-jwt-token}",
+        "name": "Authorization",
+        "in": "header"
+      }
+    }
+  },
+  "security": [
+    {
+      "JWT": []
+    }
+  ]
+}

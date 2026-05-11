@@ -1,0 +1,22 @@
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
+*.scratch
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+
+# Environment and Secrets 
+.env
+.env.local
+docker-compose.override.yml
+
+# Build and Temp 
+dist/
+temp/
+
+# Personal notes
+notes.md
+project.md
