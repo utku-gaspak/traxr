@@ -460,12 +460,18 @@
       "JobApplicationCreateDto": {
         "type": "object",
         "additionalProperties": false,
+        "required": [
+          "companyName",
+          "position"
+        ],
         "properties": {
           "companyName": {
-            "type": "string"
+            "type": "string",
+            "minLength": 1
           },
           "position": {
-            "type": "string"
+            "type": "string",
+            "minLength": 1
           },
           "status": {
             "$ref": "#/components/schemas/JobApplicationStatus"
@@ -475,12 +481,18 @@
       "JobApplicationUpdateDto": {
         "type": "object",
         "additionalProperties": false,
+        "required": [
+          "companyName",
+          "position"
+        ],
         "properties": {
           "companyName": {
-            "type": "string"
+            "type": "string",
+            "minLength": 1
           },
           "position": {
-            "type": "string"
+            "type": "string",
+            "minLength": 1
           },
           "status": {
             "$ref": "#/components/schemas/JobApplicationStatus"

@@ -355,14 +355,14 @@ export interface AppUser extends IdentityUser {
 }
 
 export interface JobApplicationCreateDto {
-    companyName?: string;
-    position?: string;
+    companyName: string;
+    position: string;
     status?: JobApplicationStatus;
 }
 
 export interface JobApplicationUpdateDto {
-    companyName?: string;
-    position?: string;
+    companyName: string;
+    position: string;
     status?: JobApplicationStatus;
     dateApplied?: string;
 }

@@ -1,0 +1,98 @@
+namespace JobTracker.Tests.Dto;
+
+public class DtoValidationTests
+{
+    [Theory]
+    [InlineData("ab")]
+    [InlineData("this-username-is-too-long")]
+    public void RegisterDto_InvalidUsername_ShouldFailValidation(string username)
+    {
+        var dto = CreateValidRegisterDto();
+        dto.Username = username;
+
+        var results = Validate(dto);
+
+        results.Should().Contain(result => result.MemberNames.Contains(nameof(RegisterDto.Username)));
+    }
+
+    [Fact]
+    public void RegisterDto_InvalidEmail_ShouldFailValidation()
+    {
+        var dto = CreateValidRegisterDto();
+        dto.Email = "not-an-email";
+
+        var results = Validate(dto);
+
+        results.Should().Contain(result => result.MemberNames.Contains(nameof(RegisterDto.Email)));
+    }
+
+    [Theory]
+    [InlineData("short")]
+    [InlineData("password1!")]
+    [InlineData("PASSWORD1!")]
+    [InlineData("Password!")]
+    [InlineData("Password1")]
+    public void RegisterDto_InvalidPassword_ShouldFailValidation(string password)
+    {
+        var dto = CreateValidRegisterDto();
+        dto.Password = password;
+
+        var results = Validate(dto);
+
+        results.Should().Contain(result => result.MemberNames.Contains(nameof(RegisterDto.Password)));
+    }
+
+    [Fact]
+    public void RegisterDto_ValidValues_ShouldPassValidation()
+    {
+        var dto = CreateValidRegisterDto();
+
+        var results = Validate(dto);
+
+        results.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void JobApplicationCreateDto_MissingRequiredFields_ShouldFailValidation()
+    {
+        var dto = new JobApplicationCreateDto(null!, null!, JobApplicationStatus.Applied);
+
+        var results = Validate(dto);
+
+        results.Should().Contain(result => result.MemberNames.Contains(nameof(JobApplicationCreateDto.CompanyName)));
+        results.Should().Contain(result => result.MemberNames.Contains(nameof(JobApplicationCreateDto.Position)));
+    }
+
+    [Fact]
+    public void JobApplicationUpdateDto_MissingRequiredFields_ShouldFailValidation()
+    {
+        var dto = new JobApplicationUpdateDto(
+            null!,
+            null!,
+            JobApplicationStatus.Interviewing,
+            new DateTime(2026, 05, 11, 12, 00, 00, DateTimeKind.Utc)
+        );
+
+        var results = Validate(dto);
+
+        results.Should().Contain(result => result.MemberNames.Contains(nameof(JobApplicationUpdateDto.CompanyName)));
+        results.Should().Contain(result => result.MemberNames.Contains(nameof(JobApplicationUpdateDto.Position)));
+    }
+
+    private static RegisterDto CreateValidRegisterDto()
+    {
+        return new RegisterDto
+        {
+            Username = "utku",
+            Email = "utku@example.com",
+            Password = "Password1!",
+        };
+    }
+
+    private static List<ValidationResult> Validate(object dto)
+    {
+        var results = new List<ValidationResult>();
+        Validator.TryValidateObject(dto, new ValidationContext(dto), results, validateAllProperties: true);
+        return results;
+    }
+}

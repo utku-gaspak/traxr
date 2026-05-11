@@ -31,6 +31,7 @@ public class TokenService(IConfiguration config) : ITokenService
             Audience = config["JWT:Audience"],
         };
         var tokenHandler = new JwtSecurityTokenHandler();
+        tokenHandler.OutboundClaimTypeMap.Clear();
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
     }

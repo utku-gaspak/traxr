@@ -17,9 +17,7 @@ Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = true;
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
 var builder = WebApplication.CreateBuilder(args);
-var defaultConnection =
-    builder.Configuration.GetConnectionString("DefaultConnection")
-    ?? throw new InvalidOperationException("ConnectionStrings:DefaultConnection is not configured.");
+var defaultConnection = RequiredConfiguration.GetDefaultConnection(builder.Configuration);
 
 builder.Services.AddCors(options =>
 {
@@ -150,3 +148,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+public partial class Program;

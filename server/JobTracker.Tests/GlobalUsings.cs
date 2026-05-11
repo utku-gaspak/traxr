@@ -1,5 +1,7 @@
 global using System.ComponentModel.DataAnnotations;
 global using System.Security.Claims;
+global using api.Dtos.Account;
+global using api.Interface;
 global using api.Controllers;
 global using api.Data;
 global using api.Dto;
@@ -9,6 +11,7 @@ global using api.Services;
 global using FluentAssertions;
 global using JobTracker.Tests.Infrastructure;
 global using Microsoft.AspNetCore.Http;
+global using Microsoft.AspNetCore.Identity;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.EntityFrameworkCore;
 global using Xunit;
