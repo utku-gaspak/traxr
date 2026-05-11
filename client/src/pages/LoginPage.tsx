@@ -34,10 +34,10 @@ const LoginPage = () => {
         showLoginFailure();
       }
     } catch (error) {
-      console.error("Giriş Hatası:", error);
+      console.error("Login failed:", error);
 
       if (axios.isAxiosError(error) && error.response?.status === 401) {
-        alert("Kullanıcı adı veya şifre hatalı!");
+        alert("Invalid username or password.");
       } else {
         showLoginFailure();
       }
@@ -52,7 +52,7 @@ const LoginPage = () => {
         <div style={{ marginBottom: "10px" }}>
           <input
             type="text"
-            placeholder="Kullanıcı Adı"
+            placeholder="Username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
@@ -62,7 +62,7 @@ const LoginPage = () => {
         <div style={{ marginBottom: "15px" }}>
           <input
             type="password"
-            placeholder="Şifre"
+            placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -82,10 +82,10 @@ const LoginPage = () => {
             cursor: "pointer"
           }}
         >
-          {loading ? "Bağlanıyor..." : "Giriş Yap"}
+          {loading ? "Signing in..." : "Sign In"}
         </button>
         <p style={{ marginTop: "15px", fontSize: "14px" }}>
-          Henüz hesabın yok mu? <Link to="/register" style={{ color: "#007bff", textDecoration: "none" }}>Hemen Kayıt Ol</Link>
+          Need an account? <Link to="/register" style={{ color: "#007bff", textDecoration: "none" }}>Create one now</Link>
         </p>
       </form>
     </div>

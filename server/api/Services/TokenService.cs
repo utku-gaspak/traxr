@@ -24,7 +24,7 @@ public class TokenService(IConfiguration config) : ITokenService
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.Now.AddDays(7),
+            Expires = DateTime.UtcNow.AddDays(7),
             SigningCredentials = creds,
             Issuer = config["JWT:Issuer"],
             Audience = config["JWT:Audience"],

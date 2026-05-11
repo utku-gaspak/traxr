@@ -124,7 +124,7 @@ public class AccountControllerTests
         var result = await controller.Login(new LoginDto { Username = "missing", Password = "Password1!" });
 
         var unauthorized = result.Should().BeOfType<UnauthorizedObjectResult>().Subject;
-        unauthorized.Value.Should().Be("Geçersiz kullanıcı adı!");
+        unauthorized.Value.Should().Be("Invalid username or password.");
         tokenServiceMock.VerifyNoOtherCalls();
     }
 
@@ -160,7 +160,7 @@ public class AccountControllerTests
         var result = await controller.Login(new LoginDto { Username = appUser.UserName, Password = "wrong-password" });
 
         var unauthorized = result.Should().BeOfType<UnauthorizedObjectResult>().Subject;
-        unauthorized.Value.Should().Be("Kullanıcı adı veya şifre hatalı!");
+        unauthorized.Value.Should().Be("Invalid username or password.");
         signInManagerMock.Verify(
             manager => manager.CheckPasswordSignInAsync(appUser, "wrong-password", false),
             Times.Once

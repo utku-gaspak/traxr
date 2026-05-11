@@ -5,19 +5,19 @@ namespace api.Dtos.Account;
 public class RegisterDto
 {
     [Required]
-    [MinLength(3, ErrorMessage = "Kullanıcı adı en az 3 karakter olmalı")]
-    [MaxLength(20, ErrorMessage = "Kullanıcı adı en fazla 20 karakter olmalı")]
+    [MinLength(3, ErrorMessage = "Username must be at least 3 characters.")]
+    [MaxLength(20, ErrorMessage = "Username must be at most 20 characters.")]
     public string? Username { get; set; }
 
     [Required]
-    [EmailAddress(ErrorMessage = "Geçersiz email formatı")]
+    [EmailAddress(ErrorMessage = "Invalid email format.")]
     public string? Email { get; set; }
 
     [Required]
-    [StringLength(100, MinimumLength = 6, ErrorMessage = "Şifre en az 6 karakter olmalı")]
+    [StringLength(100, MinimumLength = 6, ErrorMessage = "Password must be at least 6 characters.")]
     [RegularExpression(
         @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$",
-        ErrorMessage = "Şifre en az bir büyük harf, bir küçük harf, bir rakam ve bir özel karakter içermelidir."
+        ErrorMessage = "Password must include uppercase, lowercase, number, and special character."
     )]
     public string? Password { get; set; }
 }

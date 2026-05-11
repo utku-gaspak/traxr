@@ -13,11 +13,14 @@ using Microsoft.IdentityModel.Tokens;
 using NSwag;
 using NSwag.Generation.Processors.Security;
 
-Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = true;
+var builder = WebApplication.CreateBuilder(args);
+
+if (builder.Environment.IsDevelopment())
+    Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = true;
+
 // Keep JWT claim types unchanged so NameIdentifier round-trips between token creation and auth.
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
-var builder = WebApplication.CreateBuilder(args);
 var defaultConnection = RequiredConfiguration.GetDefaultConnection(builder.Configuration);
 
 builder.Services.AddCors(options =>

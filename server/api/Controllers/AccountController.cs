@@ -19,36 +19,29 @@ public class AccountController(
     [ProducesResponseType(typeof(NewUserDto), StatusCodes.Status200OK)]
     public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
     {
-        try
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        var appUser = new AppUser
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            UserName = registerDto.Username,
+            Email = registerDto.Email,
+        };
+        var createdUser = await userManager.CreateAsync(appUser, registerDto.Password!);
 
-            var appUser = new AppUser
-            {
-                UserName = registerDto.Username,
-                Email = registerDto.Email,
-            };
-            var createdUser = await userManager.CreateAsync(appUser, registerDto.Password!);
-
-            if (createdUser.Succeeded)
-            {
-                return Ok(
-                    new NewUserDto
-                    {
-                        UserName = appUser.UserName,
-                        Email = appUser.Email,
-                        Token = tokenService.CreateToken(appUser),
-                    }
-                );
-            }
-
-            return BadRequest(createdUser.Errors);
-        }
-        catch (Exception e)
+        if (createdUser.Succeeded)
         {
-            return StatusCode(500, e.Message);
+            return Ok(
+                new NewUserDto
+                {
+                    UserName = appUser.UserName,
+                    Email = appUser.Email,
+                    Token = tokenService.CreateToken(appUser),
+                }
+            );
         }
+
+        return BadRequest(createdUser.Errors);
     }
 
     [HttpPost("login")]
@@ -64,12 +57,12 @@ public class AccountController(
         );
 
         if (user == null)
-            return Unauthorized("Geçersiz kullanıcı adı!");
+            return Unauthorized("Invalid username or password.");
 
         var result = await signInManager.CheckPasswordSignInAsync(user, loginDto.Password!, false);
 
         if (!result.Succeeded)
-            return Unauthorized("Kullanıcı adı veya şifre hatalı!");
+            return Unauthorized("Invalid username or password.");
 
         return Ok(
             new NewUserDto

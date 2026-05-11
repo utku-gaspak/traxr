@@ -25,8 +25,8 @@ describe('LoginPage', () => {
   it('LoginPage_SubmitValidCredentials_StoresTokenAndCallsApi', async () => {
     renderLoginPage()
 
-    const usernameInput = screen.getByPlaceholderText('Kullanıcı Adı') as HTMLInputElement
-    const passwordInput = screen.getByPlaceholderText('Şifre') as HTMLInputElement
+    const usernameInput = screen.getByPlaceholderText('Username') as HTMLInputElement
+    const passwordInput = screen.getByPlaceholderText('Password') as HTMLInputElement
 
     fireEvent.change(usernameInput, { target: { value: 'utku' } })
     fireEvent.change(passwordInput, { target: { value: 'Password1!' } })
@@ -34,7 +34,7 @@ describe('LoginPage', () => {
     expect(usernameInput.value).toBe('utku')
     expect(passwordInput.value).toBe('Password1!')
 
-    fireEvent.click(screen.getByRole('button', { name: 'Giriş Yap' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Sign In' }))
 
     await screen.findByText('Dashboard Home')
 
@@ -59,16 +59,16 @@ describe('LoginPage', () => {
 
     renderLoginPage()
 
-    fireEvent.change(screen.getByPlaceholderText('Kullanıcı Adı'), {
+    fireEvent.change(screen.getByPlaceholderText('Username'), {
       target: { value: 'utku' },
     })
-    fireEvent.change(screen.getByPlaceholderText('Şifre'), {
+    fireEvent.change(screen.getByPlaceholderText('Password'), {
       target: { value: 'wrong-password' },
     })
-    fireEvent.click(screen.getByRole('button', { name: 'Giriş Yap' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Sign In' }))
 
     await waitFor(() => {
-      expect(alertSpy).toHaveBeenCalledWith('Kullanıcı adı veya şifre hatalı!')
+      expect(alertSpy).toHaveBeenCalledWith('Invalid username or password.')
     })
     expect(localStorage.getItem('token')).toBeNull()
 
@@ -90,13 +90,13 @@ describe('LoginPage', () => {
 
     renderLoginPage()
 
-    fireEvent.change(screen.getByPlaceholderText('Kullanıcı Adı'), {
+    fireEvent.change(screen.getByPlaceholderText('Username'), {
       target: { value: 'utku' },
     })
-    fireEvent.change(screen.getByPlaceholderText('Şifre'), {
+    fireEvent.change(screen.getByPlaceholderText('Password'), {
       target: { value: 'Password1!' },
     })
-    fireEvent.click(screen.getByRole('button', { name: 'Giriş Yap' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Sign In' }))
 
     await waitFor(() => {
       expect(alertSpy).toHaveBeenCalledWith('Login failed.')

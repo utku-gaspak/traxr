@@ -20,11 +20,11 @@ const RegisterPage = () => {
         password,
       });
 
-      alert("Kayıt başarılı! Şimdi giriş yapabilirsiniz.");
+      alert("Registration successful. You can sign in now.");
       navigate("/login");
     } catch (error) {
-      console.error("Kayıt Hatası:", error);
-      alert("Kayıt sırasında bir hata oluştu. Bilgileri kontrol edin.");
+      console.error("Registration failed:", error);
+      alert("Registration failed. Check your details and try again.");
     } finally {
       setLoading(false);
     }
@@ -32,12 +32,12 @@ const RegisterPage = () => {
 
   return (
     <div style={{ maxWidth: "400px", margin: "100px auto", textAlign: "center", fontFamily: "sans-serif" }}>
-      <h2>Yeni Hesap Oluştur</h2>
+      <h2>Create Account</h2>
       <form onSubmit={handleSubmit}>
         <div style={{ marginBottom: "10px" }}>
           <input
             type="text"
-            placeholder="Kullanıcı Adı"
+            placeholder="Username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
@@ -47,7 +47,7 @@ const RegisterPage = () => {
         <div style={{ marginBottom: "10px" }}>
           <input
             type="email"
-            placeholder="E-posta"
+            placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -57,7 +57,7 @@ const RegisterPage = () => {
         <div style={{ marginBottom: "15px" }}>
           <input
             type="password"
-            placeholder="Şifre"
+            placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -78,11 +78,11 @@ const RegisterPage = () => {
             fontWeight: "bold"
           }}
         >
-          {loading ? "Kaydediliyor..." : "Kayıt Ol"}
+          {loading ? "Creating account..." : "Create Account"}
         </button>
       </form>
       <p style={{ marginTop: "15px", fontSize: "14px" }}>
-        Zaten hesabın var mı? <Link to="/login" style={{ color: "#007bff", textDecoration: "none" }}>Giriş Yap</Link>
+        Already have an account? <Link to="/login" style={{ color: "#007bff", textDecoration: "none" }}>Sign In</Link>
       </p>
     </div>
   );
