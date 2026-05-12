@@ -89,12 +89,24 @@ public class JobApplicationsControllerTests
     public async Task Create_AuthenticatedUser_ShouldPassClaimUserIdToService()
     {
         const string userId = "user-123";
-        var dto = new JobApplicationCreateDto("Acme", "Backend Engineer", JobApplicationStatus.Applied);
+        var dto = new JobApplicationCreateDto(
+            "Acme",
+            "Backend Engineer",
+            "https://example.com/jobs/acme-backend",
+            "Remote",
+            "$100k - $120k",
+            "Full role description",
+            JobApplicationStatus.Applied
+        );
         var createdApplication = new JobApplication
         {
             Id = "job-1",
             CompanyName = dto.CompanyName,
             Position = dto.Position,
+            JobUrl = dto.JobUrl,
+            Location = dto.Location,
+            SalaryRange = dto.SalaryRange,
+            JobDescription = dto.JobDescription,
             Status = dto.Status,
             UserId = userId,
         };
@@ -125,6 +137,10 @@ public class JobApplicationsControllerTests
         var dto = new JobApplicationUpdateDto(
             "Acme",
             "Staff Engineer",
+            null,
+            "London",
+            null,
+            "Updated role description",
             JobApplicationStatus.Interviewing,
             new DateTime(2026, 05, 11, 12, 00, 00, DateTimeKind.Utc)
         );

@@ -8,20 +8,91 @@ public class JobApplicationServiceTests(TestAppDbContextFactory dbContextFactory
     {
         await using var dbContext = dbContextFactory.CreateContext();
         var service = new JobApplicationService(dbContext);
-        var dto = new JobApplicationCreateDto("Acme", "Backend Engineer", JobApplicationStatus.Applied);
+        var dto = new JobApplicationCreateDto(
+            "Acme",
+            "Backend Engineer",
+            "https://example.com/jobs/acme-backend",
+            "Remote",
+            "$100k - $120k",
+            "Strong backend role working on distributed systems.",
+            JobApplicationStatus.Applied
+        );
 
         var result = await service.CreateAsync(dto, "user-1");
 
         result.Should().NotBeNull();
         result.CompanyName.Should().Be("Acme");
         result.Position.Should().Be("Backend Engineer");
+        result.JobUrl.Should().Be("https://example.com/jobs/acme-backend");
+        result.Location.Should().Be("Remote");
+        result.SalaryRange.Should().Be("$100k - $120k");
+        result.JobDescription.Should().Be("Strong backend role working on distributed systems.");
         result.UserId.Should().Be("user-1");
         result.Id.Should().NotBeNullOrWhiteSpace();
 
         var persisted = await dbContext.JobApplications.SingleAsync();
         persisted.CompanyName.Should().Be("Acme");
         persisted.Position.Should().Be("Backend Engineer");
+        persisted.JobUrl.Should().Be("https://example.com/jobs/acme-backend");
+        persisted.Location.Should().Be("Remote");
+        persisted.SalaryRange.Should().Be("$100k - $120k");
+        persisted.JobDescription.Should().Be("Strong backend role working on distributed systems.");
         persisted.UserId.Should().Be("user-1");
+    }
+
+    [Fact]
+    public async Task CreateAsync_NullOptionalFields_PersistsJobApplication()
+    {
+        await using var dbContext = dbContextFactory.CreateContext();
+        var service = new JobApplicationService(dbContext);
+        var dto = new JobApplicationCreateDto(
+            "Acme",
+            "Backend Engineer",
+            null,
+            null,
+            null,
+            null,
+            JobApplicationStatus.Applied
+        );
+
+        var result = await service.CreateAsync(dto, "user-1");
+
+        result.JobUrl.Should().BeNull();
+        result.Location.Should().BeNull();
+        result.SalaryRange.Should().BeNull();
+        result.JobDescription.Should().BeNull();
+
+        var persisted = await dbContext.JobApplications.SingleAsync();
+        persisted.JobUrl.Should().BeNull();
+        persisted.Location.Should().BeNull();
+        persisted.SalaryRange.Should().BeNull();
+        persisted.JobDescription.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task CreateAsync_LongJobDescription_PersistsWithoutTruncation()
+    {
+        await using var dbContext = dbContextFactory.CreateContext();
+        var service = new JobApplicationService(dbContext);
+        var longDescription = new string('A', 2500);
+        var dto = new JobApplicationCreateDto(
+            "Acme",
+            "Backend Engineer",
+            null,
+            null,
+            null,
+            longDescription,
+            JobApplicationStatus.Applied
+        );
+
+        var result = await service.CreateAsync(dto, "user-1");
+
+        result.JobDescription.Should().HaveLength(2500);
+        result.JobDescription.Should().Be(longDescription);
+
+        var persisted = await dbContext.JobApplications.SingleAsync();
+        persisted.JobDescription.Should().HaveLength(2500);
+        persisted.JobDescription.Should().Be(longDescription);
     }
 
     [Fact]
@@ -92,6 +163,10 @@ public class JobApplicationServiceTests(TestAppDbContextFactory dbContextFactory
         var dto = new JobApplicationUpdateDto(
             "Acme Updated",
             "Staff Engineer",
+            null,
+            null,
+            null,
+            null,
             JobApplicationStatus.Interviewing,
             new DateTime(2026, 05, 11, 12, 00, 00, DateTimeKind.Utc)
         );
@@ -149,7 +224,7 @@ public class JobApplicationServiceTests(TestAppDbContextFactory dbContextFactory
     {
         await using var dbContext = dbContextFactory.CreateContext();
         var service = new JobApplicationService(dbContext);
-        var dto = new JobApplicationCreateDto(" ", "Backend Engineer", JobApplicationStatus.Applied);
+        var dto = new JobApplicationCreateDto(" ", "Backend Engineer", null, null, null, null, JobApplicationStatus.Applied);
 
         Func<Task> act = async () => await service.CreateAsync(dto, "user-1");
 
@@ -180,6 +255,10 @@ public class JobApplicationServiceTests(TestAppDbContextFactory dbContextFactory
         var dto = new JobApplicationUpdateDto(
             "Acme Updated",
             "",
+            null,
+            null,
+            null,
+            null,
             JobApplicationStatus.Interviewing,
             new DateTime(2026, 05, 11, 12, 00, 00, DateTimeKind.Utc)
         );

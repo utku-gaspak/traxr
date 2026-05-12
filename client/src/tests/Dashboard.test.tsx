@@ -95,7 +95,8 @@ describe('Dashboard', () => {
 
     expect(await screen.findByText('Acme')).toBeInTheDocument()
 
-    fireEvent.click(screen.getAllByRole('button', { name: 'Edit' })[0])
+    fireEvent.click(screen.getByRole('button', { name: /Acme/i }))
+    fireEvent.click(await screen.findByRole('button', { name: 'Edit Application' }))
     fireEvent.change(screen.getByPlaceholderText('Example: Stripe'), {
       target: { value: 'Acme' },
     })
@@ -118,7 +119,8 @@ describe('Dashboard', () => {
     const { container } = renderDashboard()
 
     expect(await screen.findByText('Acme')).toBeInTheDocument()
-    fireEvent.click(screen.getAllByRole('button', { name: 'Delete' })[0])
+    fireEvent.click(screen.getByRole('button', { name: /Acme/i }))
+    fireEvent.click(await screen.findByRole('button', { name: 'Delete Application' }))
 
     await waitFor(() => {
       expect(screen.queryByText('Acme')).not.toBeInTheDocument()

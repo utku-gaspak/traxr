@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
+import { Textarea } from "./ui/textarea";
 import {
   JobApplicationStatus,
   jobApplicationStatusLabels,
@@ -15,6 +16,9 @@ interface JobApplicationFormProps {
   editingApplication: JobApplication | null;
   onCancelEdit: () => void;
   onSuccess: () => void;
+  submitLabel?: string;
+  submittingLabel?: string;
+  cancelLabel?: string;
 }
 
 interface ValidationErrors {
@@ -25,6 +29,10 @@ interface ValidationErrors {
 const initialFormState: JobApplicationCreateInput = {
   companyName: "",
   position: "",
+  jobUrl: "",
+  location: "",
+  salaryRange: "",
+  jobDescription: "",
   status: JobApplicationStatus.Applied,
 };
 
@@ -34,6 +42,9 @@ const JobApplicationForm = ({
   editingApplication,
   onCancelEdit,
   onSuccess,
+  submitLabel,
+  submittingLabel = "Saving...",
+  cancelLabel = "Cancel",
 }: JobApplicationFormProps) => {
   const [form, setForm] = useState<JobApplicationCreateInput>(initialFormState);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -45,6 +56,10 @@ const JobApplicationForm = ({
       setForm({
         companyName: editingApplication.companyName,
         position: editingApplication.position,
+        jobUrl: editingApplication.jobUrl ?? "",
+        location: editingApplication.location ?? "",
+        salaryRange: editingApplication.salaryRange ?? "",
+        jobDescription: editingApplication.jobDescription ?? "",
         status: editingApplication.status,
       });
     } else {
@@ -82,6 +97,10 @@ const JobApplicationForm = ({
         await onUpdate(editingApplication.id, {
           companyName: form.companyName,
           position: form.position,
+          jobUrl: form.jobUrl,
+          location: form.location,
+          salaryRange: form.salaryRange,
+          jobDescription: form.jobDescription,
           status: form.status,
           dateApplied: editingApplication.dateApplied,
         });
@@ -166,6 +185,74 @@ const JobApplicationForm = ({
         </select>
       </label>
 
+      <label className="grid gap-2">
+        <span className="text-sm font-semibold uppercase tracking-[0.12em] text-[color:var(--color-muted-foreground)]">
+          Job URL
+        </span>
+        <Input
+          aria-label="Job URL"
+          value={form.jobUrl ?? ""}
+          onChange={(event) =>
+            setForm((current) => ({
+              ...current,
+              jobUrl: event.target.value,
+            }))
+          }
+          placeholder="https://..."
+        />
+      </label>
+
+      <label className="grid gap-2">
+        <span className="text-sm font-semibold uppercase tracking-[0.12em] text-[color:var(--color-muted-foreground)]">
+          Location
+        </span>
+        <Input
+          aria-label="Location"
+          value={form.location ?? ""}
+          onChange={(event) =>
+            setForm((current) => ({
+              ...current,
+              location: event.target.value,
+            }))
+          }
+          placeholder="Remote / London"
+        />
+      </label>
+
+      <label className="grid gap-2">
+        <span className="text-sm font-semibold uppercase tracking-[0.12em] text-[color:var(--color-muted-foreground)]">
+          Salary Range
+        </span>
+        <Input
+          aria-label="Salary Range"
+          value={form.salaryRange ?? ""}
+          onChange={(event) =>
+            setForm((current) => ({
+              ...current,
+              salaryRange: event.target.value,
+            }))
+          }
+          placeholder="$100k - $120k"
+        />
+      </label>
+
+      <label className="grid gap-2">
+        <span className="text-sm font-semibold uppercase tracking-[0.12em] text-[color:var(--color-muted-foreground)]">
+          Job Description
+        </span>
+        <Textarea
+          aria-label="Job Description"
+          value={form.jobDescription ?? ""}
+          onChange={(event) =>
+            setForm((current) => ({
+              ...current,
+              jobDescription: event.target.value,
+            }))
+          }
+          placeholder="Paste the full job post here for future reference..."
+        />
+      </label>
+
       {errorMessage ? (
         <p className="border border-[color:var(--color-danger)] bg-[color:var(--color-danger-soft)] px-3 py-2 text-sm text-[color:var(--color-danger)]">
           {errorMessage}
@@ -174,10 +261,12 @@ const JobApplicationForm = ({
 
       <div className="flex flex-wrap gap-3 pt-2">
         <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Saving..." : editingApplication ? "Save Changes" : "Add Application"}
+          {isSubmitting
+            ? submittingLabel
+            : submitLabel ?? (editingApplication ? "Save Changes" : "Add Application")}
         </Button>
         <Button variant="ghost" type="button" onClick={onCancelEdit}>
-          Cancel
+          {cancelLabel}
         </Button>
       </div>
     </form>

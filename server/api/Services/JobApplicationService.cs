@@ -18,6 +18,10 @@ public class JobApplicationService(AppDbContext dbContext) : IJobApplicationServ
             Id = Guid.NewGuid().ToString(),
             CompanyName = dto.CompanyName,
             Position = dto.Position,
+            JobUrl = NormalizeOptionalText(dto.JobUrl),
+            Location = NormalizeOptionalText(dto.Location),
+            SalaryRange = NormalizeOptionalText(dto.SalaryRange),
+            JobDescription = NormalizeOptionalText(dto.JobDescription),
             Status = dto.Status,
             DateApplied = DateTime.UtcNow,
             UserId = userId,
@@ -59,6 +63,10 @@ public class JobApplicationService(AppDbContext dbContext) : IJobApplicationServ
 
         jobApplication.CompanyName = dto.CompanyName;
         jobApplication.Position = dto.Position;
+        jobApplication.JobUrl = NormalizeOptionalText(dto.JobUrl);
+        jobApplication.Location = NormalizeOptionalText(dto.Location);
+        jobApplication.SalaryRange = NormalizeOptionalText(dto.SalaryRange);
+        jobApplication.JobDescription = NormalizeOptionalText(dto.JobDescription);
         jobApplication.Status = dto.Status;
         jobApplication.DateApplied = dto.DateApplied;
 
@@ -118,5 +126,13 @@ public class JobApplicationService(AppDbContext dbContext) : IJobApplicationServ
     {
         if (string.IsNullOrWhiteSpace(value))
             throw new ValidationException($"{fieldName} is required.");
+    }
+
+    private static string? NormalizeOptionalText(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return null;
+
+        return value.Trim();
     }
 }

@@ -10,6 +10,10 @@ interface LoginRequestBody {
 interface CreateJobApplicationBody {
   companyName: string
   position: string
+  jobUrl?: string | null
+  location?: string | null
+  salaryRange?: string | null
+  jobDescription?: string | null
   status: JobApplicationStatus
 }
 
@@ -26,6 +30,10 @@ const defaultJobs: JobApplication[] = [
     id: 'job-1',
     companyName: 'Acme',
     position: 'Backend Engineer',
+    jobUrl: 'https://example.com/jobs/acme-backend',
+    location: 'Remote',
+    salaryRange: '$110k - $130k',
+    jobDescription: 'Strong backend role working on distributed systems.',
     status: JobApplicationStatus.Applied,
     dateApplied: '2026-05-11T12:00:00.000Z',
     userId: 'user-1',
@@ -34,6 +42,10 @@ const defaultJobs: JobApplication[] = [
     id: 'job-2',
     companyName: 'Globex',
     position: 'Platform Engineer',
+    jobUrl: null,
+    location: 'London',
+    salaryRange: null,
+    jobDescription: null,
     status: JobApplicationStatus.Interviewing,
     dateApplied: '2026-05-10T12:00:00.000Z',
     userId: 'user-1',
@@ -80,6 +92,10 @@ export const handlers = [
       id: `job-${mockApiState.jobApplications.length + 1}`,
       companyName: body.companyName,
       position: body.position,
+      jobUrl: body.jobUrl ?? null,
+      location: body.location ?? null,
+      salaryRange: body.salaryRange ?? null,
+      jobDescription: body.jobDescription ?? null,
       status: body.status,
       dateApplied: '2026-05-12T12:00:00.000Z',
       userId: 'user-1',
@@ -100,6 +116,10 @@ export const handlers = [
             ...application,
             companyName: body.companyName,
             position: body.position,
+            jobUrl: body.jobUrl ?? null,
+            location: body.location ?? null,
+            salaryRange: body.salaryRange ?? null,
+            jobDescription: body.jobDescription ?? null,
             status: body.status,
             dateApplied: body.dateApplied,
           }

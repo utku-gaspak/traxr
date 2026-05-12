@@ -12,6 +12,10 @@ export interface JobApplication {
   id: string;
   companyName: string;
   position: string;
+  jobUrl?: string | null;
+  location?: string | null;
+  salaryRange?: string | null;
+  jobDescription?: string | null;
   status: JobApplicationStatus;
   dateApplied: string;
   userId: string;
@@ -20,12 +24,20 @@ export interface JobApplication {
 export interface JobApplicationCreateInput {
   companyName: string;
   position: string;
+  jobUrl?: string;
+  location?: string;
+  salaryRange?: string;
+  jobDescription?: string;
   status: JobApplicationStatus;
 }
 
 export interface JobApplicationUpdateInput {
   companyName: string;
   position: string;
+  jobUrl?: string;
+  location?: string;
+  salaryRange?: string;
+  jobDescription?: string;
   status: JobApplicationStatus;
   dateApplied: string;
 }

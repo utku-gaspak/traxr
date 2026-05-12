@@ -1,0 +1,12 @@
+{
+  "name": "job-tracker-fullstack",
+  "scripts": {
+    "test:all": "npm run test:backend && npm run test:frontend",
+    "test:backend": "dotnet test server/server.slnx",
+    "test:frontend": "cd client && npm test -- --run",
+    "test:watch": "npx concurrently \"dotnet watch test --project server/api.tests\" \"cd client && npm test\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  }
+}

@@ -7,12 +7,20 @@ namespace api.Dto;
 public record JobApplicationCreateDto(
     [Required] string CompanyName,
     [Required] string Position,
+    string? JobUrl,
+    string? Location,
+    string? SalaryRange,
+    string? JobDescription,
     JobApplicationStatus Status
 );
 
 public record JobApplicationUpdateDto(
     [Required] string CompanyName,
     [Required] string Position,
+    string? JobUrl,
+    string? Location,
+    string? SalaryRange,
+    string? JobDescription,
     JobApplicationStatus Status,
     DateTime DateApplied
 );

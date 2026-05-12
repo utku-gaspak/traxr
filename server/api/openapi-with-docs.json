@@ -337,6 +337,22 @@
             "type": "string",
             "minLength": 1
           },
+          "jobUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "location": {
+            "type": "string",
+            "nullable": true
+          },
+          "salaryRange": {
+            "type": "string",
+            "nullable": true
+          },
+          "jobDescription": {
+            "type": "string",
+            "nullable": true
+          },
           "status": {
             "$ref": "#/components/schemas/JobApplicationStatus"
           },
@@ -471,6 +487,22 @@
           "position": {
             "type": "string"
           },
+          "jobUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "location": {
+            "type": "string",
+            "nullable": true
+          },
+          "salaryRange": {
+            "type": "string",
+            "nullable": true
+          },
+          "jobDescription": {
+            "type": "string",
+            "nullable": true
+          },
           "status": {
             "$ref": "#/components/schemas/JobApplicationStatus"
           }
@@ -485,6 +517,22 @@
           },
           "position": {
             "type": "string"
+          },
+          "jobUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "location": {
+            "type": "string",
+            "nullable": true
+          },
+          "salaryRange": {
+            "type": "string",
+            "nullable": true
+          },
+          "jobDescription": {
+            "type": "string",
+            "nullable": true
           },
           "status": {
             "$ref": "#/components/schemas/JobApplicationStatus"

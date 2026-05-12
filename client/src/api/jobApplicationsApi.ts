@@ -61,6 +61,10 @@ export const createJobApplication = async (input: JobApplicationCreateInput) => 
   const response = await jobApplicationsApi.post<JobApplication>("", {
     companyName: input.companyName,
     position: input.position,
+    jobUrl: input.jobUrl,
+    location: input.location,
+    salaryRange: input.salaryRange,
+    jobDescription: input.jobDescription,
     status: input.status,
   });
 
@@ -71,6 +75,10 @@ export const updateJobApplication = async (id: string, input: JobApplicationUpda
   await jobApplicationsApi.put(`/${id}`, {
     companyName: input.companyName,
     position: input.position,
+    jobUrl: input.jobUrl,
+    location: input.location,
+    salaryRange: input.salaryRange,
+    jobDescription: input.jobDescription,
     status: input.status,
     dateApplied: input.dateApplied,
   });
