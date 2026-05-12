@@ -9,7 +9,7 @@ It supports status tracking, application details, drag-and-drop updates, and a t
 The main UI flow is shown below.
 
 ![Login screen](docs/screenshots/login.png)
-![Dashboard](docs/screenshots/application-dashboard.png)
+![Dashboard](docs/screenshots/application-dashboard-v2.png)
 ![Create application](docs/screenshots/create-application.png)
 ![Application details](docs/screenshots/application-details.png)
 
