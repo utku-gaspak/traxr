@@ -410,7 +410,7 @@ const Dashboard = () => {
               <div className="flex w-full items-center px-4">
                 <BadgePlus className="h-4 w-4 shrink-0" />
                 <span className="flex-1 text-center text-[0.65rem] uppercase tracking-[0.25em]">
-                  Log Application
+                  Add New
                 </span>
                 <div className="w-4" />
               </div>

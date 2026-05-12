@@ -3,9 +3,10 @@
 @import "tailwindcss";
 
 :root {
-  --color-background: #FDF5E6;
-  --color-foreground: #1A1A1A;
-  --color-primary: #D4AF37;
+  /* Light Mode - High-End Office */
+  --color-background: #fdf5e6;
+  --color-foreground: #1a1a1a;
+  --color-primary: #d4af37;
   --color-primary-muted: rgba(212, 175, 55, 0.2);
   --color-primary-foreground: #fffaf1;
   --color-primary-soft: rgba(212, 175, 55, 0.12);
@@ -14,7 +15,7 @@
   --color-card: #ffffff;
   --color-card-foreground: #1a1a1a;
   --color-border: rgba(212, 175, 55, 0.2);
-  --deco-border-gold: #AF8C24;
+  --deco-border-gold: #af8c24;
   --color-border-strong: rgba(175, 140, 36, 0.55);
   --color-input: rgba(255, 252, 245, 0.96);
   --color-muted: rgba(255, 250, 241, 0.72);
@@ -35,6 +36,7 @@
 }
 
 .dark {
+  /* Dark Mode - Gatsby Night */
   --color-background: #17120b;
   --color-foreground: #f7efe1;
   --color-primary: #d4af37;
@@ -65,7 +67,9 @@
 @theme inline {
   --font-sans: "Inter", sans-serif;
   --font-heading: "Playfair Display", serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --font-mono:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
   --color-primary-gold: var(--color-primary);
   --color-primary-gold-muted: var(--color-primary-muted);
   --color-deco-bg: var(--color-background);
@@ -100,43 +104,46 @@
   }
 
   body {
+    @apply font-sans antialiased;
     min-width: 320px;
     margin: 0;
+    /* Art Deco Background Texture */
     background:
-      radial-gradient(circle at top left, rgba(212, 175, 55, 0.14), transparent 26%),
-      linear-gradient(180deg, #fffaf1 0%, var(--color-background) 42%, #f7ecd9 100%);
+      radial-gradient(
+        circle at top left,
+        rgba(212, 175, 55, 0.14),
+        transparent 26%
+      ),
+      linear-gradient(
+        180deg,
+        #fffaf1 0%,
+        var(--color-background) 42%,
+        #f7ecd9 100%
+      );
     color: var(--color-foreground);
-    font-family: var(--font-sans);
     text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
-  #root {
-    min-height: 100vh;
   }
 
   h1,
   h2,
   h3,
-  h4 {
-    font-family: var(--font-heading);
-    letter-spacing: 0;
+  h4,
+  h5,
+  h6 {
+    @apply font-heading;
+    letter-spacing: -0.02em;
   }
 
   button,
   input,
-  select {
-    font: inherit;
-  }
-
-  a {
-    color: inherit;
-    text-decoration: none;
+  select,
+  textarea {
+    font-family: inherit;
   }
 }
 
 @layer components {
+  /* Sidebar Diamond Pattern */
   .deco-sidebar {
     position: relative;
     overflow: hidden;
@@ -146,8 +153,7 @@
     content: "";
     position: absolute;
     inset: 0;
-    background-image:
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cpath d='M90 10L170 90L90 170L10 90Z' fill='none' stroke='rgba(212,175,55,0.12)' stroke-width='1'/%3E%3Cpath d='M90 36L144 90L90 144L36 90Z' fill='none' stroke='rgba(212,175,55,0.09)' stroke-width='1'/%3E%3Cpath d='M90 62L118 90L90 118L62 90Z' fill='none' stroke='rgba(212,175,55,0.08)' stroke-width='1'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cpath d='M90 10L170 90L90 170L10 90Z' fill='none' stroke='rgba(212,175,55,0.12)' stroke-width='1'/%3E%3Cpath d='M90 36L144 90L90 144L36 90Z' fill='none' stroke='rgba(212,175,55,0.09)' stroke-width='1'/%3E%3Cpath d='M90 62L118 90L90 118L62 90Z' fill='none' stroke='rgba(212,175,55,0.08)' stroke-width='1'/%3E%3C/svg%3E");
     background-size: 180px 180px;
     opacity: 0.75;
     pointer-events: none;
@@ -158,11 +164,38 @@
     z-index: 1;
   }
 
+  /* Header Speed Line Effect */
+  .header-speed-line {
+    height: 2px;
+    background: var(--color-primary);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .header-speed-line::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 80%;
+    background: linear-gradient(to right, var(--color-primary), transparent);
+    opacity: 0.4;
+  }
+
+  /* Cards & Columns */
   .application-card {
+    @apply transition-all duration-300;
     box-shadow: var(--shadow-card);
+  }
+
+  .application-card:hover {
+    box-shadow: var(--deco-shadow-glow);
+    transform: translateY(-1px);
   }
 
   .kanban-column {
     box-shadow: var(--shadow-panel);
+    border-top: 3px solid var(--color-primary);
   }
 }
