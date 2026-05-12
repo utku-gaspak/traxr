@@ -468,7 +468,7 @@ const Dashboard = () => {
             <div className="grid gap-5 xl:grid-cols-4">
               {boardColumns.map((column) => (
                 <section
-                  className="kanban-column border border-[color:var(--color-border)] bg-[color:rgba(255,255,255,0.74)] p-4"
+                  className="kanban-column flex min-h-[26rem] flex-col border border-[color:var(--color-border)] bg-[color:rgba(255,255,255,0.74)] p-4"
                   id={`column-${column.title.toLowerCase()}`}
                   key={column.status}
                 >
@@ -491,7 +491,7 @@ const Dashboard = () => {
                   <Droppable droppableId={String(column.status)}>
                     {(droppableProvided, droppableSnapshot) => (
                       <div
-                        className={`mt-4 min-h-[16rem] space-y-2 transition-colors ${
+                        className={`mt-4 flex min-h-[16rem] flex-1 flex-col gap-2 transition-colors ${
                           droppableSnapshot.isDraggingOver
                             ? "bg-[color:rgba(212,175,55,0.06)]"
                             : ""
@@ -518,16 +518,17 @@ const Dashboard = () => {
                                 {...draggableProvided.dragHandleProps}
                                 onClick={() => openDetails(application)}
                               >
-                                <div className="flex items-center gap-2 overflow-hidden whitespace-nowrap">
-                                  <span className="truncate font-semibold uppercase tracking-[0.08em] text-[color:var(--color-foreground)]">
-                                    {application.companyName}
-                                  </span>
-                                  <span className="text-[color:var(--color-primary)]">-</span>
-                                  <span className="truncate text-[color:var(--color-muted-foreground)]">
-                                    {application.position}
-                                  </span>
-                                  <span className="text-[color:var(--color-primary)]">|</span>
-                                  <span className="shrink-0 text-[color:var(--color-muted-foreground)]">
+                                <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
+                                  <div className="flex min-w-0 items-center gap-2 overflow-hidden whitespace-nowrap">
+                                    <span className="truncate font-semibold uppercase tracking-[0.08em] text-[color:var(--color-foreground)]">
+                                      {application.companyName}
+                                    </span>
+                                    <span className="shrink-0 text-[color:var(--color-primary)]">-</span>
+                                    <span className="truncate text-[color:var(--color-muted-foreground)]">
+                                      {application.position}
+                                    </span>
+                                  </div>
+                                  <span className="shrink-0 text-right text-[color:var(--color-muted-foreground)]">
                                     {formatAppliedDate(application.dateApplied)}
                                   </span>
                                 </div>
