@@ -127,13 +127,17 @@
     margin: 0;
     background: var(--color-background);
     color: var(--color-foreground);
-    overflow-x: hidden;
+    overflow: hidden;
   }
   #root {
+    position: fixed;
+    inset: 0;
     min-height: calc(100dvh / var(--ui-scale));
     width: calc(100% / var(--ui-scale));
     transform: scale(var(--ui-scale));
     transform-origin: top left;
+    overflow-x: hidden;
+    overflow-y: auto;
   }
   h1,
   h2,
