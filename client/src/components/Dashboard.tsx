@@ -512,39 +512,35 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <Button
-          aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-          className="h-11 rounded-none transition-all md:ml-4"
-          onClick={toggleTheme}
-          variant="outline"
-        >
-          <div className="flex w-full items-center px-4">
+        <div className="ml-auto flex items-center gap-2">
+          <Button
+            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+            className="h-11 w-11 rounded-none p-0 transition-all"
+            onClick={toggleTheme}
+            variant="outline"
+          >
             {theme === "dark" ? (
               <SunMedium className="h-4 w-4 shrink-0" />
             ) : (
               <Moon className="h-4 w-4 shrink-0" />
             )}
-            <span className="flex-1 text-center text-[0.65rem] uppercase tracking-[0.25em]">
-              {theme === "dark" ? "Light" : "Dark"}
-            </span>
-            <div className="w-4" />
-          </div>
-        </Button>
+          </Button>
 
-        <Button
-          aria-label="Log out"
-          className="h-11 rounded-none transition-all md:ml-4"
-          variant="outline"
-          onClick={logout}
-        >
-          <div className="flex w-full items-center px-4">
-            <LogOut className="h-4 w-4 shrink-0" />
-            <span className="flex-1 text-center text-[0.65rem] uppercase tracking-[0.25em]">
-              Log Out
-            </span>
-            <div className="w-4" />
-          </div>
-        </Button>
+          <Button
+            aria-label="Log out"
+            className="h-11 rounded-none transition-all"
+            variant="outline"
+            onClick={logout}
+          >
+            <div className="flex w-full items-center px-4">
+              <LogOut className="h-4 w-4 shrink-0" />
+              <span className="flex-1 text-center text-[0.65rem] uppercase tracking-[0.25em]">
+                Log Out
+              </span>
+              <div className="w-4" />
+            </div>
+          </Button>
+        </div>
       </header>
       <div className="grid min-h-0 flex-1 gap-5 lg:grid-cols-[260px_minmax(0,1fr)] lg:items-stretch">
         <aside className="flex min-h-0 flex-col items-stretch overflow-hidden border border-border-gold bg-deco-surface-soft p-5 shadow-deco-panel backdrop-blur md:p-6">
