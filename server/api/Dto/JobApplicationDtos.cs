@@ -3,7 +3,7 @@ using api.Models;
 
 namespace api.Dto;
 
-// Use property-targeted attributes so ASP.NET model validation and OpenAPI mark these fields as required.
+// Record primary-constructor validation must stay on the constructor parameters or ASP.NET will reject the metadata at runtime.
 public record JobApplicationCreateDto(
     [Required] string CompanyName,
     [Required] string Position,

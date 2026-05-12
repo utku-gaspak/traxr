@@ -1,4 +1,5 @@
 using System.Net;
+using System.Net.Http.Json;
 using Microsoft.Extensions.Configuration;
 
 namespace JobTracker.Tests.Integration;
@@ -57,6 +58,43 @@ public class ApiStartupAndAuthTests(ApiApplicationFactory factory)
             .ContainSingle()
             .Which.Should()
             .Be("http://localhost:5173");
+    }
+
+    [Fact]
+    public async Task CreateJobApplication_MissingRequiredFields_ShouldReturnBadRequest()
+    {
+        var client = factory.CreateClient();
+        using var request = new HttpRequestMessage(HttpMethod.Post, "/api/JobApplications")
+        {
+            Content = JsonContent.Create(new
+            {
+                status = JobApplicationStatus.Applied,
+            }),
+        };
+        request.Headers.TryAddWithoutValidation("Authorization", $"Bearer {CreateToken()}");
+
+        var response = await client.SendAsync(request);
+
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
+    public async Task UpdateJobApplication_MissingRequiredFields_ShouldReturnBadRequest()
+    {
+        var client = factory.CreateClient();
+        using var request = new HttpRequestMessage(HttpMethod.Put, "/api/JobApplications/job-1")
+        {
+            Content = JsonContent.Create(new
+            {
+                status = JobApplicationStatus.Interviewing,
+                dateApplied = new DateTime(2026, 05, 11, 12, 00, 00, DateTimeKind.Utc),
+            }),
+        };
+        request.Headers.TryAddWithoutValidation("Authorization", $"Bearer {CreateToken()}");
+
+        var response = await client.SendAsync(request);
+
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
     private static string CreateToken()

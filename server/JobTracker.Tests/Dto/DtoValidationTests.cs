@@ -52,33 +52,6 @@ public class DtoValidationTests
         results.Should().BeEmpty();
     }
 
-    [Fact]
-    public void JobApplicationCreateDto_MissingRequiredFields_ShouldFailValidation()
-    {
-        var dto = new JobApplicationCreateDto(null!, null!, JobApplicationStatus.Applied);
-
-        var results = Validate(dto);
-
-        results.Should().Contain(result => result.MemberNames.Contains(nameof(JobApplicationCreateDto.CompanyName)));
-        results.Should().Contain(result => result.MemberNames.Contains(nameof(JobApplicationCreateDto.Position)));
-    }
-
-    [Fact]
-    public void JobApplicationUpdateDto_MissingRequiredFields_ShouldFailValidation()
-    {
-        var dto = new JobApplicationUpdateDto(
-            null!,
-            null!,
-            JobApplicationStatus.Interviewing,
-            new DateTime(2026, 05, 11, 12, 00, 00, DateTimeKind.Utc)
-        );
-
-        var results = Validate(dto);
-
-        results.Should().Contain(result => result.MemberNames.Contains(nameof(JobApplicationUpdateDto.CompanyName)));
-        results.Should().Contain(result => result.MemberNames.Contains(nameof(JobApplicationUpdateDto.Position)));
-    }
-
     private static RegisterDto CreateValidRegisterDto()
     {
         return new RegisterDto
