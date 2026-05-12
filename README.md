@@ -1,8 +1,8 @@
 # Job Application Tracker 
 
-Job Application Tracker is a full-stack app for managing job applications with JWT authentication, per-user data isolation, and a compact React dashboard for day-to-day tracking.
+Job Application Tracker is a full-stack app for managing job applications with JWT authentication, per-user data isolation, and a compact React dashboard.
 
-The app supports status tracking, detailed application records, drag-and-drop updates, and clear error handling across both the API and client. The current test suite includes 65 automated tests across the backend and frontend.
+It supports status tracking, application details, drag-and-drop updates, and a top-of-board filter bar for search, status, interest level, and technical skills. The current test suite includes 67 automated tests across the backend and frontend.
 
 ## Screenshots
 
@@ -20,9 +20,10 @@ The main UI flow is shown below.
 - CRUD operations for job applications
 - Kanban status tracking for `Applied`, `Interviewing`, `Rejected`, and `Offer`
 - Optional application details, including job URL, location, salary range, job description, interest level, and technical stack
+- Compact filter bar above the board with search, status, interest level, and skill transfer controls
 - Protected dashboard routes with persisted login state
 - Error handling for validation, authorization, server, and connection failures
-- OpenAPI artifact and TypeScript client support for keeping the backend and frontend contract visible
+- OpenAPI and generated TypeScript client support for keeping the backend and frontend in sync
 
 ## Tech Stack
 
@@ -56,8 +57,8 @@ The project uses focused tests at both layers instead of relying on a live exter
 Current test count:
 
 - Backend: `48` tests
-- Frontend: `17` tests
-- Total: `65` tests
+- Frontend: `19` tests
+- Total: `67` tests
 
 Run the suites with:
 
@@ -109,4 +110,4 @@ The frontend expects the API at `http://localhost:5075` unless `VITE_API_BASE_UR
 
 ## Project Status
 
-The core backend and frontend flows are implemented and tested. Current work is focused on UI/UX refinement and improving the application detail experience.
+The core backend and frontend flows are implemented and tested. Current work is focused on UI/UX refinement and small layout improvements.
