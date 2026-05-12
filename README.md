@@ -1,4 +1,4 @@
-# Job Application Tracker (Full Stack .NET 10 & React)
+# Job Application Tracker 
 
 Job Application Tracker is a full-stack app for managing job applications with JWT authentication, per-user data isolation, and a compact React dashboard for day-to-day tracking.
 
