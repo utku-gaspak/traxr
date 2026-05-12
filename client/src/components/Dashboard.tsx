@@ -7,12 +7,16 @@ import {
 } from "@hello-pangea/dnd";
 import {
   BadgePlus,
+  ChevronDown,
   Diamond,
   ExternalLink,
   FileText,
+  Filter,
   LogOut,
+  Search,
   Trash2,
   User,
+  X,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -26,6 +30,7 @@ import {
 import JobApplicationForm from "./JobApplicationForm";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
+import { Input } from "./ui/input";
 import {
   Dialog,
   DialogContent,
@@ -61,6 +66,58 @@ const splitTechnicalStack = (value?: string | null) =>
     ?.split(",")
     .map((skill) => skill.trim())
     .filter(Boolean) ?? [];
+
+const getUniqueTechnicalSkills = (applications: JobApplication[]) =>
+  Array.from(
+    new Set(
+      applications.flatMap((application) =>
+        splitTechnicalStack(application.technicalStack),
+      ),
+    ),
+  ).sort((left, right) => left.localeCompare(right));
+
+const matchesFilters = (
+  application: JobApplication,
+  filters: {
+    searchTerm: string;
+    statusFilter: JobApplicationStatus | "all";
+    interestFilter: number | "all";
+    selectedSkills: string[];
+  },
+) => {
+  const normalizedSearchTerm = filters.searchTerm.trim().toLowerCase();
+  const normalizedCompany = application.companyName.toLowerCase();
+  const normalizedPosition = application.position.toLowerCase();
+  const applicationSkills = splitTechnicalStack(application.technicalStack);
+
+  if (
+    normalizedSearchTerm &&
+    !`${normalizedCompany} ${normalizedPosition}`.includes(normalizedSearchTerm)
+  ) {
+    return false;
+  }
+
+  if (
+    filters.statusFilter !== "all" &&
+    application.status !== filters.statusFilter
+  ) {
+    return false;
+  }
+
+  if (
+    filters.interestFilter !== "all" &&
+    application.interestLevel !== filters.interestFilter
+  ) {
+    return false;
+  }
+
+  return filters.selectedSkills.every((skill) =>
+    applicationSkills.some(
+      (applicationSkill) =>
+        applicationSkill.toLowerCase() === skill.toLowerCase(),
+    ),
+  );
+};
 
 const getLoadApplicationsErrorMessage = (error: unknown) => {
   // Keep server-side failures and connectivity failures distinct so the UI can suggest the right next step.
@@ -189,8 +246,43 @@ const Dashboard = () => {
   const [selectedApplication, setSelectedApplication] =
     useState<JobApplication | null>(null);
   const [isDetailEditing, setIsDetailEditing] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState<JobApplicationStatus | "all">(
+    "all",
+  );
+  const [interestFilter, setInterestFilter] = useState<number | "all">("all");
+  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
 
-  const columns = useMemo(() => buildColumns(applications), [applications]);
+  const availableSkills = useMemo(
+    () => getUniqueTechnicalSkills(applications),
+    [applications],
+  );
+
+  const filteredApplications = useMemo(
+    () =>
+      applications.filter((application) =>
+        matchesFilters(application, {
+          searchTerm,
+          statusFilter,
+          interestFilter,
+          selectedSkills,
+        }),
+      ),
+    [applications, interestFilter, searchTerm, selectedSkills, statusFilter],
+  );
+
+  const columns = useMemo(
+    () => buildColumns(filteredApplications),
+    [filteredApplications],
+  );
+
+  const selectedSkillSet = new Set(
+    selectedSkills.map((skill) => skill.toLowerCase()),
+  );
+  const visibleAvailableSkills = availableSkills.filter(
+    (skill) => !selectedSkillSet.has(skill.toLowerCase()),
+  );
 
   useEffect(() => {
     const loadApplications = async () => {
@@ -225,6 +317,35 @@ const Dashboard = () => {
   const closeDetails = () => {
     setSelectedApplication(null);
     setIsDetailEditing(false);
+  };
+
+  const clearAllFilters = () => {
+    setSearchTerm("");
+    setStatusFilter("all");
+    setInterestFilter("all");
+    setSelectedSkills([]);
+  };
+
+  const addSkillFilter = (skill: string) => {
+    setSelectedSkills((current) => {
+      if (
+        current.some(
+          (existing) => existing.toLowerCase() === skill.toLowerCase(),
+        )
+      ) {
+        return current;
+      }
+
+      return [...current, skill];
+    });
+  };
+
+  const removeSkillFilter = (skill: string) => {
+    setSelectedSkills((current) =>
+      current.filter(
+        (existing) => existing.toLowerCase() !== skill.toLowerCase(),
+      ),
+    );
   };
 
   const handleCreate = async (input: JobApplicationCreateInput) => {
@@ -366,24 +487,41 @@ const Dashboard = () => {
 
   return (
     <main className="mx-auto flex h-screen max-w-[1600px] flex-col overflow-hidden px-3 py-3 lg:px-5">
-      <header className="mb-4 flex flex-col gap-2 border-b border-border-gold bg-deco-surface px-6 py-4 shadow-deco-panel backdrop-blur md:flex-row md:items-baseline md:justify-between">
-        <div className="flex flex-col">
-          <h1 className="font-heading text-[1.75rem] tracking-tight text-deco-foreground md:text-[2.2rem]">
-            Job Application Tracker
-          </h1>
+      <header className="mb-4 flex flex-col gap-3 border-b border-border-gold bg-deco-surface px-6 py-4 shadow-deco-panel backdrop-blur md:flex-row md:items-center md:justify-between">
+        <div className="flex min-w-0 flex-col gap-2 md:flex-row md:items-center md:gap-4">
+          <div className="min-w-0">
+            <h1 className="font-heading text-[1.75rem] tracking-tight text-deco-foreground md:text-[2.2rem]">
+              Job Application Tracker
+            </h1>
 
-          <div className="mt-2 flex items-center">
-            <div className="h-[2px] w-24 bg-primary-gold"></div>
-            <div className="h-px w-full max-w-[200px] bg-primary-gold opacity-20"></div>
+            <div className="mt-2 flex items-center">
+              <div className="h-[2px] w-24 bg-primary-gold"></div>
+              <div className="h-px w-full max-w-[200px] bg-primary-gold opacity-20"></div>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 md:pt-1">
+            <div className="h-1 w-1 rounded-full bg-primary-gold"></div>
+            <p className="text-[0.65rem] font-medium uppercase tracking-[0.25em] text-deco-muted">
+              Drag to update status
+            </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <div className="h-1 w-1 rounded-full bg-primary-gold"></div>
-          <p className="text-[0.65rem] font-medium uppercase tracking-[0.25em] text-deco-muted">
-            Drag to update status
-          </p>
-        </div>
+        <Button
+          aria-label="Log out"
+          className="h-11 rounded-none transition-all md:ml-4"
+          variant="outline"
+          onClick={logout}
+        >
+          <div className="flex w-full items-center px-4">
+            <LogOut className="h-4 w-4 shrink-0" />
+            <span className="flex-1 text-center text-[0.65rem] uppercase tracking-[0.25em]">
+              Log Out
+            </span>
+            <div className="w-4" />
+          </div>
+        </Button>
       </header>
       <div className="grid min-h-0 flex-1 gap-5 lg:grid-cols-[260px_minmax(0,1fr)] lg:items-stretch">
         <aside className="deco-sidebar flex min-h-0 flex-col items-stretch overflow-hidden border border-border-gold bg-deco-surface-soft p-5 shadow-deco-panel backdrop-blur md:p-6">
@@ -425,25 +563,174 @@ const Dashboard = () => {
                 <div className="w-4" />
               </div>
             </Button>
-
-            <Button
-              aria-label="Log out"
-              className="h-11 w-full rounded-none transition-all"
-              variant="outline"
-              onClick={logout}
-            >
-              <div className="flex w-full items-center px-4">
-                <LogOut className="h-4 w-4 shrink-0" />
-                <span className="flex-1 text-center text-[0.65rem] uppercase tracking-[0.25em]">
-                  Log Out
-                </span>
-                <div className="w-4" />
-              </div>
-            </Button>
           </div>
         </aside>
 
         <section className="flex min-h-0 flex-col gap-3">
+          <section className="border border-border-gold bg-deco-surface-soft p-4 shadow-deco-panel">
+            <div className="flex flex-col gap-3 xl:flex-row xl:items-end xl:justify-between">
+              <div className="grid flex-1 gap-3 xl:grid-cols-[minmax(0,2.2fr)_repeat(2,minmax(0,1fr))]">
+                <label className="grid gap-2">
+                  <span className="text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-deco-muted">
+                    Search
+                  </span>
+                  <div className="relative">
+                    <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-deco-muted" />
+                    <Input
+                      aria-label="Search applications"
+                      className="h-10 rounded-none border-border-gold-muted bg-deco-input pl-9"
+                      placeholder="Company or position"
+                      value={searchTerm}
+                      onChange={(event) => setSearchTerm(event.target.value)}
+                    />
+                  </div>
+                </label>
+
+                <label className="grid gap-2">
+                  <span className="text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-deco-muted">
+                    Status
+                  </span>
+                  <select
+                    aria-label="Filter status"
+                    className="h-10 rounded-none border border-border-gold-muted bg-deco-input px-3 py-2 text-sm outline-none transition-colors focus:border-primary-gold focus:ring-2 focus:ring-primary-gold-muted"
+                    value={statusFilter}
+                    onChange={(event) =>
+                      setStatusFilter(
+                        event.target.value === "all"
+                          ? "all"
+                          : (Number(event.target.value) as JobApplicationStatus),
+                      )
+                    }
+                  >
+                    <option value="all">All statuses</option>
+                    {jobApplicationStatusOrder.map((status) => (
+                      <option key={status} value={status}>
+                        {jobApplicationStatusLabels[status]}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <label className="grid gap-2">
+                  <span className="text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-deco-muted">
+                    Interest Level
+                  </span>
+                  <select
+                    aria-label="Filter interest level"
+                    className="h-10 rounded-none border border-border-gold-muted bg-deco-input px-3 py-2 text-sm outline-none transition-colors focus:border-primary-gold focus:ring-2 focus:ring-primary-gold-muted"
+                    value={interestFilter}
+                    onChange={(event) =>
+                      setInterestFilter(
+                        event.target.value === "all"
+                          ? "all"
+                          : Number(event.target.value),
+                      )
+                    }
+                  >
+                    <option value="all">Any interest</option>
+                    {interestLevelOptions.map((level) => (
+                      <option key={level} value={level}>
+                        {level}/5
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Button
+                  className="h-10 rounded-none px-4 text-[0.65rem] uppercase tracking-[0.18em]"
+                  onClick={clearAllFilters}
+                  type="button"
+                  variant="ghost"
+                >
+                  Clear All
+                </Button>
+                <Button
+                  aria-expanded={isFilterOpen}
+                  className="h-10 rounded-none px-4 text-[0.65rem] uppercase tracking-[0.18em]"
+                  onClick={() => setIsFilterOpen((current) => !current)}
+                  type="button"
+                  variant="outline"
+                >
+                  <Filter className="mr-2 h-4 w-4" />
+                  More
+                  <ChevronDown
+                    className={`ml-2 h-4 w-4 transition-transform ${
+                      isFilterOpen ? "rotate-180" : ""
+                    }`}
+                  />
+                </Button>
+              </div>
+            </div>
+
+            {isFilterOpen ? (
+              <div className="mt-4 border-t border-border-gold-muted pt-4">
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-deco-muted">
+                    Skill Transfer
+                  </span>
+                  <span className="text-[0.65rem] uppercase tracking-[0.18em] text-deco-muted">
+                    Selected {selectedSkills.length}
+                  </span>
+                </div>
+
+                <div className="mt-3 grid gap-3 lg:grid-cols-2">
+                  <div className="border border-border-gold-muted bg-deco-surface-soft p-3">
+                    <p className="text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-primary-gold">
+                      Selected
+                    </p>
+                    {selectedSkills.length > 0 ? (
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {selectedSkills.map((skill) => (
+                          <button
+                            className="inline-flex items-center gap-2 border border-border-gold-muted bg-deco-card px-2 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-deco-foreground"
+                            aria-label={`Remove ${skill}`}
+                            key={skill}
+                            onClick={() => removeSkillFilter(skill)}
+                            type="button"
+                          >
+                            {skill}
+                            <X className="h-3 w-3 text-deco-muted" />
+                          </button>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="mt-2 text-sm text-deco-muted">
+                        No active skills.
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="border border-border-gold-muted bg-deco-surface-soft p-3">
+                    <p className="text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-primary-gold">
+                      Available
+                    </p>
+                    {visibleAvailableSkills.length > 0 ? (
+                      <div className="mt-2 flex max-h-28 flex-wrap gap-2 overflow-y-auto">
+                        {visibleAvailableSkills.map((skill) => (
+                          <button
+                            className="inline-flex items-center border border-border-gold-muted bg-deco-card px-2 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-deco-foreground transition-colors hover:bg-primary-gold-muted"
+                            aria-label={`Add ${skill}`}
+                            key={skill}
+                            onClick={() => addSkillFilter(skill)}
+                            type="button"
+                          >
+                            {skill}
+                          </button>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="mt-2 text-sm text-deco-muted">
+                        No more skills available.
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ) : null}
+          </section>
+
           {errorMessage ? (
             <p className="border border-danger bg-danger-soft px-4 py-3 text-sm text-danger">
               {errorMessage}
@@ -472,7 +759,24 @@ const Dashboard = () => {
             </div>
           ) : null}
 
-          {!isLoading && applications.length > 0 ? (
+          {!isLoading &&
+          applications.length > 0 &&
+          filteredApplications.length === 0 ? (
+            <div className="border border-border-gold-muted bg-deco-surface-soft px-5 py-10 text-center shadow-deco-panel">
+              <p className="font-heading text-2xl text-deco-foreground">
+                No applications match the current filters.
+              </p>
+              <p className="mt-3 text-sm text-deco-muted">
+                Adjust the search, status, interest, or selected skills to show
+                results again.
+              </p>
+              <Button className="mt-6" onClick={clearAllFilters} type="button">
+                Clear Filters
+              </Button>
+            </div>
+          ) : null}
+
+          {!isLoading && filteredApplications.length > 0 ? (
             <DragDropContext onDragEnd={(result) => void handleDragEnd(result)}>
               <div className="grid min-h-0 flex-1 gap-5 xl:grid-cols-4">
                 {boardColumns.map((column) => (
@@ -516,7 +820,7 @@ const Dashboard = () => {
                             >
                               {(draggableProvided, draggableSnapshot) => (
                                 <article
-                                  className={`application-card ${column.borderClass} cursor-pointer border-y border-r border-l-2 border-border-gold-muted bg-deco-card px-3 py-2 font-sans text-deco-foreground shadow-sm transition-shadow hover:shadow-deco-glow ${
+                                  className={`application-card ${column.borderClass} cursor-pointer border border-l-2 border-border-gold-muted bg-deco-card px-3 py-2 font-sans text-deco-foreground shadow-sm transition-shadow hover:shadow-deco-glow ${
                                     draggableSnapshot.isDragging
                                       ? "shadow-deco-glow"
                                       : ""

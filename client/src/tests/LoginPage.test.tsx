@@ -34,7 +34,7 @@ describe('LoginPage', () => {
     expect(usernameInput.value).toBe('utku')
     expect(passwordInput.value).toBe('Password1!')
 
-    fireEvent.click(screen.getByRole('button', { name: 'Sign In' }))
+    fireEvent.click(screen.getByRole('button', { name: /sign in/i }))
 
     await screen.findByText('Dashboard Home')
 
@@ -65,7 +65,7 @@ describe('LoginPage', () => {
     fireEvent.change(screen.getByPlaceholderText('Password'), {
       target: { value: 'wrong-password' },
     })
-    fireEvent.click(screen.getByRole('button', { name: 'Sign In' }))
+    fireEvent.click(screen.getByRole('button', { name: /sign in/i }))
 
     await waitFor(() => {
       expect(alertSpy).toHaveBeenCalledWith('Invalid username or password.')
@@ -96,7 +96,7 @@ describe('LoginPage', () => {
     fireEvent.change(screen.getByPlaceholderText('Password'), {
       target: { value: 'Password1!' },
     })
-    fireEvent.click(screen.getByRole('button', { name: 'Sign In' }))
+    fireEvent.click(screen.getByRole('button', { name: /sign in/i }))
 
     await waitFor(() => {
       expect(alertSpy).toHaveBeenCalledWith('Login failed.')

@@ -22,13 +22,13 @@ describe('App', () => {
     renderAppAt('/dashboard')
 
     expect(await screen.findByText('Job Application Tracker')).toBeInTheDocument()
-    expect(screen.queryByText('Job Tracker Login')).not.toBeInTheDocument()
+    expect(screen.queryByText('Access your board')).not.toBeInTheDocument()
   })
 
   it('ProtectedRoute_NoToken_RedirectsToLogin', async () => {
     renderAppAt('/dashboard')
 
-    expect(await screen.findByText('Job Tracker Login')).toBeInTheDocument()
+    expect(await screen.findByText('Access your board')).toBeInTheDocument()
   })
 
   it('App_ExpiredToken_RedirectsToLogin', async () => {
@@ -46,7 +46,7 @@ describe('App', () => {
 
     await waitFor(() => {
       expect(localStorage.getItem('token')).toBeNull()
-      expect(screen.getByText('Job Tracker Login')).toBeInTheDocument()
+      expect(screen.getByText('Access your board')).toBeInTheDocument()
     })
   })
 
@@ -59,7 +59,7 @@ describe('App', () => {
 
     await waitFor(() => {
       expect(localStorage.getItem('token')).toBeNull()
-      expect(screen.getByText('Job Tracker Login')).toBeInTheDocument()
+      expect(screen.getByText('Access your board')).toBeInTheDocument()
     })
   })
 })

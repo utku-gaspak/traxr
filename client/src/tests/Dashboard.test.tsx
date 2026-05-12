@@ -30,6 +30,55 @@ describe('Dashboard', () => {
     })
   })
 
+  it('Dashboard_FiltersApplications_BySearchStatusAndInterest', async () => {
+    const { container } = renderDashboard()
+
+    expect(await screen.findByText('Acme')).toBeInTheDocument()
+    expect(screen.getByText('Globex')).toBeInTheDocument()
+
+    fireEvent.change(screen.getByLabelText('Search applications'), {
+      target: { value: 'acme' },
+    })
+    fireEvent.change(screen.getByRole('combobox', { name: 'Filter status' }), {
+      target: { value: String(JobApplicationStatus.Applied) },
+    })
+    fireEvent.change(
+      screen.getByRole('combobox', { name: 'Filter interest level' }),
+      {
+        target: { value: '5' },
+      },
+    )
+
+    await waitFor(() => {
+      expect(screen.getByText('Acme')).toBeInTheDocument()
+      expect(screen.queryByText('Globex')).not.toBeInTheDocument()
+      expect(container.querySelectorAll('article.application-card')).toHaveLength(1)
+    })
+  })
+
+  it('Dashboard_SkillTransfer_FiltersBySelectedSkillAndCanClearAll', async () => {
+    const { container } = renderDashboard()
+
+    expect(await screen.findByText('Acme')).toBeInTheDocument()
+    expect(screen.getByText('Globex')).toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Add C#' }))
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Remove C#' })).toBeInTheDocument()
+      expect(screen.queryByText('Globex')).not.toBeInTheDocument()
+      expect(container.querySelectorAll('article.application-card')).toHaveLength(1)
+    })
+
+    fireEvent.click(screen.getByRole('button', { name: 'Clear All' }))
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Add C#' })).toBeInTheDocument()
+      expect(screen.getByText('Globex')).toBeInTheDocument()
+      expect(container.querySelectorAll('article.application-card')).toHaveLength(2)
+    })
+  })
+
   it('Dashboard_SlowLoad_ShowsSpinner', async () => {
     server.use(
       http.get(`${finalUrl}/api/jobapplications`, async () => {
