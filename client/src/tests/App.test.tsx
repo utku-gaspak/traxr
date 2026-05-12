@@ -3,6 +3,7 @@ import { http, HttpResponse } from 'msw'
 import { describe, expect, it } from 'vitest'
 import App from '../App'
 import { AuthProvider } from '../context/AuthContext'
+import { ThemeProvider } from '../context/ThemeContext'
 import { server } from './mocks/server'
 import { finalUrl } from '../baseUrl'
 
@@ -10,9 +11,11 @@ const renderAppAt = (path: string) => {
   window.history.pushState({}, '', path)
 
   return render(
-    <AuthProvider>
-      <App />
-    </AuthProvider>,
+    <ThemeProvider>
+      <AuthProvider>
+        <App />
+      </AuthProvider>
+    </ThemeProvider>,
   )
 }
 

@@ -13,6 +13,8 @@ afterEach(() => {
   server.resetHandlers()
   resetMockApiState()
   localStorage.clear()
+  document.documentElement.classList.remove('dark')
+  document.documentElement.style.colorScheme = ''
 })
 
 afterAll(() => {

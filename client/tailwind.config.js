@@ -5,23 +5,15 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        // Art Deco headings
         heading: ["'Playfair Display'", "serif"],
-        // Modern UI text
         sans: ["Inter", "sans-serif"],
-        mono: [
-          "ui-monospace",
-          "SFMono-Regular",
-          "Menlo",
-          "Monaco",
-          "Consolas",
-          "monospace",
-        ],
+        mono: ["ui-monospace", "SFMono-Regular", "Menlo", "Monaco", "Consolas", "monospace"],
       },
       colors: {
-        // Gold and surface colors
+        // Everforest mappings (names kept for backward compatibility)
         "primary-gold": "var(--color-primary)",
         "primary-gold-muted": "var(--color-primary-muted)",
+        "primary-soft": "var(--color-primary-soft)",
         "deco-bg": "var(--color-background)",
         "deco-surface": "var(--color-surface)",
         "deco-surface-soft": "var(--color-surface-soft)",
@@ -32,27 +24,25 @@ export default {
         "border-gold": "var(--deco-border-gold)",
         "border-gold-muted": "var(--color-border)",
 
-        // Accent and status colors
         accent: "var(--color-accent)",
         danger: "var(--color-danger)",
         "danger-soft": "var(--color-danger-soft)",
 
-        // Kanban column colors (jewel tones)
         "column-applied": "var(--color-column-applied)",
         "column-interviewing": "var(--color-column-interviewing)",
         "column-rejected": "var(--color-column-rejected)",
         "column-offer": "var(--color-column-offer)",
       },
       boxShadow: {
-        // Art Deco shadows
         "deco-panel": "var(--deco-shadow-panel)",
         "deco-card": "var(--shadow-card)",
         "deco-glow": "var(--deco-shadow-glow)",
       },
       letterSpacing: {
-        // Wide letter spacing for luxury typography
-        "deco-wide": "0.15em",
-        "deco-wider": "0.25em",
+        // Minimalist dashboard requires tight yet readable spacing
+        "deco-tight": "-0.01em",
+        "deco-wide": "0.1em",
+        "deco-wider": "0.2em",
       },
     },
   },

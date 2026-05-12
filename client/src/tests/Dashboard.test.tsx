@@ -3,6 +3,7 @@ import { delay, http, HttpResponse } from 'msw'
 import { describe, expect, it } from 'vitest'
 import Dashboard from '../components/Dashboard'
 import { AuthProvider } from '../context/AuthContext'
+import { ThemeProvider } from '../context/ThemeContext'
 import { JobApplicationStatus } from '../types'
 import { mockApiState } from './mocks/handlers'
 import { server } from './mocks/server'
@@ -12,9 +13,11 @@ const renderDashboard = () => {
   localStorage.setItem('token', 'test-jwt-token')
 
   return render(
-    <AuthProvider>
-      <Dashboard />
-    </AuthProvider>,
+    <ThemeProvider>
+      <AuthProvider>
+        <Dashboard />
+      </AuthProvider>
+    </ThemeProvider>,
   )
 }
 
@@ -26,6 +29,25 @@ describe('Dashboard', () => {
     expect(screen.getByText('Globex')).toBeInTheDocument()
 
     await waitFor(() => {
+      expect(container.querySelectorAll('article.application-card')).toHaveLength(2)
+    })
+  })
+
+  it('Dashboard_ThemeToggle_SwitchesThemeMode', async () => {
+    const { container } = renderDashboard()
+
+    expect(await screen.findByText('Acme')).toBeInTheDocument()
+    expect(document.documentElement).not.toHaveClass('dark')
+
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Switch to dark mode' }),
+    )
+
+    await waitFor(() => {
+      expect(document.documentElement).toHaveClass('dark')
+      expect(
+        screen.getByRole('button', { name: 'Switch to light mode' }),
+      ).toBeInTheDocument()
       expect(container.querySelectorAll('article.application-card')).toHaveLength(2)
     })
   })

@@ -13,7 +13,9 @@ import {
   FileText,
   Filter,
   LogOut,
+  Moon,
   Search,
+  SunMedium,
   Trash2,
   User,
   X,
@@ -53,6 +55,7 @@ import {
   type JobApplicationCreateInput,
   type JobApplicationUpdateInput,
 } from "../types";
+import { useTheme } from "../context/ThemeContext";
 
 const formatAppliedDate = (isoDate: string) =>
   new Intl.DateTimeFormat("de-DE", {
@@ -239,6 +242,7 @@ const interestLevelOptions = [1, 2, 3, 4, 5] as const;
 
 const Dashboard = () => {
   const { logout, username } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const [applications, setApplications] = useState<JobApplication[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -509,6 +513,25 @@ const Dashboard = () => {
         </div>
 
         <Button
+          aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+          className="h-11 rounded-none transition-all md:ml-4"
+          onClick={toggleTheme}
+          variant="outline"
+        >
+          <div className="flex w-full items-center px-4">
+            {theme === "dark" ? (
+              <SunMedium className="h-4 w-4 shrink-0" />
+            ) : (
+              <Moon className="h-4 w-4 shrink-0" />
+            )}
+            <span className="flex-1 text-center text-[0.65rem] uppercase tracking-[0.25em]">
+              {theme === "dark" ? "Light" : "Dark"}
+            </span>
+            <div className="w-4" />
+          </div>
+        </Button>
+
+        <Button
           aria-label="Log out"
           className="h-11 rounded-none transition-all md:ml-4"
           variant="outline"
@@ -524,7 +547,7 @@ const Dashboard = () => {
         </Button>
       </header>
       <div className="grid min-h-0 flex-1 gap-5 lg:grid-cols-[260px_minmax(0,1fr)] lg:items-stretch">
-        <aside className="deco-sidebar flex min-h-0 flex-col items-stretch overflow-hidden border border-border-gold bg-deco-surface-soft p-5 shadow-deco-panel backdrop-blur md:p-6">
+        <aside className="flex min-h-0 flex-col items-stretch overflow-hidden border border-border-gold bg-deco-surface-soft p-5 shadow-deco-panel backdrop-blur md:p-6">
           <section className="border border-border-gold bg-deco-surface p-4 shadow-sm">
             <p className="text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-primary-gold">
               Profile
