@@ -516,7 +516,7 @@ const Dashboard = () => {
                             >
                               {(draggableProvided, draggableSnapshot) => (
                                 <article
-                                  className={`application-card ${column.borderClass} cursor-pointer border-y border-r border-l-2 border-border-gold-muted bg-deco-card px-3 py-2 font-sans text-[0.78rem] tracking-[0.02em] text-deco-foreground shadow-sm transition-shadow hover:shadow-deco-glow ${
+                                  className={`application-card ${column.borderClass} cursor-pointer border-y border-r border-l-2 border-border-gold-muted bg-deco-card px-3 py-2 font-sans text-deco-foreground shadow-sm transition-shadow hover:shadow-deco-glow ${
                                     draggableSnapshot.isDragging
                                       ? "shadow-deco-glow"
                                       : ""
@@ -527,23 +527,20 @@ const Dashboard = () => {
                                   {...draggableProvided.dragHandleProps}
                                   onClick={() => openDetails(application)}
                                 >
-                                  <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
-                                    <div className="flex min-w-0 items-center gap-2 overflow-hidden whitespace-nowrap">
-                                      <span className="truncate font-semibold uppercase tracking-[0.08em] text-deco-foreground">
-                                        {application.companyName}
-                                      </span>
-                                      <span className="shrink-0 text-primary-gold">
-                                        -
-                                      </span>
-                                      <span className="truncate text-deco-muted">
+                                  <div className="grid min-w-0 gap-1">
+                                    <span className="truncate text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-deco-foreground">
+                                      {application.companyName}
+                                    </span>
+                                    <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
+                                      <span className="truncate text-left text-[0.72rem] tracking-[0.02em] text-deco-muted">
                                         {application.position}
                                       </span>
+                                      <span className="shrink-0 text-right text-[0.68rem] tabular-nums tracking-[0.04em] text-deco-muted">
+                                        {formatAppliedDate(
+                                          application.dateApplied,
+                                        )}
+                                      </span>
                                     </div>
-                                    <span className="shrink-0 text-right text-deco-muted">
-                                      {formatAppliedDate(
-                                        application.dateApplied,
-                                      )}
-                                    </span>
                                   </div>
                                 </article>
                               )}
