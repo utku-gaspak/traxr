@@ -21,7 +21,7 @@ describe('App', () => {
     localStorage.setItem('token', 'test-jwt-token')
     renderAppAt('/dashboard')
 
-    expect(await screen.findByText('Application dashboard')).toBeInTheDocument()
+    expect(await screen.findByText('Job Application Tracker')).toBeInTheDocument()
     expect(screen.queryByText('Job Tracker Login')).not.toBeInTheDocument()
   })
 
@@ -54,7 +54,7 @@ describe('App', () => {
     localStorage.setItem('token', 'test-jwt-token')
     renderAppAt('/dashboard')
 
-    expect(await screen.findByText('Application dashboard')).toBeInTheDocument()
+    expect(await screen.findByText('Job Application Tracker')).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: 'Log out' }))
 
     await waitFor(() => {

@@ -1,15 +1,20 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap");
+@config "../tailwind.config.js";
 @import "tailwindcss";
 
 :root {
-  --color-background: #fdf5e6;
-  --color-foreground: #1a1a1a;
-  --color-primary: #af8c24;
+  --color-background: #FDF5E6;
+  --color-foreground: #1A1A1A;
+  --color-primary: #D4AF37;
+  --color-primary-muted: rgba(212, 175, 55, 0.2);
   --color-primary-foreground: #fffaf1;
   --color-primary-soft: rgba(212, 175, 55, 0.12);
+  --color-surface: rgba(255, 255, 255, 0.65);
+  --color-surface-soft: rgba(255, 255, 255, 0.74);
   --color-card: #ffffff;
   --color-card-foreground: #1a1a1a;
   --color-border: rgba(212, 175, 55, 0.2);
+  --deco-border-gold: #AF8C24;
   --color-border-strong: rgba(175, 140, 36, 0.55);
   --color-input: rgba(255, 252, 245, 0.96);
   --color-muted: rgba(255, 250, 241, 0.72);
@@ -23,7 +28,9 @@
   --color-column-interviewing: #1f4e79;
   --color-column-rejected: #8a2030;
   --color-column-offer: #6b4f1d;
-  --shadow-panel: 0 18px 42px rgba(57, 45, 17, 0.08);
+  --deco-shadow-panel: 0 4px 20px rgba(0, 0, 0, 0.05);
+  --deco-shadow-glow: 0 0 15px rgba(212, 175, 55, 0.15);
+  --shadow-panel: var(--deco-shadow-panel);
   --shadow-card: 0 12px 24px rgba(57, 45, 17, 0.08);
 }
 
@@ -31,11 +38,15 @@
   --color-background: #17120b;
   --color-foreground: #f7efe1;
   --color-primary: #d4af37;
+  --color-primary-muted: rgba(212, 175, 55, 0.24);
   --color-primary-foreground: #17120b;
   --color-primary-soft: rgba(212, 175, 55, 0.16);
+  --color-surface: rgba(32, 25, 17, 0.78);
+  --color-surface-soft: rgba(36, 29, 21, 0.82);
   --color-card: #201911;
   --color-card-foreground: #f7efe1;
   --color-border: rgba(212, 175, 55, 0.24);
+  --deco-border-gold: #d4af37;
   --color-border-strong: rgba(212, 175, 55, 0.56);
   --color-input: rgba(28, 22, 15, 0.96);
   --color-muted: rgba(36, 29, 21, 0.82);
@@ -45,13 +56,37 @@
   --color-ring: rgba(212, 175, 55, 0.38);
   --color-danger: #ce5b6b;
   --color-danger-soft: rgba(206, 91, 107, 0.12);
-  --shadow-panel: 0 18px 42px rgba(0, 0, 0, 0.3);
+  --deco-shadow-panel: 0 4px 20px rgba(0, 0, 0, 0.24);
+  --deco-shadow-glow: 0 0 15px rgba(212, 175, 55, 0.18);
+  --shadow-panel: var(--deco-shadow-panel);
   --shadow-card: 0 12px 24px rgba(0, 0, 0, 0.24);
 }
 
 @theme inline {
   --font-sans: "Inter", sans-serif;
   --font-heading: "Playfair Display", serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --color-primary-gold: var(--color-primary);
+  --color-primary-gold-muted: var(--color-primary-muted);
+  --color-deco-bg: var(--color-background);
+  --color-deco-surface: var(--color-surface);
+  --color-deco-surface-soft: var(--color-surface-soft);
+  --color-deco-card: var(--color-card);
+  --color-deco-input: var(--color-input);
+  --color-deco-foreground: var(--color-foreground);
+  --color-deco-muted: var(--color-muted-foreground);
+  --color-border-gold: var(--deco-border-gold);
+  --color-border-gold-muted: var(--color-border);
+  --color-accent: var(--color-accent);
+  --color-danger: var(--color-danger);
+  --color-danger-soft: var(--color-danger-soft);
+  --color-column-applied: var(--color-column-applied);
+  --color-column-interviewing: var(--color-column-interviewing);
+  --color-column-rejected: var(--color-column-rejected);
+  --color-column-offer: var(--color-column-offer);
+  --shadow-deco-panel: var(--deco-shadow-panel);
+  --shadow-deco-card: var(--shadow-card);
+  --shadow-deco-glow: var(--deco-shadow-glow);
 }
 
 @layer base {

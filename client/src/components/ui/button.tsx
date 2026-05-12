@@ -9,15 +9,15 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "border-[color:var(--color-primary)] bg-[color:var(--color-primary)] text-[color:var(--color-primary-foreground)] hover:shadow-[0_0_15px_rgba(212,175,55,0.15)]",
+          "border-primary-gold bg-primary-gold text-deco-bg hover:shadow-deco-glow",
         outline:
-          "border-[color:var(--color-border-strong)] bg-[color:var(--color-card)] text-[color:var(--color-foreground)] hover:border-[color:var(--color-primary)] hover:text-[color:var(--color-primary)]",
+          "border-border-gold bg-deco-card text-deco-foreground hover:border-primary-gold hover:text-primary-gold",
         ghost:
-          "border-transparent bg-transparent text-[color:var(--color-muted-foreground)] hover:text-[color:var(--color-foreground)]",
+          "border-transparent bg-transparent text-deco-muted hover:text-deco-foreground",
         accent:
-          "border-[color:var(--color-accent)] bg-[color:var(--color-accent)] text-[color:var(--color-accent-foreground)] hover:shadow-[0_0_15px_rgba(4,99,7,0.16)]",
+          "border-accent bg-accent text-deco-bg hover:shadow-deco-glow",
         stamp:
-          "border-[color:var(--color-primary)] bg-[color:var(--color-card)] text-[color:var(--color-primary)] hover:bg-[color:var(--color-primary-soft)]",
+          "border-primary-gold bg-deco-card text-primary-gold hover:bg-primary-gold-muted",
       },
       size: {
         default: "h-11 px-5 py-2.5",

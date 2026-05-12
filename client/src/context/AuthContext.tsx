@@ -4,12 +4,52 @@ import { AUTH_TOKEN_CLEARED_EVENT } from "../authEvents";
 
 interface AuthContextType {
   token: string | null;
+  username: string | null;
   isLoggedIn: boolean;
   login: (token: string) => void;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+const decodeJwtPayload = (token: string) => {
+  try {
+    const [, payload] = token.split(".");
+
+    if (!payload) {
+      return null;
+    }
+
+    // JWT payloads are base64url-encoded, so normalize them before decoding in the browser.
+    const normalizedPayload = payload.replace(/-/g, "+").replace(/_/g, "/");
+    const paddedPayload = normalizedPayload.padEnd(
+      normalizedPayload.length + ((4 - (normalizedPayload.length % 4)) % 4),
+      "=",
+    );
+
+    return JSON.parse(window.atob(paddedPayload)) as Record<string, unknown>;
+  } catch {
+    return null;
+  }
+};
+
+const getUsernameFromToken = (token: string | null) => {
+  if (!token) {
+    return null;
+  }
+
+  const payload = decodeJwtPayload(token);
+  const usernameCandidate =
+    payload?.unique_name ??
+    payload?.preferred_username ??
+    payload?.username ??
+    payload?.given_name ??
+    payload?.name;
+
+  return typeof usernameCandidate === "string" && usernameCandidate.trim()
+    ? usernameCandidate
+    : null;
+};
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   // Read the persisted token during the initial render so auth state survives refreshes.
@@ -39,6 +79,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const value = {
     token,
+    username: getUsernameFromToken(token),
     isLoggedIn: !!token,
     login,
     logout,

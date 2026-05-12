@@ -20,13 +20,13 @@ const DialogContent = ({ className, children, ...props }: DialogPrimitive.Dialog
     <DialogOverlay />
     <DialogPrimitive.Content
       className={cn(
-        "fixed left-1/2 top-1/2 z-50 grid w-[min(92vw,34rem)] -translate-x-1/2 -translate-y-1/2 border border-[color:var(--color-primary)] bg-[color:var(--color-card)] shadow-2xl",
+        "fixed left-1/2 top-1/2 z-50 grid w-[min(92vw,34rem)] -translate-x-1/2 -translate-y-1/2 border border-primary-gold bg-deco-card shadow-2xl",
         className,
       )}
       {...props}
     >
       {children}
-      <DialogPrimitive.Close className="absolute right-4 top-4 text-[color:var(--color-primary)] transition-colors hover:text-[color:var(--color-foreground)]">
+      <DialogPrimitive.Close className="absolute right-4 top-4 text-primary-gold transition-colors hover:text-deco-foreground">
         <X className="h-4 w-4" />
         <span className="sr-only">Close</span>
       </DialogPrimitive.Close>
@@ -37,7 +37,7 @@ const DialogContent = ({ className, children, ...props }: DialogPrimitive.Dialog
 const DialogHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      "border-b border-[color:var(--color-primary)] bg-[color:var(--color-primary-soft)] px-6 py-5",
+      "border-b border-primary-gold bg-primary-gold-muted px-6 py-5",
       className,
     )}
     {...props}
@@ -46,14 +46,14 @@ const DialogHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivEleme
 
 const DialogTitle = ({ className, ...props }: DialogPrimitive.DialogTitleProps) => (
   <DialogPrimitive.Title
-    className={cn("font-heading text-2xl font-semibold text-[color:var(--color-foreground)]", className)}
+    className={cn("font-heading text-2xl font-semibold text-deco-foreground", className)}
     {...props}
   />
 );
 
 const DialogDescription = ({ className, ...props }: DialogPrimitive.DialogDescriptionProps) => (
   <DialogPrimitive.Description
-    className={cn("mt-2 text-sm text-[color:var(--color-muted-foreground)]", className)}
+    className={cn("mt-2 text-sm text-deco-muted", className)}
     {...props}
   />
 );

@@ -121,7 +121,7 @@ const JobApplicationForm = ({
   return (
     <form className="grid gap-5 p-6" noValidate onSubmit={handleSubmit}>
       <label className="grid gap-2">
-        <span className="text-sm font-semibold uppercase tracking-[0.12em] text-[color:var(--color-muted-foreground)]">
+        <span className="text-sm font-semibold uppercase tracking-[0.12em] text-deco-muted">
           Company Name
         </span>
         <Input
@@ -136,12 +136,12 @@ const JobApplicationForm = ({
           required
         />
         {validationErrors.companyName ? (
-          <span className="text-sm text-[color:var(--color-danger)]">{validationErrors.companyName}</span>
+          <span className="text-sm text-danger">{validationErrors.companyName}</span>
         ) : null}
       </label>
 
       <label className="grid gap-2">
-        <span className="text-sm font-semibold uppercase tracking-[0.12em] text-[color:var(--color-muted-foreground)]">
+        <span className="text-sm font-semibold uppercase tracking-[0.12em] text-deco-muted">
           Position
         </span>
         <Input
@@ -156,17 +156,17 @@ const JobApplicationForm = ({
           required
         />
         {validationErrors.position ? (
-          <span className="text-sm text-[color:var(--color-danger)]">{validationErrors.position}</span>
+          <span className="text-sm text-danger">{validationErrors.position}</span>
         ) : null}
       </label>
 
       <label className="grid gap-2">
-        <span className="text-sm font-semibold uppercase tracking-[0.12em] text-[color:var(--color-muted-foreground)]">
+        <span className="text-sm font-semibold uppercase tracking-[0.12em] text-deco-muted">
           Status
         </span>
         <select
           aria-label="Status"
-          className="h-11 rounded-none border border-[color:var(--color-border)] bg-[color:var(--color-input)] px-3 py-2 text-sm shadow-sm outline-none transition-colors focus:border-[color:var(--color-primary)] focus:ring-2 focus:ring-[color:var(--color-ring)]"
+          className="h-11 rounded-none border border-border-gold-muted bg-deco-input px-3 py-2 text-sm shadow-sm outline-none transition-colors focus:border-primary-gold focus:ring-2 focus:ring-primary-gold-muted"
           value={form.status}
           onChange={(event) =>
             setForm((current) => ({
@@ -186,7 +186,7 @@ const JobApplicationForm = ({
       </label>
 
       <label className="grid gap-2">
-        <span className="text-sm font-semibold uppercase tracking-[0.12em] text-[color:var(--color-muted-foreground)]">
+        <span className="text-sm font-semibold uppercase tracking-[0.12em] text-deco-muted">
           Job URL
         </span>
         <Input
@@ -203,7 +203,7 @@ const JobApplicationForm = ({
       </label>
 
       <label className="grid gap-2">
-        <span className="text-sm font-semibold uppercase tracking-[0.12em] text-[color:var(--color-muted-foreground)]">
+        <span className="text-sm font-semibold uppercase tracking-[0.12em] text-deco-muted">
           Location
         </span>
         <Input
@@ -220,7 +220,7 @@ const JobApplicationForm = ({
       </label>
 
       <label className="grid gap-2">
-        <span className="text-sm font-semibold uppercase tracking-[0.12em] text-[color:var(--color-muted-foreground)]">
+        <span className="text-sm font-semibold uppercase tracking-[0.12em] text-deco-muted">
           Salary Range
         </span>
         <Input
@@ -237,7 +237,7 @@ const JobApplicationForm = ({
       </label>
 
       <label className="grid gap-2">
-        <span className="text-sm font-semibold uppercase tracking-[0.12em] text-[color:var(--color-muted-foreground)]">
+        <span className="text-sm font-semibold uppercase tracking-[0.12em] text-deco-muted">
           Job Description
         </span>
         <Textarea
@@ -254,7 +254,7 @@ const JobApplicationForm = ({
       </label>
 
       {errorMessage ? (
-        <p className="border border-[color:var(--color-danger)] bg-[color:var(--color-danger-soft)] px-3 py-2 text-sm text-[color:var(--color-danger)]">
+        <p className="border border-danger bg-danger-soft px-3 py-2 text-sm text-danger">
           {errorMessage}
         </p>
       ) : null}

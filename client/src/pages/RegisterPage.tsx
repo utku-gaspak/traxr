@@ -37,9 +37,9 @@ const RegisterPage = () => {
   return (
     <main className="min-h-screen px-4 py-10 md:px-8">
       <div className="mx-auto flex min-h-[calc(100vh-5rem)] max-w-2xl items-center">
-        <Card className="w-full border-[color:var(--color-border-strong)] bg-[color:rgba(255,255,255,0.88)]">
-          <CardHeader className="border-b border-[color:var(--color-primary)] bg-[color:var(--color-primary-soft)]">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[color:var(--color-primary)]">
+        <Card className="w-full border-border-gold bg-deco-surface-soft">
+          <CardHeader className="border-b border-primary-gold bg-primary-gold-muted">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary-gold">
               New Account
             </p>
             <CardTitle>Create Account</CardTitle>
@@ -47,7 +47,7 @@ const RegisterPage = () => {
           <CardContent className="pt-6">
             <form className="grid gap-4" onSubmit={handleSubmit}>
               <div className="grid gap-2">
-                <label className="text-sm font-semibold uppercase tracking-[0.12em] text-[color:var(--color-muted-foreground)]">
+                <label className="text-sm font-semibold uppercase tracking-[0.12em] text-deco-muted">
                   Username
                 </label>
                 <Input
@@ -59,7 +59,7 @@ const RegisterPage = () => {
                 />
               </div>
               <div className="grid gap-2">
-                <label className="text-sm font-semibold uppercase tracking-[0.12em] text-[color:var(--color-muted-foreground)]">
+                <label className="text-sm font-semibold uppercase tracking-[0.12em] text-deco-muted">
                   Email
                 </label>
                 <Input
@@ -71,7 +71,7 @@ const RegisterPage = () => {
                 />
               </div>
               <div className="grid gap-2">
-                <label className="text-sm font-semibold uppercase tracking-[0.12em] text-[color:var(--color-muted-foreground)]">
+                <label className="text-sm font-semibold uppercase tracking-[0.12em] text-deco-muted">
                   Password
                 </label>
                 <Input
@@ -87,9 +87,9 @@ const RegisterPage = () => {
               </Button>
             </form>
 
-            <p className="mt-5 text-sm text-[color:var(--color-muted-foreground)]">
+            <p className="mt-5 text-sm text-deco-muted">
               Already have an account?{" "}
-              <Link className="inline-flex items-center gap-1 text-[color:var(--color-primary)]" to="/login">
+              <Link className="inline-flex items-center gap-1 text-primary-gold" to="/login">
                 <ArrowLeft className="h-3.5 w-3.5" />
                 Sign In
               </Link>

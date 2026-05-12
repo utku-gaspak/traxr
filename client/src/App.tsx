@@ -13,7 +13,7 @@ const ProtectedRoute = ({ children }: { children: ReactNode }) => {
 };
 
 const RouteFallback = () => (
-  <div className="flex min-h-screen items-center justify-center bg-[color:var(--color-background)] px-6 text-sm text-[color:var(--color-muted-foreground)]">
+  <div className="flex min-h-screen items-center justify-center bg-deco-bg px-6 text-sm text-deco-muted">
     Loading...
   </div>
 );
@@ -25,8 +25,8 @@ function App() {
         position="top-right"
         toastOptions={{
           className:
-            "rounded-none border border-[color:var(--color-primary)] bg-[color:var(--color-card)] text-[color:var(--color-foreground)] shadow-lg",
-          descriptionClassName: "text-[color:var(--color-muted-foreground)]",
+            "rounded-none border border-primary-gold bg-deco-card text-deco-foreground shadow-lg",
+          descriptionClassName: "text-deco-muted",
         }}
       />
       <Suspense fallback={<RouteFallback />}>

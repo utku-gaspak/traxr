@@ -7,13 +7,12 @@ import {
 } from "@hello-pangea/dnd";
 import {
   BadgePlus,
-  BriefcaseBusiness,
-  Columns3,
   Diamond,
   ExternalLink,
   FileText,
   LogOut,
   Trash2,
+  User,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -27,7 +26,6 @@ import {
 import JobApplicationForm from "./JobApplicationForm";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import {
   Dialog,
   DialogContent,
@@ -78,33 +76,29 @@ const boardColumns = [
     status: JobApplicationStatus.Applied,
     title: "Applied",
     subtitle: "Fresh outreach",
-    borderClass: "border-l-[color:var(--color-column-applied)]",
-    accentClass: "text-[color:var(--color-column-applied)]",
-    dotClass: "bg-[color:var(--color-column-applied)]",
+    borderClass: "border-l-column-applied",
+    accentClass: "text-column-applied",
   },
   {
     status: JobApplicationStatus.Interviewing,
     title: "Interviewing",
     subtitle: "Active conversations",
-    borderClass: "border-l-[color:var(--color-column-interviewing)]",
-    accentClass: "text-[color:var(--color-column-interviewing)]",
-    dotClass: "bg-[color:var(--color-column-interviewing)]",
+    borderClass: "border-l-column-interviewing",
+    accentClass: "text-column-interviewing",
   },
   {
     status: JobApplicationStatus.Rejected,
     title: "Rejected",
     subtitle: "Closed loops",
-    borderClass: "border-l-[color:var(--color-column-rejected)]",
-    accentClass: "text-[color:var(--color-column-rejected)]",
-    dotClass: "bg-[color:var(--color-column-rejected)]",
+    borderClass: "border-l-column-rejected",
+    accentClass: "text-column-rejected",
   },
   {
     status: JobApplicationStatus.Offer,
     title: "Offer",
     subtitle: "Decision stage",
-    borderClass: "border-l-[color:var(--color-column-offer)]",
-    accentClass: "text-[color:var(--color-column-offer)]",
-    dotClass: "bg-[color:var(--color-column-offer)]",
+    borderClass: "border-l-column-offer",
+    accentClass: "text-column-offer",
   },
 ] as const;
 
@@ -168,24 +162,26 @@ const reorderApplications = (
   };
 };
 
-const detailRows = (application: JobApplication) => [
-  { label: "Company", value: application.companyName },
-  { label: "Position", value: application.position },
-  { label: "Status", value: jobApplicationStatusLabels[application.status] },
-  { label: "Date", value: formatAppliedDate(application.dateApplied) },
-  { label: "Location", value: application.location ?? "Not provided" },
-  { label: "Salary", value: application.salaryRange ?? "Not provided" },
-  // These remain view-only placeholders until the backend model persists them.
-  { label: "Technical Stack", value: "Not tracked yet" },
-] as const;
+const detailRows = (application: JobApplication) =>
+  [
+    { label: "Company", value: application.companyName },
+    { label: "Position", value: application.position },
+    { label: "Status", value: jobApplicationStatusLabels[application.status] },
+    { label: "Date", value: formatAppliedDate(application.dateApplied) },
+    { label: "Location", value: application.location ?? "Not provided" },
+    { label: "Salary", value: application.salaryRange ?? "Not provided" },
+    // These remain view-only placeholders until the backend model persists them.
+    { label: "Technical Stack", value: "Not tracked yet" },
+  ] as const;
 
 const Dashboard = () => {
-  const { logout } = useAuth();
+  const { logout, username } = useAuth();
   const [applications, setApplications] = useState<JobApplication[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
-  const [selectedApplication, setSelectedApplication] = useState<JobApplication | null>(null);
+  const [selectedApplication, setSelectedApplication] =
+    useState<JobApplication | null>(null);
   const [isDetailEditing, setIsDetailEditing] = useState(false);
 
   const columns = useMemo(() => buildColumns(applications), [applications]);
@@ -238,7 +234,9 @@ const Dashboard = () => {
       setApplications((current) =>
         current.filter((application) => application.id !== id),
       );
-      setSelectedApplication((current) => (current?.id === id ? null : current));
+      setSelectedApplication((current) =>
+        current?.id === id ? null : current,
+      );
       setIsDetailEditing(false);
       toast.success("Application removed.");
     } catch (error) {
@@ -357,355 +355,367 @@ const Dashboard = () => {
   };
 
   return (
-    <main className="mx-auto grid min-h-screen max-w-[1600px] gap-6 px-4 py-6 lg:grid-cols-[280px_minmax(0,1fr)] lg:px-6">
-      <aside className="deco-sidebar sticky top-6 self-start border border-[color:var(--color-border-strong)] bg-[color:rgba(255,255,255,0.74)] p-6 shadow-[var(--shadow-panel)] backdrop-blur md:p-7">
-        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[color:var(--color-primary)]">
-          Job Application Tracker
-        </p>
-        <h1 className="mt-3 text-4xl leading-[0.95] text-[color:var(--color-foreground)]">
-          Application dashboard
-        </h1>
-        <p className="mt-4 text-sm leading-6 text-[color:var(--color-muted-foreground)]">
-          A Kanban style board for managing job applications.
-        </p>
+    <main className="mx-auto flex h-screen max-w-[1600px] flex-col overflow-hidden px-3 py-3 lg:px-5">
+      <header className="mb-4 flex flex-col gap-2 border-b border-border-gold bg-deco-surface px-6 py-4 shadow-deco-panel backdrop-blur md:flex-row md:items-baseline md:justify-between">
+        <div className="flex flex-col">
+          <h1 className="font-heading text-[1.75rem] tracking-tight text-deco-foreground md:text-[2.2rem]">
+            Job Application Tracker
+          </h1>
 
-        <Card className="mt-8 border-[color:var(--color-border-strong)] bg-[color:rgba(255,255,255,0.86)]">
-          <CardHeader className="pb-3">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[color:var(--color-primary)]">
+          <div className="mt-2 flex items-center">
+            <div className="h-[2px] w-24 bg-primary-gold"></div>
+            <div className="h-px w-full max-w-[200px] bg-primary-gold opacity-20"></div>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <div className="h-1 w-1 rounded-full bg-primary-gold"></div>
+          <p className="text-[0.65rem] font-medium uppercase tracking-[0.25em] text-deco-muted">
+            Drag to update status
+          </p>
+        </div>
+      </header>
+      <div className="grid min-h-0 flex-1 gap-5 lg:grid-cols-[260px_minmax(0,1fr)] lg:items-stretch">
+        <aside className="deco-sidebar flex min-h-0 flex-col items-stretch overflow-hidden border border-border-gold bg-deco-surface-soft p-5 shadow-deco-panel backdrop-blur md:p-6">
+          <section className="border border-border-gold bg-deco-surface p-4 shadow-sm">
+            <p className="text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-primary-gold">
+              Profile
+            </p>
+            <div className="mt-2 flex items-center gap-2 text-sm text-deco-foreground">
+              <User className="h-4 w-4 text-primary-gold" />
+              <span className="truncate font-medium">{username ?? "User"}</span>
+            </div>
+          </section>
+
+          <section className="mt-4 border border-border-gold bg-deco-surface p-4 shadow-sm">
+            <p className="text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-primary-gold">
               Summary
             </p>
-            <CardTitle className="text-3xl">{applications.length}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-[color:var(--color-muted-foreground)]">
-              Total applications tracked
-            </p>
-          </CardContent>
-        </Card>
-
-        <nav className="mt-8 grid gap-2">
-          {boardColumns.map((column) => (
-            <a
-              key={column.status}
-              href={`#column-${column.title.toLowerCase()}`}
-              className="flex items-center justify-between border border-transparent px-3 py-2 text-sm uppercase tracking-[0.16em] text-[color:var(--color-muted-foreground)] transition-colors hover:border-[color:var(--color-border)] hover:bg-[color:rgba(255,255,255,0.5)] hover:text-[color:var(--color-primary)]"
-            >
-              <span>{column.title}</span>
-              <span className={column.accentClass}>
-                {columns[column.status].length}
+            <div className="mt-2">
+              <span className="font-heading text-3xl leading-none">
+                {applications.length}
               </span>
-            </a>
-          ))}
-        </nav>
-
-        <div className="mt-8 grid gap-3">
-          <Button className="w-full justify-center" onClick={openCreateDialog}>
-            <BadgePlus className="h-4 w-4" />
-            New Application
-          </Button>
-          <Button
-            className="w-full justify-center"
-            variant="outline"
-            onClick={logout}
-          >
-            <LogOut className="h-4 w-4" />
-            Log out
-          </Button>
-        </div>
-      </aside>
-
-      <section className="grid gap-6">
-        <header className="flex flex-col gap-4 border border-[color:var(--color-border)] bg-[color:rgba(255,255,255,0.52)] p-6 shadow-[var(--shadow-panel)] md:flex-row md:items-end md:justify-between">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[color:var(--color-primary)]">
-              High-End Boutique Office
-            </p>
-            <div className="mt-2 flex items-center gap-3">
-              <BriefcaseBusiness className="h-5 w-5 text-[color:var(--color-primary)]" />
-              <h2 className="text-3xl text-[color:var(--color-foreground)]">
-                Track every move with precision.
-              </h2>
+              <p className="mt-1 text-[0.6rem] uppercase tracking-[0.15em] text-deco-muted">
+                Total Applications
+              </p>
             </div>
-          </div>
-          <div className="flex flex-wrap items-center gap-4 text-sm uppercase tracking-[0.14em] text-[color:var(--color-muted-foreground)]">
-            <span className="inline-flex items-center gap-2">
-              <Columns3 className="h-4 w-4 text-[color:var(--color-primary)]" />
-              Drag to update status
-            </span>
-          </div>
-        </header>
+          </section>
 
-        {errorMessage ? (
-          <p className="border border-[color:var(--color-danger)] bg-[color:var(--color-danger-soft)] px-4 py-3 text-sm text-[color:var(--color-danger)]">
-            {errorMessage}
-          </p>
-        ) : null}
+          <div className="mt-4 flex w-full flex-col gap-3">
+            <Button
+              aria-label="New Application"
+              className="h-11 w-full rounded-none transition-all hover:opacity-90"
+              onClick={openCreateDialog}
+            >
+              <div className="flex w-full items-center px-4">
+                <BadgePlus className="h-4 w-4 shrink-0" />
+                <span className="flex-1 text-center text-[0.65rem] uppercase tracking-[0.25em]">
+                  Log Application
+                </span>
+                <div className="w-4" />
+              </div>
+            </Button>
 
-        {isLoading ? (
-          <p className="border border-[color:var(--color-border)] bg-[color:rgba(255,255,255,0.72)] px-4 py-3 text-sm text-[color:var(--color-muted-foreground)]">
-            Loading applications...
-          </p>
-        ) : null}
-
-        {!isLoading && applications.length === 0 ? (
-          <div className="border border-[color:var(--color-border)] bg-[color:rgba(255,255,255,0.78)] px-5 py-10 text-center shadow-[var(--shadow-panel)]">
-            <p className="font-heading text-2xl text-[color:var(--color-foreground)]">
-              No applications yet.
-            </p>
-            <p className="mt-3 text-sm text-[color:var(--color-muted-foreground)]">
-              No applications yet. Add your first one and it will appear here
-              immediately.
-            </p>
-            <Button className="mt-6" onClick={openCreateDialog}>
-              <BadgePlus className="h-4 w-4" />
-              Add Application
+            <Button
+              aria-label="Log out"
+              className="h-11 w-full rounded-none transition-all"
+              variant="outline"
+              onClick={logout}
+            >
+              <div className="flex w-full items-center px-4">
+                <LogOut className="h-4 w-4 shrink-0" />
+                <span className="flex-1 text-center text-[0.65rem] uppercase tracking-[0.25em]">
+                  Log Out
+                </span>
+                <div className="w-4" />
+              </div>
             </Button>
           </div>
-        ) : null}
+        </aside>
 
-        {!isLoading && applications.length > 0 ? (
-          <DragDropContext onDragEnd={(result) => void handleDragEnd(result)}>
-            <div className="grid gap-5 xl:grid-cols-4">
-              {boardColumns.map((column) => (
-                <section
-                  className="kanban-column flex min-h-[26rem] flex-col border border-[color:var(--color-border)] bg-[color:rgba(255,255,255,0.74)] p-4"
-                  id={`column-${column.title.toLowerCase()}`}
-                  key={column.status}
-                >
-                  <div className="border-b border-[color:var(--color-primary)] pb-3">
-                    <div className="flex items-end justify-between gap-3">
-                      <div>
-                        <h3 className="text-2xl text-[color:var(--color-foreground)]">
-                          {column.title}
-                        </h3>
-                        <p className="mt-1 text-sm text-[color:var(--color-muted-foreground)]">
-                          {column.subtitle}
-                        </p>
+        <section className="flex min-h-0 flex-col gap-3">
+          {errorMessage ? (
+            <p className="border border-danger bg-danger-soft px-4 py-3 text-sm text-danger">
+              {errorMessage}
+            </p>
+          ) : null}
+
+          {isLoading ? (
+            <p className="border border-border-gold-muted bg-deco-surface-soft px-4 py-3 text-sm text-deco-muted">
+              Loading applications...
+            </p>
+          ) : null}
+
+          {!isLoading && applications.length === 0 ? (
+            <div className="border border-border-gold-muted bg-deco-surface-soft px-5 py-10 text-center shadow-deco-panel">
+              <p className="font-heading text-2xl text-deco-foreground">
+                No applications yet.
+              </p>
+              <p className="mt-3 text-sm text-deco-muted">
+                No applications yet. Add your first one and it will appear here
+                immediately.
+              </p>
+              <Button className="mt-6" onClick={openCreateDialog}>
+                <BadgePlus className="h-4 w-4" />
+                Add Application
+              </Button>
+            </div>
+          ) : null}
+
+          {!isLoading && applications.length > 0 ? (
+            <DragDropContext onDragEnd={(result) => void handleDragEnd(result)}>
+              <div className="grid min-h-0 flex-1 gap-5 xl:grid-cols-4">
+                {boardColumns.map((column) => (
+                  <section
+                    className="kanban-column flex min-h-0 flex-col border border-border-gold-muted bg-deco-surface-soft p-4"
+                    id={`column-${column.title.toLowerCase()}`}
+                    key={column.status}
+                  >
+                    <div className="border-b border-primary-gold pb-3">
+                      <div className="flex items-end justify-between gap-3">
+                        <div>
+                          <h3 className="text-2xl text-deco-foreground">
+                            {column.title}
+                          </h3>
+                          <p className="mt-1 text-sm text-deco-muted">
+                            {column.subtitle}
+                          </p>
+                        </div>
+                        <span className={column.accentClass}>
+                          {columns[column.status].length}
+                        </span>
                       </div>
-                      <span className={column.accentClass}>
-                        {columns[column.status].length}
-                      </span>
                     </div>
-                  </div>
 
-                  <Droppable droppableId={String(column.status)}>
-                    {(droppableProvided, droppableSnapshot) => (
-                      <div
-                        className={`mt-4 flex min-h-[16rem] flex-1 flex-col gap-2 transition-colors ${
-                          droppableSnapshot.isDraggingOver
-                            ? "bg-[color:rgba(212,175,55,0.06)]"
-                            : ""
-                        }`}
-                        ref={droppableProvided.innerRef}
-                        {...droppableProvided.droppableProps}
-                      >
-                        {columns[column.status].map((application, index) => (
-                          <Draggable
-                            draggableId={application.id}
-                            index={index}
-                            key={application.id}
-                          >
-                            {(draggableProvided, draggableSnapshot) => (
-                              <article
-                                className={`application-card ${column.borderClass} cursor-pointer border-l-[2px] border-y border-r border-[color:var(--color-border)] bg-[color:rgba(255,255,255,0.9)] px-3 py-2 font-sans text-[0.78rem] tracking-[0.02em] text-[color:var(--color-foreground)] shadow-sm transition-shadow hover:shadow-[0_0_10px_rgba(212,175,55,0.14)] ${
-                                  draggableSnapshot.isDragging
-                                    ? "shadow-[0_0_14px_rgba(212,175,55,0.18)]"
-                                    : ""
-                                }`}
-                                key={application.id}
-                                ref={draggableProvided.innerRef}
-                                {...draggableProvided.draggableProps}
-                                {...draggableProvided.dragHandleProps}
-                                onClick={() => openDetails(application)}
-                              >
-                                <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
-                                  <div className="flex min-w-0 items-center gap-2 overflow-hidden whitespace-nowrap">
-                                    <span className="truncate font-semibold uppercase tracking-[0.08em] text-[color:var(--color-foreground)]">
-                                      {application.companyName}
-                                    </span>
-                                    <span className="shrink-0 text-[color:var(--color-primary)]">-</span>
-                                    <span className="truncate text-[color:var(--color-muted-foreground)]">
-                                      {application.position}
+                    <Droppable droppableId={String(column.status)}>
+                      {(droppableProvided, droppableSnapshot) => (
+                        <div
+                          className={`mt-4 flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto transition-colors ${
+                            droppableSnapshot.isDraggingOver
+                              ? "bg-primary-gold-muted"
+                              : ""
+                          }`}
+                          ref={droppableProvided.innerRef}
+                          {...droppableProvided.droppableProps}
+                        >
+                          {columns[column.status].map((application, index) => (
+                            <Draggable
+                              draggableId={application.id}
+                              index={index}
+                              key={application.id}
+                            >
+                              {(draggableProvided, draggableSnapshot) => (
+                                <article
+                                  className={`application-card ${column.borderClass} cursor-pointer border-y border-r border-l-2 border-border-gold-muted bg-deco-card px-3 py-2 font-sans text-[0.78rem] tracking-[0.02em] text-deco-foreground shadow-sm transition-shadow hover:shadow-deco-glow ${
+                                    draggableSnapshot.isDragging
+                                      ? "shadow-deco-glow"
+                                      : ""
+                                  }`}
+                                  key={application.id}
+                                  ref={draggableProvided.innerRef}
+                                  {...draggableProvided.draggableProps}
+                                  {...draggableProvided.dragHandleProps}
+                                  onClick={() => openDetails(application)}
+                                >
+                                  <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
+                                    <div className="flex min-w-0 items-center gap-2 overflow-hidden whitespace-nowrap">
+                                      <span className="truncate font-semibold uppercase tracking-[0.08em] text-deco-foreground">
+                                        {application.companyName}
+                                      </span>
+                                      <span className="shrink-0 text-primary-gold">
+                                        -
+                                      </span>
+                                      <span className="truncate text-deco-muted">
+                                        {application.position}
+                                      </span>
+                                    </div>
+                                    <span className="shrink-0 text-right text-deco-muted">
+                                      {formatAppliedDate(
+                                        application.dateApplied,
+                                      )}
                                     </span>
                                   </div>
-                                  <span className="shrink-0 text-right text-[color:var(--color-muted-foreground)]">
-                                    {formatAppliedDate(application.dateApplied)}
-                                  </span>
-                                </div>
-                              </article>
-                            )}
-                          </Draggable>
-                        ))}
-                        {droppableProvided.placeholder}
-                      </div>
-                    )}
-                  </Droppable>
-                </section>
-              ))}
-            </div>
-          </DragDropContext>
-        ) : null}
-
-        <Dialog
-          open={isCreateDialogOpen}
-          onOpenChange={(open) => {
-            setIsCreateDialogOpen(open);
-          }}
-        >
-          <DialogContent className="p-0">
-            <DialogHeader>
-              <DialogTitle>Add Application</DialogTitle>
-              <DialogDescription>
-                Capture the company, role, and current status in the board.
-              </DialogDescription>
-            </DialogHeader>
-            <JobApplicationForm
-              editingApplication={null}
-              onCancelEdit={closeCreateDialog}
-              onCreate={handleCreate}
-              onSuccess={closeCreateDialog}
-              onUpdate={handleUpdate}
-            />
-          </DialogContent>
-        </Dialog>
-
-        <Sheet
-          open={selectedApplication !== null}
-          onOpenChange={(open) => {
-            if (!open) {
-              closeDetails();
-            }
-          }}
-        >
-          <SheetContent className="border-l border-[color:var(--color-border-strong)] bg-[linear-gradient(180deg,rgba(255,251,243,0.98),rgba(252,245,229,0.98))]">
-            <SheetHeader>
-              <SheetTitle>
-                {selectedApplication
-                  ? `${selectedApplication.companyName} Details`
-                  : "Job Details"}
-              </SheetTitle>
-              <SheetDescription>
-                {selectedApplication?.position ?? "Application details"}
-              </SheetDescription>
-            </SheetHeader>
-            <div className="flex-1 overflow-y-auto px-6 py-6">
-              {selectedApplication ? (
-                <div className="space-y-6">
-                  {isDetailEditing ? (
-                    <JobApplicationForm
-                      editingApplication={selectedApplication}
-                      onCancelEdit={() => setIsDetailEditing(false)}
-                      onCreate={handleCreate}
-                      onSuccess={() => setIsDetailEditing(false)}
-                      onUpdate={handleUpdate}
-                      submitLabel="Save Changes"
-                      submittingLabel="Saving Changes..."
-                      cancelLabel="Discard"
-                    />
-                  ) : (
-                    <>
-                      <section className="space-y-4 border-b border-[color:var(--color-primary)]/40 pb-5">
-                        <div className="flex items-start justify-between gap-4">
-                          <div>
-                            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[color:var(--color-primary)]">
-                              Application Record
-                            </p>
-                            <h3 className="mt-2 text-3xl text-[color:var(--color-foreground)]">
-                              {selectedApplication.companyName}
-                            </h3>
-                            <p className="mt-2 text-sm uppercase tracking-[0.14em] text-[color:var(--color-muted-foreground)]">
-                              {selectedApplication.position}
-                            </p>
-                          </div>
-                          <Badge>
-                            {jobApplicationStatusLabels[selectedApplication.status]}
-                          </Badge>
-                        </div>
-
-                        <div className="grid gap-4 sm:grid-cols-2">
-                          {detailRows(selectedApplication).map((row) => (
-                            <div key={row.label} className="space-y-1">
-                              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--color-primary)]">
-                                {row.label}
-                              </p>
-                              <p className="text-sm leading-6 text-[color:var(--color-foreground)]">
-                                {row.value}
-                              </p>
-                            </div>
+                                </article>
+                              )}
+                            </Draggable>
                           ))}
-                          <div className="space-y-1">
-                            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--color-primary)]">
-                              Interest Level
-                            </p>
-                            <div className="flex items-center gap-1 text-[color:var(--color-primary)]">
-                              <Diamond className="h-4 w-4 fill-current" />
-                              <Diamond className="h-4 w-4 fill-current opacity-70" />
-                              <Diamond className="h-4 w-4 opacity-30" />
+                          {droppableProvided.placeholder}
+                        </div>
+                      )}
+                    </Droppable>
+                  </section>
+                ))}
+              </div>
+            </DragDropContext>
+          ) : null}
+
+          <Dialog
+            open={isCreateDialogOpen}
+            onOpenChange={(open) => {
+              setIsCreateDialogOpen(open);
+            }}
+          >
+            <DialogContent className="p-0">
+              <DialogHeader>
+                <DialogTitle>Add Application</DialogTitle>
+                <DialogDescription>
+                  Capture the company, role, and current status in the board.
+                </DialogDescription>
+              </DialogHeader>
+              <JobApplicationForm
+                editingApplication={null}
+                onCancelEdit={closeCreateDialog}
+                onCreate={handleCreate}
+                onSuccess={closeCreateDialog}
+                onUpdate={handleUpdate}
+              />
+            </DialogContent>
+          </Dialog>
+
+          <Sheet
+            open={selectedApplication !== null}
+            onOpenChange={(open) => {
+              if (!open) {
+                closeDetails();
+              }
+            }}
+          >
+            <SheetContent className="border-l border-border-gold bg-deco-bg">
+              <SheetHeader>
+                <SheetTitle>
+                  {selectedApplication
+                    ? `${selectedApplication.companyName} Details`
+                    : "Job Details"}
+                </SheetTitle>
+                <SheetDescription>
+                  {selectedApplication?.position ?? "Application details"}
+                </SheetDescription>
+              </SheetHeader>
+              <div className="flex-1 overflow-y-auto px-6 py-6">
+                {selectedApplication ? (
+                  <div className="space-y-6">
+                    {isDetailEditing ? (
+                      <JobApplicationForm
+                        editingApplication={selectedApplication}
+                        onCancelEdit={() => setIsDetailEditing(false)}
+                        onCreate={handleCreate}
+                        onSuccess={() => setIsDetailEditing(false)}
+                        onUpdate={handleUpdate}
+                        submitLabel="Save Changes"
+                        submittingLabel="Saving Changes..."
+                        cancelLabel="Discard"
+                      />
+                    ) : (
+                      <>
+                        <section className="space-y-4 border-b border-primary-gold-muted pb-5">
+                          <div className="flex items-start justify-between gap-4">
+                            <div>
+                              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary-gold">
+                                Application Record
+                              </p>
+                              <h3 className="mt-2 text-3xl text-deco-foreground">
+                                {selectedApplication.companyName}
+                              </h3>
+                              <p className="mt-2 text-sm uppercase tracking-[0.14em] text-deco-muted">
+                                {selectedApplication.position}
+                              </p>
+                            </div>
+                            <Badge>
+                              {
+                                jobApplicationStatusLabels[
+                                  selectedApplication.status
+                                ]
+                              }
+                            </Badge>
+                          </div>
+
+                          <div className="grid gap-4 sm:grid-cols-2">
+                            {detailRows(selectedApplication).map((row) => (
+                              <div key={row.label} className="space-y-1">
+                                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary-gold">
+                                  {row.label}
+                                </p>
+                                <p className="text-sm leading-6 text-deco-foreground">
+                                  {row.value}
+                                </p>
+                              </div>
+                            ))}
+                            <div className="space-y-1">
+                              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary-gold">
+                                Interest Level
+                              </p>
+                              <div className="flex items-center gap-1 text-primary-gold">
+                                <Diamond className="h-4 w-4 fill-current" />
+                                <Diamond className="h-4 w-4 fill-current opacity-70" />
+                                <Diamond className="h-4 w-4 opacity-30" />
+                              </div>
+                            </div>
+                            <div className="space-y-1">
+                              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary-gold">
+                                Job URL
+                              </p>
+                              {selectedApplication.jobUrl ? (
+                                <a
+                                  className="inline-flex items-center gap-2 text-sm text-deco-foreground underline decoration-primary-gold underline-offset-4 transition-colors hover:text-primary-gold"
+                                  href={selectedApplication.jobUrl}
+                                  rel="noreferrer"
+                                  target="_blank"
+                                >
+                                  <ExternalLink className="h-4 w-4" />
+                                  Open posting
+                                </a>
+                              ) : (
+                                <p className="text-sm leading-6 text-deco-foreground">
+                                  Not provided
+                                </p>
+                              )}
                             </div>
                           </div>
-                          <div className="space-y-1">
-                            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--color-primary)]">
-                              Job URL
-                            </p>
-                            {selectedApplication.jobUrl ? (
-                              <a
-                                className="inline-flex items-center gap-2 text-sm text-[color:var(--color-foreground)] underline decoration-[color:var(--color-primary)] underline-offset-4 transition-colors hover:text-[color:var(--color-primary)]"
-                                href={selectedApplication.jobUrl}
-                                rel="noreferrer"
-                                target="_blank"
-                              >
-                                <ExternalLink className="h-4 w-4" />
-                                Open posting
-                              </a>
-                            ) : (
-                              <p className="text-sm leading-6 text-[color:var(--color-foreground)]">
-                                Not provided
-                              </p>
-                            )}
+                        </section>
+
+                        <section className="space-y-3 border-b border-primary-gold-muted pb-5">
+                          <div className="flex items-center gap-2">
+                            <FileText className="h-4 w-4 text-primary-gold" />
+                            <h4 className="text-xl text-deco-foreground">
+                              Job Description
+                            </h4>
                           </div>
-                        </div>
-                      </section>
+                          <div className="max-h-[22rem] overflow-y-auto border border-border-gold-muted bg-deco-surface-soft p-4 shadow-sm">
+                            <pre className="whitespace-pre-wrap break-words font-mono text-sm leading-7 text-deco-foreground">
+                              {selectedApplication.jobDescription?.trim()
+                                ? selectedApplication.jobDescription
+                                : "No job description saved."}
+                            </pre>
+                          </div>
+                        </section>
 
-                      <section className="space-y-3 border-b border-[color:var(--color-primary)]/40 pb-5">
-                        <div className="flex items-center gap-2">
-                          <FileText className="h-4 w-4 text-[color:var(--color-primary)]" />
-                          <h4 className="text-xl text-[color:var(--color-foreground)]">
-                            Job Description
-                          </h4>
+                        <div className="space-y-3">
+                          <Button
+                            className="w-full justify-center"
+                            onClick={() => setIsDetailEditing(true)}
+                          >
+                            Edit Application
+                          </Button>
+                          <Button
+                            className="w-full justify-center text-danger hover:text-danger"
+                            variant="ghost"
+                            onClick={() =>
+                              void handleDelete(selectedApplication.id)
+                            }
+                          >
+                            <Trash2 className="h-4 w-4" />
+                            Delete Application
+                          </Button>
                         </div>
-                        <div className="max-h-[22rem] overflow-y-auto border border-[color:var(--color-border)] bg-[color:rgba(255,255,255,0.72)] p-4 shadow-sm">
-                          <pre className="whitespace-pre-wrap break-words text-sm leading-7 text-[color:var(--color-foreground)] font-[ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation_Mono,Courier_New,monospace]">
-                            {selectedApplication.jobDescription?.trim()
-                              ? selectedApplication.jobDescription
-                              : "No job description saved."}
-                          </pre>
-                        </div>
-                      </section>
-
-                      <div className="space-y-3">
-                        <Button
-                          className="w-full justify-center"
-                          onClick={() => setIsDetailEditing(true)}
-                        >
-                          Edit Application
-                        </Button>
-                        <Button
-                          className="w-full justify-center text-[color:var(--color-danger)] hover:text-[color:var(--color-danger)]"
-                          variant="ghost"
-                          onClick={() => void handleDelete(selectedApplication.id)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                          Delete Application
-                        </Button>
-                      </div>
-                    </>
-                  )}
-                </div>
-              ) : null}
-            </div>
-          </SheetContent>
-        </Sheet>
-      </section>
+                      </>
+                    )}
+                  </div>
+                ) : null}
+              </div>
+            </SheetContent>
+          </Sheet>
+        </section>
+      </div>
     </main>
   );
 };

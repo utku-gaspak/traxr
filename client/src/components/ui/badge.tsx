@@ -8,7 +8,7 @@ const badgeVariants = cva(
     variants: {
       variant: {
         stamp:
-          "border-[color:var(--color-primary)] bg-[color:rgba(255,255,255,0.8)] text-[color:var(--color-primary)]",
+          "border-primary-gold bg-deco-surface text-primary-gold",
       },
     },
     defaultVariants: {

@@ -20,13 +20,13 @@ const SheetContent = ({ className, children, ...props }: DialogPrimitive.DialogC
     <SheetOverlay />
     <DialogPrimitive.Content
       className={cn(
-        "fixed right-0 top-0 z-50 flex h-full w-[min(92vw,44rem)] flex-col border-l border-[color:var(--color-primary)] bg-[color:var(--color-card)] shadow-2xl",
+        "fixed right-0 top-0 z-50 flex h-full w-[min(92vw,44rem)] flex-col border-l border-primary-gold bg-deco-card shadow-2xl",
         className,
       )}
       {...props}
     >
       {children}
-      <DialogPrimitive.Close className="absolute right-4 top-4 text-[color:var(--color-primary)] transition-colors hover:text-[color:var(--color-foreground)]">
+      <DialogPrimitive.Close className="absolute right-4 top-4 text-primary-gold transition-colors hover:text-deco-foreground">
         <X className="h-4 w-4" />
         <span className="sr-only">Close</span>
       </DialogPrimitive.Close>
@@ -37,7 +37,7 @@ const SheetContent = ({ className, children, ...props }: DialogPrimitive.DialogC
 const SheetHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      "border-b border-[color:var(--color-primary)] bg-[color:var(--color-primary-soft)] px-6 py-5",
+      "border-b border-primary-gold bg-primary-gold-muted px-6 py-5",
       className,
     )}
     {...props}
@@ -46,14 +46,14 @@ const SheetHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElemen
 
 const SheetTitle = ({ className, ...props }: DialogPrimitive.DialogTitleProps) => (
   <DialogPrimitive.Title
-    className={cn("font-heading text-2xl font-semibold text-[color:var(--color-foreground)]", className)}
+    className={cn("font-heading text-2xl font-semibold text-deco-foreground", className)}
     {...props}
   />
 );
 
 const SheetDescription = ({ className, ...props }: DialogPrimitive.DialogDescriptionProps) => (
   <DialogPrimitive.Description
-    className={cn("mt-2 text-sm text-[color:var(--color-muted-foreground)]", className)}
+    className={cn("mt-2 text-sm text-deco-muted", className)}
     {...props}
   />
 );
