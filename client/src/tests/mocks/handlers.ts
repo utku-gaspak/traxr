@@ -14,6 +14,8 @@ interface CreateJobApplicationBody {
   location?: string | null
   salaryRange?: string | null
   jobDescription?: string | null
+  interestLevel?: number | null
+  technicalStack?: string | null
   status: JobApplicationStatus
 }
 
@@ -34,6 +36,8 @@ const defaultJobs: JobApplication[] = [
     location: 'Remote',
     salaryRange: '$110k - $130k',
     jobDescription: 'Strong backend role working on distributed systems.',
+    interestLevel: 5,
+    technicalStack: 'C#, PostgreSQL, React',
     status: JobApplicationStatus.Applied,
     dateApplied: '2026-05-11T12:00:00.000Z',
     userId: 'user-1',
@@ -46,6 +50,8 @@ const defaultJobs: JobApplication[] = [
     location: 'London',
     salaryRange: null,
     jobDescription: null,
+    interestLevel: null,
+    technicalStack: null,
     status: JobApplicationStatus.Interviewing,
     dateApplied: '2026-05-10T12:00:00.000Z',
     userId: 'user-1',
@@ -96,6 +102,8 @@ export const handlers = [
       location: body.location ?? null,
       salaryRange: body.salaryRange ?? null,
       jobDescription: body.jobDescription ?? null,
+      interestLevel: body.interestLevel ?? null,
+      technicalStack: body.technicalStack ?? null,
       status: body.status,
       dateApplied: '2026-05-12T12:00:00.000Z',
       userId: 'user-1',
@@ -120,6 +128,8 @@ export const handlers = [
             location: body.location ?? null,
             salaryRange: body.salaryRange ?? null,
             jobDescription: body.jobDescription ?? null,
+            interestLevel: body.interestLevel ?? null,
+            technicalStack: body.technicalStack ?? null,
             status: body.status,
             dateApplied: body.dateApplied,
           }

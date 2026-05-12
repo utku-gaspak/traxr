@@ -96,6 +96,8 @@ public class JobApplicationsControllerTests
             "Remote",
             "$100k - $120k",
             "Full role description",
+            4,
+            "C#, React",
             JobApplicationStatus.Applied
         );
         var createdApplication = new JobApplication
@@ -107,6 +109,8 @@ public class JobApplicationsControllerTests
             Location = dto.Location,
             SalaryRange = dto.SalaryRange,
             JobDescription = dto.JobDescription,
+            InterestLevel = dto.InterestLevel,
+            TechnicalStack = dto.TechnicalStack,
             Status = dto.Status,
             UserId = userId,
         };
@@ -141,6 +145,8 @@ public class JobApplicationsControllerTests
             "London",
             null,
             "Updated role description",
+            3,
+            "TypeScript, .NET",
             JobApplicationStatus.Interviewing,
             new DateTime(2026, 05, 11, 12, 00, 00, DateTimeKind.Utc)
         );

@@ -11,6 +11,8 @@ public record JobApplicationCreateDto(
     string? Location,
     string? SalaryRange,
     string? JobDescription,
+    int? InterestLevel,
+    string? TechnicalStack,
     JobApplicationStatus Status
 );
 
@@ -21,6 +23,8 @@ public record JobApplicationUpdateDto(
     string? Location,
     string? SalaryRange,
     string? JobDescription,
+    int? InterestLevel,
+    string? TechnicalStack,
     JobApplicationStatus Status,
     DateTime DateApplied
 );

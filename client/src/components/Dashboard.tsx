@@ -170,9 +170,10 @@ const detailRows = (application: JobApplication) =>
     { label: "Date", value: formatAppliedDate(application.dateApplied) },
     { label: "Location", value: application.location ?? "Not provided" },
     { label: "Salary", value: application.salaryRange ?? "Not provided" },
-    // These remain view-only placeholders until the backend model persists them.
-    { label: "Technical Stack", value: "Not tracked yet" },
+    { label: "Technical Stack", value: application.technicalStack ?? "Not provided" },
   ] as const;
+
+const interestLevelOptions = [1, 2, 3, 4, 5] as const;
 
 const Dashboard = () => {
   const { logout, username } = useAuth();
@@ -264,6 +265,8 @@ const Dashboard = () => {
           location: input.location ?? null,
           salaryRange: input.salaryRange ?? null,
           jobDescription: input.jobDescription ?? null,
+          interestLevel: input.interestLevel ?? null,
+          technicalStack: input.technicalStack ?? null,
           status: input.status,
           dateApplied: input.dateApplied,
         };
@@ -333,6 +336,8 @@ const Dashboard = () => {
         location: reordered.movedApplication.location ?? undefined,
         salaryRange: reordered.movedApplication.salaryRange ?? undefined,
         jobDescription: reordered.movedApplication.jobDescription ?? undefined,
+        interestLevel: reordered.movedApplication.interestLevel ?? undefined,
+        technicalStack: reordered.movedApplication.technicalStack ?? undefined,
         status: reordered.movedApplication.status,
         dateApplied: reordered.movedApplication.dateApplied,
       });
@@ -555,7 +560,7 @@ const Dashboard = () => {
               setIsCreateDialogOpen(open);
             }}
           >
-            <DialogContent className="p-0">
+            <DialogContent className="max-h-[92vh] w-[min(94vw,56rem)] overflow-y-auto p-0">
               <DialogHeader>
                 <DialogTitle>Add Application</DialogTitle>
                 <DialogDescription>
@@ -591,9 +596,9 @@ const Dashboard = () => {
                   {selectedApplication?.position ?? "Application details"}
                 </SheetDescription>
               </SheetHeader>
-              <div className="flex-1 overflow-y-auto px-6 py-6">
+              <div className="min-h-0 flex-1 overflow-y-auto px-5 py-4">
                 {selectedApplication ? (
-                  <div className="space-y-6">
+                  <div className="flex min-h-full flex-col">
                     {isDetailEditing ? (
                       <JobApplicationForm
                         editingApplication={selectedApplication}
@@ -607,51 +612,58 @@ const Dashboard = () => {
                       />
                     ) : (
                       <>
-                        <section className="space-y-4 border-b border-primary-gold-muted pb-5">
-                          <div className="flex items-start justify-between gap-4">
-                            <div>
-                              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary-gold">
+                        <section className="border-b border-primary-gold-muted pb-4">
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="min-w-0">
+                              <p className="text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-primary-gold">
                                 Application Record
                               </p>
-                              <h3 className="mt-2 text-3xl text-deco-foreground">
+                              <h3 className="mt-1 truncate text-2xl text-deco-foreground">
                                 {selectedApplication.companyName}
                               </h3>
-                              <p className="mt-2 text-sm uppercase tracking-[0.14em] text-deco-muted">
+                              <p className="mt-1 truncate text-xs uppercase tracking-[0.14em] text-deco-muted">
                                 {selectedApplication.position}
                               </p>
                             </div>
-                            <Badge>
-                              {
-                                jobApplicationStatusLabels[
-                                  selectedApplication.status
-                                ]
-                              }
+                            <Badge className="shrink-0">
+                              {jobApplicationStatusLabels[selectedApplication.status]}
                             </Badge>
                           </div>
 
-                          <div className="grid gap-4 sm:grid-cols-2">
+                          <div className="mt-4 grid gap-2 sm:grid-cols-2">
                             {detailRows(selectedApplication).map((row) => (
-                              <div key={row.label} className="space-y-1">
-                                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary-gold">
+                              <div
+                                key={row.label}
+                                className="min-w-0 border border-border-gold-muted bg-deco-surface px-3 py-2"
+                              >
+                                <p className="text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-primary-gold">
                                   {row.label}
                                 </p>
-                                <p className="text-sm leading-6 text-deco-foreground">
+                                <p className="mt-1 truncate text-sm leading-5 text-deco-foreground">
                                   {row.value}
                                 </p>
                               </div>
                             ))}
-                            <div className="space-y-1">
-                              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary-gold">
+                            <div className="border border-border-gold-muted bg-deco-surface px-3 py-2">
+                              <p className="text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-primary-gold">
                                 Interest Level
                               </p>
-                              <div className="flex items-center gap-1 text-primary-gold">
-                                <Diamond className="h-4 w-4 fill-current" />
-                                <Diamond className="h-4 w-4 fill-current opacity-70" />
-                                <Diamond className="h-4 w-4 opacity-30" />
+                              <div className="mt-1 flex items-center gap-1 text-primary-gold">
+                                {interestLevelOptions.map((level) => (
+                                  <Diamond
+                                    className={`h-4 w-4 ${
+                                      selectedApplication.interestLevel &&
+                                      level <= selectedApplication.interestLevel
+                                        ? "fill-current"
+                                        : "opacity-30"
+                                    }`}
+                                    key={level}
+                                  />
+                                ))}
                               </div>
                             </div>
-                            <div className="space-y-1">
-                              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary-gold">
+                            <div className="min-w-0 border border-border-gold-muted bg-deco-surface px-3 py-2">
+                              <p className="text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-primary-gold">
                                 Job URL
                               </p>
                               {selectedApplication.jobUrl ? (
@@ -662,10 +674,10 @@ const Dashboard = () => {
                                   target="_blank"
                                 >
                                   <ExternalLink className="h-4 w-4" />
-                                  Open posting
+                                  <span className="truncate">Open posting</span>
                                 </a>
                               ) : (
-                                <p className="text-sm leading-6 text-deco-foreground">
+                                <p className="mt-1 text-sm leading-5 text-deco-foreground">
                                   Not provided
                                 </p>
                               )}
@@ -673,14 +685,14 @@ const Dashboard = () => {
                           </div>
                         </section>
 
-                        <section className="space-y-3 border-b border-primary-gold-muted pb-5">
+                        <section className="mt-4 flex min-h-0 flex-1 flex-col space-y-3 pb-4">
                           <div className="flex items-center gap-2">
                             <FileText className="h-4 w-4 text-primary-gold" />
                             <h4 className="text-xl text-deco-foreground">
                               Job Description
                             </h4>
                           </div>
-                          <div className="max-h-[22rem] overflow-y-auto border border-border-gold-muted bg-deco-surface-soft p-4 shadow-sm">
+                          <div className="min-h-[12rem] flex-1 overflow-y-auto border border-border-gold-muted bg-deco-surface-soft p-4 shadow-sm">
                             <pre className="whitespace-pre-wrap break-words font-mono text-sm leading-7 text-deco-foreground">
                               {selectedApplication.jobDescription?.trim()
                                 ? selectedApplication.jobDescription
@@ -689,7 +701,7 @@ const Dashboard = () => {
                           </div>
                         </section>
 
-                        <div className="space-y-3">
+                        <div className="sticky bottom-0 -mx-5 mt-auto grid gap-3 border-t border-primary-gold-muted bg-deco-bg px-5 py-4">
                           <Button
                             className="w-full justify-center"
                             onClick={() => setIsDetailEditing(true)}

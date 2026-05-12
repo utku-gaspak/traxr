@@ -320,6 +320,8 @@ export interface JobApplication {
     location?: string | undefined;
     salaryRange?: string | undefined;
     jobDescription?: string | undefined;
+    interestLevel?: number | undefined;
+    technicalStack?: string | undefined;
     status?: JobApplicationStatus;
     dateApplied?: string;
     userId?: string;
@@ -365,6 +367,8 @@ export interface JobApplicationCreateDto {
     location?: string | undefined;
     salaryRange?: string | undefined;
     jobDescription?: string | undefined;
+    interestLevel?: number | undefined;
+    technicalStack?: string | undefined;
     status?: JobApplicationStatus;
 }
 
@@ -375,6 +379,8 @@ export interface JobApplicationUpdateDto {
     location?: string | undefined;
     salaryRange?: string | undefined;
     jobDescription?: string | undefined;
+    interestLevel?: number | undefined;
+    technicalStack?: string | undefined;
     status?: JobApplicationStatus;
     dateApplied?: string;
 }

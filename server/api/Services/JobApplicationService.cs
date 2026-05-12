@@ -22,6 +22,8 @@ public class JobApplicationService(AppDbContext dbContext) : IJobApplicationServ
             Location = NormalizeOptionalText(dto.Location),
             SalaryRange = NormalizeOptionalText(dto.SalaryRange),
             JobDescription = NormalizeOptionalText(dto.JobDescription),
+            InterestLevel = dto.InterestLevel,
+            TechnicalStack = NormalizeOptionalText(dto.TechnicalStack),
             Status = dto.Status,
             DateApplied = DateTime.UtcNow,
             UserId = userId,
@@ -67,6 +69,8 @@ public class JobApplicationService(AppDbContext dbContext) : IJobApplicationServ
         jobApplication.Location = NormalizeOptionalText(dto.Location);
         jobApplication.SalaryRange = NormalizeOptionalText(dto.SalaryRange);
         jobApplication.JobDescription = NormalizeOptionalText(dto.JobDescription);
+        jobApplication.InterestLevel = dto.InterestLevel;
+        jobApplication.TechnicalStack = NormalizeOptionalText(dto.TechnicalStack);
         jobApplication.Status = dto.Status;
         jobApplication.DateApplied = dto.DateApplied;
 
@@ -98,6 +102,7 @@ public class JobApplicationService(AppDbContext dbContext) : IJobApplicationServ
         ValidateUserId(userId);
         ValidateRequiredText(dto.CompanyName, nameof(dto.CompanyName));
         ValidateRequiredText(dto.Position, nameof(dto.Position));
+        ValidateInterestLevel(dto.InterestLevel);
     }
 
     private static void ValidateUpdateRequest(JobApplicationUpdateDto? dto, string userId)
@@ -108,6 +113,7 @@ public class JobApplicationService(AppDbContext dbContext) : IJobApplicationServ
         ValidateUserId(userId);
         ValidateRequiredText(dto.CompanyName, nameof(dto.CompanyName));
         ValidateRequiredText(dto.Position, nameof(dto.Position));
+        ValidateInterestLevel(dto.InterestLevel);
     }
 
     private static void ValidateId(string id)
@@ -134,5 +140,11 @@ public class JobApplicationService(AppDbContext dbContext) : IJobApplicationServ
             return null;
 
         return value.Trim();
+    }
+
+    private static void ValidateInterestLevel(int? interestLevel)
+    {
+        if (interestLevel is < 1 or > 5)
+            throw new ValidationException("InterestLevel must be between 1 and 5.");
     }
 }

@@ -353,6 +353,15 @@
             "type": "string",
             "nullable": true
           },
+          "interestLevel": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "technicalStack": {
+            "type": "string",
+            "nullable": true
+          },
           "status": {
             "$ref": "#/components/schemas/JobApplicationStatus"
           },
@@ -503,6 +512,15 @@
             "type": "string",
             "nullable": true
           },
+          "interestLevel": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "technicalStack": {
+            "type": "string",
+            "nullable": true
+          },
           "status": {
             "$ref": "#/components/schemas/JobApplicationStatus"
           }
@@ -531,6 +549,15 @@
             "nullable": true
           },
           "jobDescription": {
+            "type": "string",
+            "nullable": true
+          },
+          "interestLevel": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "technicalStack": {
             "type": "string",
             "nullable": true
           },

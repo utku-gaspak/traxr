@@ -65,6 +65,8 @@ export const createJobApplication = async (input: JobApplicationCreateInput) => 
     location: input.location,
     salaryRange: input.salaryRange,
     jobDescription: input.jobDescription,
+    interestLevel: input.interestLevel,
+    technicalStack: input.technicalStack,
     status: input.status,
   });
 
@@ -79,6 +81,8 @@ export const updateJobApplication = async (id: string, input: JobApplicationUpda
     location: input.location,
     salaryRange: input.salaryRange,
     jobDescription: input.jobDescription,
+    interestLevel: input.interestLevel,
+    technicalStack: input.technicalStack,
     status: input.status,
     dateApplied: input.dateApplied,
   });

@@ -30,6 +30,10 @@ public class JobApplication
     [Column(TypeName = "text")]
     public string? JobDescription { get; set; }
 
+    public int? InterestLevel { get; set; }
+
+    public string? TechnicalStack { get; set; }
+
     public JobApplicationStatus Status { get; set; } = JobApplicationStatus.Applied;
 
     public DateTime DateApplied { get; set; } = DateTime.UtcNow;

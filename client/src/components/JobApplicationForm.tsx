@@ -1,4 +1,5 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { X } from "lucide-react";
+import { useEffect, useState, type FormEvent, type KeyboardEvent } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
@@ -33,8 +34,18 @@ const initialFormState: JobApplicationCreateInput = {
   location: "",
   salaryRange: "",
   jobDescription: "",
+  interestLevel: null,
+  technicalStack: "",
   status: JobApplicationStatus.Applied,
 };
+
+const splitTechnicalStack = (value?: string | null) =>
+  value
+    ?.split(",")
+    .map((skill) => skill.trim())
+    .filter(Boolean) ?? [];
+
+const joinTechnicalStack = (skills: string[]) => skills.join(", ");
 
 const JobApplicationForm = ({
   onCreate,
@@ -50,6 +61,7 @@ const JobApplicationForm = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
+  const [technicalStackDraft, setTechnicalStackDraft] = useState("");
 
   useEffect(() => {
     if (editingApplication) {
@@ -60,6 +72,8 @@ const JobApplicationForm = ({
         location: editingApplication.location ?? "",
         salaryRange: editingApplication.salaryRange ?? "",
         jobDescription: editingApplication.jobDescription ?? "",
+        interestLevel: editingApplication.interestLevel ?? null,
+        technicalStack: editingApplication.technicalStack ?? "",
         status: editingApplication.status,
       });
     } else {
@@ -68,11 +82,68 @@ const JobApplicationForm = ({
 
     setErrorMessage(null);
     setValidationErrors({});
+    setTechnicalStackDraft("");
   }, [editingApplication]);
+
+  const technicalStackSkills = splitTechnicalStack(form.technicalStack);
+
+  const setTechnicalStackSkills = (skills: string[]) => {
+    setForm((current) => ({
+      ...current,
+      technicalStack: joinTechnicalStack(skills),
+    }));
+  };
+
+  const addTechnicalStackSkill = () => {
+    const nextSkill = technicalStackDraft.trim();
+
+    if (!nextSkill) {
+      return;
+    }
+
+    const alreadyExists = technicalStackSkills.some(
+      (skill) => skill.toLowerCase() === nextSkill.toLowerCase(),
+    );
+
+    if (!alreadyExists) {
+      setTechnicalStackSkills([...technicalStackSkills, nextSkill]);
+    }
+
+    setTechnicalStackDraft("");
+  };
+
+  const removeTechnicalStackSkill = (skillToRemove: string) => {
+    setTechnicalStackSkills(
+      technicalStackSkills.filter((skill) => skill !== skillToRemove),
+    );
+  };
+
+  const handleTechnicalStackKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key !== "Enter") {
+      return;
+    }
+
+    event.preventDefault();
+    addTechnicalStackSkill();
+  };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setErrorMessage(null);
+
+    const trimmedTechnicalStackDraft = technicalStackDraft.trim();
+    const nextTechnicalStackSkills = trimmedTechnicalStackDraft
+      ? [
+          ...technicalStackSkills,
+          ...(!technicalStackSkills.some(
+            (skill) =>
+              skill.toLowerCase() === trimmedTechnicalStackDraft.toLowerCase(),
+          )
+            ? [trimmedTechnicalStackDraft]
+            : []),
+        ]
+      : technicalStackSkills;
+    const nextTechnicalStack = joinTechnicalStack(nextTechnicalStackSkills);
 
     const nextValidationErrors: ValidationErrors = {};
 
@@ -101,12 +172,18 @@ const JobApplicationForm = ({
           location: form.location,
           salaryRange: form.salaryRange,
           jobDescription: form.jobDescription,
+          interestLevel: form.interestLevel,
+          technicalStack: nextTechnicalStack,
           status: form.status,
           dateApplied: editingApplication.dateApplied,
         });
       } else {
-        await onCreate(form);
+        await onCreate({
+          ...form,
+          technicalStack: nextTechnicalStack,
+        });
         setForm(initialFormState);
+        setTechnicalStackDraft("");
       }
 
       onSuccess();
@@ -119,8 +196,8 @@ const JobApplicationForm = ({
   };
 
   return (
-    <form className="grid gap-5 p-6" noValidate onSubmit={handleSubmit}>
-      <label className="grid gap-2">
+    <form className="grid gap-5 p-6 md:grid-cols-2" noValidate onSubmit={handleSubmit}>
+      <label className="grid gap-2 md:col-span-2">
         <span className="text-sm font-semibold uppercase tracking-[0.12em] text-deco-muted">
           Company Name
         </span>
@@ -238,6 +315,69 @@ const JobApplicationForm = ({
 
       <label className="grid gap-2">
         <span className="text-sm font-semibold uppercase tracking-[0.12em] text-deco-muted">
+          Interest Level
+        </span>
+        <select
+          aria-label="Interest Level"
+          className="h-11 rounded-none border border-border-gold-muted bg-deco-input px-3 py-2 text-sm shadow-sm outline-none transition-colors focus:border-primary-gold focus:ring-2 focus:ring-primary-gold-muted"
+          value={form.interestLevel ?? ""}
+          onChange={(event) =>
+            setForm((current) => ({
+              ...current,
+              interestLevel: event.target.value ? Number(event.target.value) : null,
+            }))
+          }
+        >
+          <option value="">Not rated</option>
+          <option value="1">1 diamond</option>
+          <option value="2">2 diamonds</option>
+          <option value="3">3 diamonds</option>
+          <option value="4">4 diamonds</option>
+          <option value="5">5 diamonds</option>
+        </select>
+      </label>
+
+      <div className="grid gap-2">
+        <span className="text-sm font-semibold uppercase tracking-[0.12em] text-deco-muted">
+          Technical Stack
+        </span>
+        <div className="grid gap-2">
+          {technicalStackSkills.length > 0 ? (
+            <div
+              aria-label="Selected technical stack"
+              className="flex min-h-10 flex-wrap gap-2 border border-border-gold-muted bg-deco-surface-soft p-2"
+            >
+              {technicalStackSkills.map((skill) => (
+                <span
+                  className="inline-flex items-center gap-2 border border-border-gold-muted bg-deco-card px-2 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-deco-foreground"
+                  key={skill}
+                >
+                  {skill}
+                  <button
+                    aria-label={`Remove ${skill}`}
+                    className="text-deco-muted transition-colors hover:text-danger focus:outline-none focus:ring-2 focus:ring-primary-gold-muted"
+                    onClick={() => removeTechnicalStackSkill(skill)}
+                    type="button"
+                  >
+                    <X aria-hidden="true" className="size-3" />
+                  </button>
+                </span>
+              ))}
+            </div>
+          ) : null}
+          <Input
+            aria-label="Technical Stack"
+            value={technicalStackDraft}
+            onBlur={addTechnicalStackSkill}
+            onChange={(event) => setTechnicalStackDraft(event.target.value)}
+            onKeyDown={handleTechnicalStackKeyDown}
+            placeholder="Type SQL and press Enter"
+          />
+        </div>
+      </div>
+
+      <label className="grid gap-2">
+        <span className="text-sm font-semibold uppercase tracking-[0.12em] text-deco-muted">
           Job Description
         </span>
         <Textarea
@@ -254,12 +394,12 @@ const JobApplicationForm = ({
       </label>
 
       {errorMessage ? (
-        <p className="border border-danger bg-danger-soft px-3 py-2 text-sm text-danger">
+        <p className="border border-danger bg-danger-soft px-3 py-2 text-sm text-danger md:col-span-2">
           {errorMessage}
         </p>
       ) : null}
 
-      <div className="flex flex-wrap gap-3 pt-2">
+      <div className="flex flex-wrap gap-3 pt-2 md:col-span-2">
         <Button type="submit" disabled={isSubmitting}>
           {isSubmitting
             ? submittingLabel

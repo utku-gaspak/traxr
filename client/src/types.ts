@@ -16,6 +16,8 @@ export interface JobApplication {
   location?: string | null;
   salaryRange?: string | null;
   jobDescription?: string | null;
+  interestLevel?: number | null;
+  technicalStack?: string | null;
   status: JobApplicationStatus;
   dateApplied: string;
   userId: string;
@@ -28,6 +30,8 @@ export interface JobApplicationCreateInput {
   location?: string;
   salaryRange?: string;
   jobDescription?: string;
+  interestLevel?: number | null;
+  technicalStack?: string;
   status: JobApplicationStatus;
 }
 
@@ -38,6 +42,8 @@ export interface JobApplicationUpdateInput {
   location?: string;
   salaryRange?: string;
   jobDescription?: string;
+  interestLevel?: number | null;
+  technicalStack?: string;
   status: JobApplicationStatus;
   dateApplied: string;
 }

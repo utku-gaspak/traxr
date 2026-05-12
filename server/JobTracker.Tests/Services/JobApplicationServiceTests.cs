@@ -15,6 +15,8 @@ public class JobApplicationServiceTests(TestAppDbContextFactory dbContextFactory
             "Remote",
             "$100k - $120k",
             "Strong backend role working on distributed systems.",
+            5,
+            "C#, PostgreSQL, React",
             JobApplicationStatus.Applied
         );
 
@@ -27,6 +29,8 @@ public class JobApplicationServiceTests(TestAppDbContextFactory dbContextFactory
         result.Location.Should().Be("Remote");
         result.SalaryRange.Should().Be("$100k - $120k");
         result.JobDescription.Should().Be("Strong backend role working on distributed systems.");
+        result.InterestLevel.Should().Be(5);
+        result.TechnicalStack.Should().Be("C#, PostgreSQL, React");
         result.UserId.Should().Be("user-1");
         result.Id.Should().NotBeNullOrWhiteSpace();
 
@@ -37,6 +41,8 @@ public class JobApplicationServiceTests(TestAppDbContextFactory dbContextFactory
         persisted.Location.Should().Be("Remote");
         persisted.SalaryRange.Should().Be("$100k - $120k");
         persisted.JobDescription.Should().Be("Strong backend role working on distributed systems.");
+        persisted.InterestLevel.Should().Be(5);
+        persisted.TechnicalStack.Should().Be("C#, PostgreSQL, React");
         persisted.UserId.Should().Be("user-1");
     }
 
@@ -52,6 +58,8 @@ public class JobApplicationServiceTests(TestAppDbContextFactory dbContextFactory
             null,
             null,
             null,
+            null,
+            null,
             JobApplicationStatus.Applied
         );
 
@@ -61,12 +69,16 @@ public class JobApplicationServiceTests(TestAppDbContextFactory dbContextFactory
         result.Location.Should().BeNull();
         result.SalaryRange.Should().BeNull();
         result.JobDescription.Should().BeNull();
+        result.InterestLevel.Should().BeNull();
+        result.TechnicalStack.Should().BeNull();
 
         var persisted = await dbContext.JobApplications.SingleAsync();
         persisted.JobUrl.Should().BeNull();
         persisted.Location.Should().BeNull();
         persisted.SalaryRange.Should().BeNull();
         persisted.JobDescription.Should().BeNull();
+        persisted.InterestLevel.Should().BeNull();
+        persisted.TechnicalStack.Should().BeNull();
     }
 
     [Fact]
@@ -82,6 +94,8 @@ public class JobApplicationServiceTests(TestAppDbContextFactory dbContextFactory
             null,
             null,
             longDescription,
+            null,
+            null,
             JobApplicationStatus.Applied
         );
 
@@ -167,6 +181,8 @@ public class JobApplicationServiceTests(TestAppDbContextFactory dbContextFactory
             null,
             null,
             null,
+            null,
+            null,
             JobApplicationStatus.Interviewing,
             new DateTime(2026, 05, 11, 12, 00, 00, DateTimeKind.Utc)
         );
@@ -224,7 +240,7 @@ public class JobApplicationServiceTests(TestAppDbContextFactory dbContextFactory
     {
         await using var dbContext = dbContextFactory.CreateContext();
         var service = new JobApplicationService(dbContext);
-        var dto = new JobApplicationCreateDto(" ", "Backend Engineer", null, null, null, null, JobApplicationStatus.Applied);
+        var dto = new JobApplicationCreateDto(" ", "Backend Engineer", null, null, null, null, null, null, JobApplicationStatus.Applied);
 
         Func<Task> act = async () => await service.CreateAsync(dto, "user-1");
 
@@ -255,6 +271,8 @@ public class JobApplicationServiceTests(TestAppDbContextFactory dbContextFactory
         var dto = new JobApplicationUpdateDto(
             "Acme Updated",
             "",
+            null,
+            null,
             null,
             null,
             null,

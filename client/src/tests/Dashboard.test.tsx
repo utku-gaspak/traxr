@@ -103,14 +103,27 @@ describe('Dashboard', () => {
     fireEvent.change(screen.getByPlaceholderText('Example: Backend Engineer'), {
       target: { value: 'Backend Engineer' },
     })
-    fireEvent.change(screen.getByRole('combobox'), {
+    fireEvent.change(screen.getByRole('combobox', { name: 'Status' }), {
       target: { value: String(JobApplicationStatus.Offer) },
     })
+    fireEvent.change(screen.getByRole('combobox', { name: 'Interest Level' }), {
+      target: { value: '4' },
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Remove C#' }))
+    const technicalStackInput = screen.getByLabelText('Technical Stack')
+    fireEvent.change(technicalStackInput, {
+      target: { value: '.NET' },
+    })
+    fireEvent.keyDown(technicalStackInput, { key: 'Enter' })
+    expect(technicalStackInput).toHaveValue('')
+    expect(screen.getByText('.NET')).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: 'Save Changes' }))
 
     await waitFor(() => {
       expect(mockApiState.updateJobApplicationRequests).toHaveLength(1)
       expect(mockApiState.updateJobApplicationRequests[0]?.id).toBe('job-1')
+      expect(mockApiState.updateJobApplicationRequests[0]?.body.interestLevel).toBe(4)
+      expect(mockApiState.updateJobApplicationRequests[0]?.body.technicalStack).toBe('PostgreSQL, React, .NET')
     })
     expect(screen.getAllByText('Offer').length).toBeGreaterThan(0)
   })
