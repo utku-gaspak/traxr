@@ -4,6 +4,15 @@ Job Application Tracker is a full-stack app for managing job applications with J
 
 The app supports status tracking, detailed application records, drag-and-drop updates, and clear error handling across both the API and client. The current test suite includes 65 automated tests across the backend and frontend.
 
+## Screenshots
+
+The main UI flow is shown below.
+
+![Login screen](docs/screenshots/login.png)
+![Dashboard](docs/screenshots/application-dashboard.png)
+![Create application](docs/screenshots/create-application.png)
+![Application details](docs/screenshots/application-details.png)
+
 ## Core Features
 
 - JWT-based register and login flows
