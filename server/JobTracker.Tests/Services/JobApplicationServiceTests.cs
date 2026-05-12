@@ -198,6 +198,49 @@ public class JobApplicationServiceTests(TestAppDbContextFactory dbContextFactory
     }
 
     [Fact]
+    public async Task UpdateAsync_ValidRequest_UpdatesInterestLevelAndTechnicalStack()
+    {
+        await using var dbContext = dbContextFactory.CreateContext();
+        var service = new JobApplicationService(dbContext);
+        var existing = new JobApplication
+        {
+            Id = "job-1",
+            CompanyName = "Acme",
+            Position = "Engineer",
+            InterestLevel = 2,
+            TechnicalStack = "C#",
+            Status = JobApplicationStatus.Applied,
+            DateApplied = new DateTime(2026, 05, 01, 12, 00, 00, DateTimeKind.Utc),
+            UserId = "owner-user",
+        };
+
+        dbContext.JobApplications.Add(existing);
+        await dbContext.SaveChangesAsync();
+
+        var updatedDate = new DateTime(2026, 05, 11, 12, 00, 00, DateTimeKind.Utc);
+        var dto = new JobApplicationUpdateDto(
+            "Acme",
+            "Engineer",
+            null,
+            null,
+            null,
+            null,
+            5,
+            "SQL, PostgreSQL, Redis",
+            JobApplicationStatus.Interviewing,
+            updatedDate
+        );
+
+        await service.UpdateAsync(existing.Id, dto, "owner-user");
+
+        var persisted = await dbContext.JobApplications.SingleAsync();
+        persisted.InterestLevel.Should().Be(5);
+        persisted.TechnicalStack.Should().Be("SQL, PostgreSQL, Redis");
+        persisted.Status.Should().Be(JobApplicationStatus.Interviewing);
+        persisted.DateApplied.Should().Be(updatedDate);
+    }
+
+    [Fact]
     public async Task DeleteAsync_RecordOwnedByAnotherUser_ShouldReturnFalse()
     {
         await using var dbContext = dbContextFactory.CreateContext();

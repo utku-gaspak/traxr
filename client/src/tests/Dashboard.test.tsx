@@ -106,7 +106,7 @@ describe('Dashboard', () => {
     fireEvent.change(screen.getByRole('combobox', { name: 'Status' }), {
       target: { value: String(JobApplicationStatus.Offer) },
     })
-    fireEvent.change(screen.getByRole('combobox', { name: 'Interest Level' }), {
+    fireEvent.change(screen.getByRole('slider', { name: 'Interest Level' }), {
       target: { value: '4' },
     })
     fireEvent.click(screen.getByRole('button', { name: 'Remove C#' }))

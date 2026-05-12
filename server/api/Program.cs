@@ -138,16 +138,18 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
+// Keep schema aligned with the running model so new optional fields persist in every environment.
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await dbContext.Database.MigrateAsync();
+}
+
 app.UseExceptionHandler();
 app.UseCors("AllowReactApp");
 
 if (app.Environment.IsDevelopment())
 {
-    // Apply pending EF migrations on local startup so the dev database stays in sync with the current model.
-    using var scope = app.Services.CreateScope();
-    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    await dbContext.Database.MigrateAsync();
-
     app.UseOpenApi();
     app.UseSwaggerUi();
     await app.GenerateApiClientsFromOpenApi("/../../client/src/generate-ts-client.ts");

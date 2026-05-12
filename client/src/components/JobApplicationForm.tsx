@@ -46,6 +46,7 @@ const splitTechnicalStack = (value?: string | null) =>
     .filter(Boolean) ?? [];
 
 const joinTechnicalStack = (skills: string[]) => skills.join(", ");
+const defaultInterestLevel = 3;
 
 const JobApplicationForm = ({
   onCreate,
@@ -314,27 +315,32 @@ const JobApplicationForm = ({
       </label>
 
       <label className="grid gap-2">
-        <span className="text-sm font-semibold uppercase tracking-[0.12em] text-deco-muted">
-          Interest Level
+        <span className="flex items-center justify-between gap-3">
+          <span className="text-sm font-semibold uppercase tracking-[0.12em] text-deco-muted">
+            Interest Level
+          </span>
+          <span
+            aria-live="polite"
+            className="border border-border-gold-muted bg-deco-surface px-2 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-primary-gold"
+          >
+            {form.interestLevel ?? defaultInterestLevel}/5
+          </span>
         </span>
-        <select
+        <input
           aria-label="Interest Level"
-          className="h-11 rounded-none border border-border-gold-muted bg-deco-input px-3 py-2 text-sm shadow-sm outline-none transition-colors focus:border-primary-gold focus:ring-2 focus:ring-primary-gold-muted"
-          value={form.interestLevel ?? ""}
+          className="deco-range-slider"
+          max={5}
+          min={1}
+          step={1}
+          type="range"
+          value={form.interestLevel ?? defaultInterestLevel}
           onChange={(event) =>
             setForm((current) => ({
               ...current,
-              interestLevel: event.target.value ? Number(event.target.value) : null,
+              interestLevel: Number(event.target.value),
             }))
           }
-        >
-          <option value="">Not rated</option>
-          <option value="1">1 diamond</option>
-          <option value="2">2 diamonds</option>
-          <option value="3">3 diamonds</option>
-          <option value="4">4 diamonds</option>
-          <option value="5">5 diamonds</option>
-        </select>
+        />
       </label>
 
       <div className="grid gap-2">

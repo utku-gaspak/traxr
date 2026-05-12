@@ -56,6 +56,12 @@ const formatAppliedDate = (isoDate: string) =>
     year: "2-digit",
   }).format(new Date(isoDate));
 
+const splitTechnicalStack = (value?: string | null) =>
+  value
+    ?.split(",")
+    .map((skill) => skill.trim())
+    .filter(Boolean) ?? [];
+
 const getLoadApplicationsErrorMessage = (error: unknown) => {
   // Keep server-side failures and connectivity failures distinct so the UI can suggest the right next step.
   if (axios.isAxiosError(error)) {
@@ -170,7 +176,6 @@ const detailRows = (application: JobApplication) =>
     { label: "Date", value: formatAppliedDate(application.dateApplied) },
     { label: "Location", value: application.location ?? "Not provided" },
     { label: "Salary", value: application.salaryRange ?? "Not provided" },
-    { label: "Technical Stack", value: application.technicalStack ?? "Not provided" },
   ] as const;
 
 const interestLevelOptions = [1, 2, 3, 4, 5] as const;
@@ -644,6 +649,30 @@ const Dashboard = () => {
                                 </p>
                               </div>
                             ))}
+                            <div className="min-w-0 border border-border-gold-muted bg-deco-surface px-3 py-2 sm:col-span-2">
+                              <p className="text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-primary-gold">
+                                Technical Stack
+                              </p>
+                              {splitTechnicalStack(selectedApplication.technicalStack)
+                                .length > 0 ? (
+                                <div className="mt-2 flex flex-wrap gap-2">
+                                  {splitTechnicalStack(
+                                    selectedApplication.technicalStack,
+                                  ).map((skill) => (
+                                    <span
+                                      className="max-w-full break-words border border-border-gold-muted bg-deco-card px-2 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-deco-foreground"
+                                      key={skill}
+                                    >
+                                      {skill}
+                                    </span>
+                                  ))}
+                                </div>
+                              ) : (
+                                <p className="mt-1 text-sm leading-5 text-deco-foreground">
+                                  Not provided
+                                </p>
+                              )}
+                            </div>
                             <div className="border border-border-gold-muted bg-deco-surface px-3 py-2">
                               <p className="text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-primary-gold">
                                 Interest Level
