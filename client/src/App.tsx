@@ -21,11 +21,11 @@ const RouteFallback = () => (
 function App() {
   return (
     <BrowserRouter>
-      <Toaster
+        <Toaster
         position="top-right"
         toastOptions={{
           className:
-            "rounded-none border border-primary-gold bg-deco-card text-deco-foreground shadow-lg",
+            "deco-frame border-primary-gold bg-deco-card text-deco-foreground shadow-lg",
           descriptionClassName: "text-deco-muted",
         }}
       />

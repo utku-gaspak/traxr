@@ -84,6 +84,7 @@ describe('Dashboard', () => {
     expect(await screen.findByText('Acme')).toBeInTheDocument()
     expect(screen.getByText('Globex')).toBeInTheDocument()
 
+    fireEvent.click(screen.getByRole('button', { name: 'More' }))
     fireEvent.click(screen.getByRole('button', { name: 'Add C#' }))
 
     await waitFor(() => {
@@ -99,6 +100,17 @@ describe('Dashboard', () => {
       expect(screen.getByText('Globex')).toBeInTheDocument()
       expect(container.querySelectorAll('article.application-card')).toHaveLength(2)
     })
+  })
+
+  it('Dashboard_FilterPanel_DefaultsToCollapsed', async () => {
+    renderDashboard()
+
+    expect(await screen.findByText('Acme')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'More' })).toHaveAttribute(
+      'aria-expanded',
+      'false',
+    )
+    expect(screen.queryByRole('button', { name: 'Add C#' })).not.toBeInTheDocument()
   })
 
   it('Dashboard_SlowLoad_ShowsSpinner', async () => {

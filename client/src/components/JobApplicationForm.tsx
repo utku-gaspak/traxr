@@ -264,7 +264,7 @@ const JobApplicationForm = ({
         </span>
         <select
           aria-label="Status"
-          className="h-11 rounded-none border border-border-gold-muted bg-deco-input px-3 py-2 text-sm shadow-sm outline-none transition-colors focus:border-primary-gold focus:ring-2 focus:ring-primary-gold-muted"
+          className="deco-frame h-11 border-border-gold-muted bg-deco-input px-3 py-2 text-sm shadow-sm outline-none transition-colors focus:border-primary-gold focus:ring-2 focus:ring-primary-gold-muted"
           value={form.status}
           onChange={(event) =>
             setForm((current) => ({
@@ -344,9 +344,9 @@ const JobApplicationForm = ({
           </span>
           <span
             aria-live="polite"
-            className="border border-border-gold-muted bg-deco-surface px-2 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-primary-gold"
+            className="deco-frame border-border-gold-muted bg-deco-surface px-2 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-primary-gold"
           >
-            {form.interestLevel ?? defaultInterestLevel}/5
+          {form.interestLevel ?? defaultInterestLevel}/5
           </span>
         </span>
         <input
@@ -374,11 +374,11 @@ const JobApplicationForm = ({
           {technicalStackSkills.length > 0 ? (
             <div
               aria-label="Selected technical stack"
-              className="flex min-h-10 flex-wrap gap-2 border border-border-gold-muted bg-deco-surface-soft p-2"
+              className="deco-frame flex min-h-10 flex-wrap gap-2 border-border-gold-muted bg-deco-surface-soft p-2"
             >
               {technicalStackSkills.map((skill) => (
                 <span
-                  className="inline-flex items-center gap-2 border border-border-gold-muted bg-deco-card px-2 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-deco-foreground"
+                  className="deco-frame inline-flex items-center gap-2 border-border-gold-muted bg-deco-card px-2 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-deco-foreground"
                   key={skill}
                 >
                   {skill}
@@ -423,7 +423,7 @@ const JobApplicationForm = ({
       </label>
 
       {errorMessage ? (
-        <p className="border border-danger bg-danger-soft px-3 py-2 text-sm text-danger md:col-span-2">
+        <p className="deco-frame border-danger bg-danger-soft px-3 py-2 text-sm text-danger md:col-span-2">
           {errorMessage}
         </p>
       ) : null}

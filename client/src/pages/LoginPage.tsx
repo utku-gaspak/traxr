@@ -58,7 +58,7 @@ const LoginPage = () => {
     <main className="min-h-screen px-4 py-10 md:px-8">
       <div className="mx-auto grid min-h-[calc(100vh-5rem)] max-w-6xl items-center gap-8 lg:grid-cols-[1.1fr_0.9fr]">
         {/* Left Section: Information */}
-        <section className="border border-border-gold-muted bg-deco-surface p-8 shadow-deco-panel">
+        <section className="deco-frame border-border-gold-muted bg-deco-surface p-8 shadow-deco-panel">
           <p className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-primary-gold">
             Job Application Tracker
           </p>
@@ -95,7 +95,7 @@ const LoginPage = () => {
                 <Input
                   type="text"
                   placeholder="Username"
-                  className="rounded-none border-border-gold-muted focus-visible:ring-primary-gold"
+                  className="border-border-gold-muted focus-visible:ring-primary-gold"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   required
@@ -108,7 +108,7 @@ const LoginPage = () => {
                 <Input
                   type="password"
                   placeholder="Password"
-                  className="rounded-none border-border-gold-muted focus-visible:ring-primary-gold"
+                  className="border-border-gold-muted focus-visible:ring-primary-gold"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -117,7 +117,7 @@ const LoginPage = () => {
               <Button
                 type="submit"
                 disabled={loading}
-                className="mt-2 w-full rounded-none tracking-widest"
+                className="mt-2 w-full tracking-widest"
               >
                 {loading ? "Signing in..." : "SIGN IN"}
               </Button>

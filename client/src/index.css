@@ -3,6 +3,8 @@
 @import "tailwindcss";
 
 :root {
+  --ui-scale: 0.8;
+
   /* Everforest Light - Hard Variant */
   --color-background: #f8efd4;
   --color-foreground: #5c6a72;
@@ -130,6 +132,14 @@
       ),
       var(--color-background);
     color: var(--color-foreground);
+    overflow-x: hidden;
+  }
+
+  #root {
+    min-height: calc(100dvh / var(--ui-scale));
+    width: calc(100% / var(--ui-scale));
+    transform: scale(var(--ui-scale));
+    transform-origin: top left;
   }
 
   h1,
@@ -151,6 +161,24 @@
 }
 
 @layer components {
+  .deco-frame {
+    border-style: solid;
+    border-top-width: 1px;
+    border-left-width: 1px;
+    border-right-width: 2px;
+    border-bottom-width: 2px;
+    border-radius: 6px;
+  }
+
+  .deco-frame-thick {
+    border-style: solid;
+    border-top-width: 2px;
+    border-left-width: 2px;
+    border-right-width: 4px;
+    border-bottom-width: 4px;
+    border-radius: 6px;
+  }
+
   header,
   .main-header-bar {
     background-color: var(--color-background) !important;
@@ -179,7 +207,6 @@
 
   .kanban-column {
     box-shadow: var(--shadow-panel);
-    border-top: 4px solid var(--color-primary);
     background-color: var(--color-surface-soft);
     border-radius: 4px;
   }

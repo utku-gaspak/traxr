@@ -144,6 +144,7 @@ const boardColumns = [
     subtitle: "Fresh outreach",
     borderClass: "border-l-column-applied",
     accentClass: "text-column-applied",
+    frameClass: "deco-frame border-border-gold",
   },
   {
     status: JobApplicationStatus.Interviewing,
@@ -151,6 +152,7 @@ const boardColumns = [
     subtitle: "Active conversations",
     borderClass: "border-l-column-interviewing",
     accentClass: "text-column-interviewing",
+    frameClass: "deco-frame border-border-gold",
   },
   {
     status: JobApplicationStatus.Rejected,
@@ -158,6 +160,7 @@ const boardColumns = [
     subtitle: "Closed loops",
     borderClass: "border-l-column-rejected",
     accentClass: "text-column-rejected",
+    frameClass: "deco-frame border-border-gold",
   },
   {
     status: JobApplicationStatus.Offer,
@@ -165,6 +168,7 @@ const boardColumns = [
     subtitle: "Decision stage",
     borderClass: "border-l-column-offer",
     accentClass: "text-column-offer",
+    frameClass: "deco-frame border-border-gold",
   },
 ] as const;
 
@@ -250,7 +254,7 @@ const Dashboard = () => {
   const [selectedApplication, setSelectedApplication] =
     useState<JobApplication | null>(null);
   const [isDetailEditing, setIsDetailEditing] = useState(false);
-  const [isFilterOpen, setIsFilterOpen] = useState(true);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<JobApplicationStatus | "all">(
     "all",
@@ -490,8 +494,8 @@ const Dashboard = () => {
   };
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-[1600px] flex-col overflow-x-hidden px-3 py-3 lg:px-5">
-      <header className="mb-4 flex flex-col gap-3 border-b border-border-gold bg-deco-surface px-6 py-4 shadow-deco-panel backdrop-blur md:flex-row md:items-center md:justify-between">
+    <main className="mx-auto flex h-[calc(100dvh/var(--ui-scale))] max-w-[1600px] flex-col overflow-x-hidden px-3 py-3 lg:px-5">
+      <header className="deco-frame-thick mb-4 flex flex-col gap-3 border-border-gold bg-deco-surface px-6 py-4 shadow-deco-panel backdrop-blur md:flex-row md:items-center md:justify-between">
         <div className="flex min-w-0 flex-col gap-2 md:flex-row md:items-center md:gap-4">
           <div className="min-w-0">
             <h1 className="font-heading text-[1.75rem] tracking-tight text-deco-foreground md:text-[2.2rem]">
@@ -504,18 +508,12 @@ const Dashboard = () => {
             </div>
           </div>
 
-          <div className="flex items-center gap-2 md:pt-1">
-            <div className="h-1 w-1 rounded-full bg-primary-gold"></div>
-            <p className="text-[0.65rem] font-medium uppercase tracking-[0.25em] text-deco-muted">
-              Drag to update status
-            </p>
-          </div>
         </div>
 
         <div className="ml-auto flex items-center gap-2">
           <Button
             aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-            className="h-11 w-11 rounded-none p-0 transition-all"
+            className="h-11 w-11 p-0 transition-all"
             onClick={toggleTheme}
             variant="outline"
           >
@@ -528,7 +526,7 @@ const Dashboard = () => {
 
           <Button
             aria-label="Log out"
-            className="h-11 rounded-none transition-all"
+            className="h-11 transition-all"
             variant="outline"
             onClick={logout}
           >
@@ -543,8 +541,8 @@ const Dashboard = () => {
         </div>
       </header>
       <div className="grid min-h-0 flex-1 gap-5 lg:grid-cols-[260px_minmax(0,1fr)] lg:items-stretch">
-        <aside className="flex min-h-0 flex-col items-stretch overflow-hidden border border-border-gold bg-deco-surface-soft p-5 shadow-deco-panel backdrop-blur md:p-6">
-          <section className="border border-border-gold bg-deco-surface p-4 shadow-sm">
+        <aside className="deco-frame flex min-h-0 flex-col items-stretch overflow-hidden border-border-gold bg-deco-surface-soft p-5 shadow-deco-panel backdrop-blur md:p-6">
+          <section className="deco-frame border-border-gold bg-deco-surface p-4 shadow-sm">
             <p className="text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-primary-gold">
               Profile
             </p>
@@ -554,7 +552,7 @@ const Dashboard = () => {
             </div>
           </section>
 
-          <section className="mt-4 border border-border-gold bg-deco-surface p-4 shadow-sm">
+          <section className="deco-frame mt-4 border-border-gold bg-deco-surface p-4 shadow-sm">
             <p className="text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-primary-gold">
               Summary
             </p>
@@ -571,7 +569,7 @@ const Dashboard = () => {
           <div className="mt-4 flex w-full flex-col gap-3">
             <Button
               aria-label="New Application"
-              className="h-11 w-full rounded-none transition-all hover:opacity-90"
+              className="h-11 w-full transition-all hover:opacity-90"
               onClick={openCreateDialog}
             >
               <div className="flex w-full items-center px-4">
@@ -582,11 +580,16 @@ const Dashboard = () => {
                 <div className="w-4" />
               </div>
             </Button>
+
+            <p className="flex items-center gap-2 px-1 text-[0.65rem] font-medium uppercase tracking-[0.2em] text-deco-muted">
+              <span className="h-1 w-1 rounded-full bg-primary-gold" />
+              Drag to update status
+            </p>
           </div>
         </aside>
 
         <section className="flex min-h-0 flex-col gap-3">
-          <section className="border border-border-gold bg-deco-surface-soft p-4 shadow-deco-panel">
+          <section className="deco-frame border-border-gold bg-deco-surface-soft p-4 shadow-deco-panel">
             <div className="flex flex-col gap-3 xl:flex-row xl:items-end xl:justify-between">
               <div className="grid flex-1 gap-3 xl:grid-cols-[minmax(0,2.2fr)_repeat(2,minmax(0,1fr))]">
                 <label className="grid gap-2">
@@ -597,7 +600,7 @@ const Dashboard = () => {
                     <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-deco-muted" />
                     <Input
                       aria-label="Search applications"
-                      className="h-10 rounded-none border-border-gold-muted bg-deco-input pl-9"
+                      className="h-10 border-border-gold-muted bg-deco-input pl-9"
                       placeholder="Company or position"
                       value={searchTerm}
                       onChange={(event) => setSearchTerm(event.target.value)}
@@ -611,7 +614,7 @@ const Dashboard = () => {
                   </span>
                   <select
                     aria-label="Filter status"
-                    className="h-10 rounded-none border border-border-gold-muted bg-deco-input px-3 py-2 text-sm outline-none transition-colors focus:border-primary-gold focus:ring-2 focus:ring-primary-gold-muted"
+                    className="deco-frame h-10 border-border-gold-muted bg-deco-input px-3 py-2 text-sm outline-none transition-colors focus:border-primary-gold focus:ring-2 focus:ring-primary-gold-muted"
                     value={statusFilter}
                     onChange={(event) =>
                       setStatusFilter(
@@ -636,7 +639,7 @@ const Dashboard = () => {
                   </span>
                   <select
                     aria-label="Filter interest level"
-                    className="h-10 rounded-none border border-border-gold-muted bg-deco-input px-3 py-2 text-sm outline-none transition-colors focus:border-primary-gold focus:ring-2 focus:ring-primary-gold-muted"
+                    className="deco-frame h-10 border-border-gold-muted bg-deco-input px-3 py-2 text-sm outline-none transition-colors focus:border-primary-gold focus:ring-2 focus:ring-primary-gold-muted"
                     value={interestFilter}
                     onChange={(event) =>
                       setInterestFilter(
@@ -658,7 +661,7 @@ const Dashboard = () => {
 
               <div className="flex items-center gap-2">
                 <Button
-                  className="h-10 rounded-none px-4 text-[0.65rem] uppercase tracking-[0.18em]"
+                  className="h-10 px-4 text-[0.65rem] uppercase tracking-[0.18em]"
                   onClick={clearAllFilters}
                   type="button"
                   variant="ghost"
@@ -667,7 +670,7 @@ const Dashboard = () => {
                 </Button>
                 <Button
                   aria-expanded={isFilterOpen}
-                  className="h-10 rounded-none px-4 text-[0.65rem] uppercase tracking-[0.18em]"
+                  className="h-10 px-4 text-[0.65rem] uppercase tracking-[0.18em]"
                   onClick={() => setIsFilterOpen((current) => !current)}
                   type="button"
                   variant="outline"
@@ -695,7 +698,7 @@ const Dashboard = () => {
                 </div>
 
                 <div className="mt-3 grid gap-3 lg:grid-cols-2">
-                  <div className="border border-border-gold-muted bg-deco-surface-soft p-3">
+                  <div className="deco-frame border-border-gold-muted bg-deco-surface-soft p-3">
                     <p className="text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-primary-gold">
                       Selected
                     </p>
@@ -703,7 +706,7 @@ const Dashboard = () => {
                       <div className="mt-2 flex flex-wrap gap-2">
                         {selectedSkills.map((skill) => (
                           <button
-                            className="inline-flex items-center gap-2 border border-border-gold-muted bg-deco-card px-2 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-deco-foreground"
+                            className="deco-frame inline-flex items-center gap-2 border-border-gold-muted bg-deco-card px-2 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-deco-foreground"
                             aria-label={`Remove ${skill}`}
                             key={skill}
                             onClick={() => removeSkillFilter(skill)}
@@ -721,7 +724,7 @@ const Dashboard = () => {
                     )}
                   </div>
 
-                  <div className="border border-border-gold-muted bg-deco-surface-soft p-3">
+                  <div className="deco-frame border-border-gold-muted bg-deco-surface-soft p-3">
                     <p className="text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-primary-gold">
                       Available
                     </p>
@@ -729,7 +732,7 @@ const Dashboard = () => {
                       <div className="mt-2 flex max-h-28 flex-wrap gap-2 overflow-y-auto">
                         {visibleAvailableSkills.map((skill) => (
                           <button
-                            className="inline-flex items-center border border-border-gold-muted bg-deco-card px-2 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-deco-foreground transition-colors hover:bg-primary-gold-muted"
+                            className="deco-frame inline-flex items-center border-border-gold-muted bg-deco-card px-2 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-deco-foreground transition-colors hover:bg-primary-gold-muted"
                             aria-label={`Add ${skill}`}
                             key={skill}
                             onClick={() => addSkillFilter(skill)}
@@ -751,19 +754,19 @@ const Dashboard = () => {
           </section>
 
           {errorMessage ? (
-            <p className="border border-danger bg-danger-soft px-4 py-3 text-sm text-danger">
+            <p className="deco-frame border-danger bg-danger-soft px-4 py-3 text-sm text-danger">
               {errorMessage}
             </p>
           ) : null}
 
           {isLoading ? (
-            <p className="border border-border-gold-muted bg-deco-surface-soft px-4 py-3 text-sm text-deco-muted">
+            <p className="deco-frame border-border-gold-muted bg-deco-surface-soft px-4 py-3 text-sm text-deco-muted">
               Loading applications...
             </p>
           ) : null}
 
           {!isLoading && applications.length === 0 ? (
-            <div className="border border-border-gold-muted bg-deco-surface-soft px-5 py-10 text-center shadow-deco-panel">
+            <div className="deco-frame border-border-gold-muted bg-deco-surface-soft px-5 py-10 text-center shadow-deco-panel">
               <p className="font-heading text-2xl text-deco-foreground">
                 No applications yet.
               </p>
@@ -781,7 +784,7 @@ const Dashboard = () => {
           {!isLoading &&
           applications.length > 0 &&
           filteredApplications.length === 0 ? (
-            <div className="border border-border-gold-muted bg-deco-surface-soft px-5 py-10 text-center shadow-deco-panel">
+            <div className="deco-frame border-border-gold-muted bg-deco-surface-soft px-5 py-10 text-center shadow-deco-panel">
               <p className="font-heading text-2xl text-deco-foreground">
                 No applications match the current filters.
               </p>
@@ -800,7 +803,7 @@ const Dashboard = () => {
               <div className="grid min-h-0 flex-1 gap-5 xl:grid-cols-4">
                 {boardColumns.map((column) => (
                   <section
-                    className="kanban-column flex min-h-0 flex-col border border-border-gold-muted bg-deco-surface-soft p-4"
+                    className={`kanban-column ${column.frameClass} bg-deco-surface-soft p-4`}
                     id={`column-${column.title.toLowerCase()}`}
                     key={column.status}
                   >
@@ -839,7 +842,7 @@ const Dashboard = () => {
                             >
                               {(draggableProvided, draggableSnapshot) => (
                                 <article
-                                  className={`application-card ${column.borderClass} cursor-pointer border border-l-2 border-border-gold-muted bg-deco-card px-3 py-2 font-sans text-deco-foreground shadow-sm transition-shadow hover:shadow-deco-glow ${
+                                  className={`application-card ${column.borderClass} deco-frame cursor-pointer border-border-gold-muted bg-deco-card px-3 py-2 font-sans text-deco-foreground shadow-sm transition-shadow hover:shadow-deco-glow ${
                                     draggableSnapshot.isDragging
                                       ? "shadow-deco-glow"
                                       : ""
@@ -910,7 +913,7 @@ const Dashboard = () => {
               }
             }}
           >
-            <SheetContent className="border-l border-border-gold bg-deco-bg">
+            <SheetContent className="deco-frame border-border-gold bg-deco-bg">
               <SheetHeader>
                 <SheetTitle>
                   {selectedApplication
@@ -959,7 +962,7 @@ const Dashboard = () => {
                             {detailRows(selectedApplication).map((row) => (
                               <div
                                 key={row.label}
-                                className="min-w-0 border border-border-gold-muted bg-deco-surface px-3 py-2"
+                                className="deco-frame min-w-0 border-border-gold-muted bg-deco-surface px-3 py-2"
                               >
                                 <p className="text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-primary-gold">
                                   {row.label}
@@ -969,7 +972,7 @@ const Dashboard = () => {
                                 </p>
                               </div>
                             ))}
-                            <div className="min-w-0 border border-border-gold-muted bg-deco-surface px-3 py-2 sm:col-span-2">
+                            <div className="deco-frame min-w-0 border-border-gold-muted bg-deco-surface px-3 py-2 sm:col-span-2">
                               <p className="text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-primary-gold">
                                 Technical Stack
                               </p>
@@ -980,7 +983,7 @@ const Dashboard = () => {
                                     selectedApplication.technicalStack,
                                   ).map((skill) => (
                                     <span
-                                      className="max-w-full break-words border border-border-gold-muted bg-deco-card px-2 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-deco-foreground"
+                                      className="deco-frame max-w-full break-words border-border-gold-muted bg-deco-card px-2 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-deco-foreground"
                                       key={skill}
                                     >
                                       {skill}
@@ -993,7 +996,7 @@ const Dashboard = () => {
                                 </p>
                               )}
                             </div>
-                            <div className="border border-border-gold-muted bg-deco-surface px-3 py-2">
+                            <div className="deco-frame border-border-gold-muted bg-deco-surface px-3 py-2">
                               <p className="text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-primary-gold">
                                 Interest Level
                               </p>
@@ -1011,7 +1014,7 @@ const Dashboard = () => {
                                 ))}
                               </div>
                             </div>
-                            <div className="min-w-0 border border-border-gold-muted bg-deco-surface px-3 py-2">
+                            <div className="deco-frame min-w-0 border-border-gold-muted bg-deco-surface px-3 py-2">
                               <p className="text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-primary-gold">
                                 Job URL
                               </p>
@@ -1041,7 +1044,7 @@ const Dashboard = () => {
                               Job Description
                             </h4>
                           </div>
-                          <div className="min-h-[12rem] flex-1 overflow-y-auto border border-border-gold-muted bg-deco-surface-soft p-4 shadow-sm">
+                          <div className="deco-frame min-h-[12rem] flex-1 overflow-y-auto border-border-gold-muted bg-deco-surface-soft p-4 shadow-sm">
                             <pre className="whitespace-pre-wrap break-words font-mono text-sm leading-7 text-deco-foreground">
                               {selectedApplication.jobDescription?.trim()
                                 ? selectedApplication.jobDescription
