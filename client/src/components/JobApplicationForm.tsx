@@ -89,6 +89,12 @@ const JobApplicationForm = ({
   }, [editingApplication]);
 
   const technicalStackSkills = splitTechnicalStack(form.technicalStack);
+  const fieldSurfaceClass = "bg-deco-surface";
+  const fieldCompactClass = "h-10";
+  const labelCompactClass =
+    "text-[0.6rem] font-semibold uppercase tracking-[0.16em] text-deco-muted";
+  const chipCompactClass =
+    "deco-frame inline-flex items-center gap-1.5 border-border-gold-muted bg-deco-card px-1.5 py-0.5 text-[0.58rem] font-semibold uppercase tracking-[0.1em] text-deco-foreground";
 
   const setTechnicalStackSkills = (skills: string[]) => {
     setForm((current) => ({
@@ -204,16 +210,17 @@ const JobApplicationForm = ({
 
   return (
     <form
-      className="grid gap-5 p-6 md:grid-cols-2"
+      className="grid gap-3 p-4 md:grid-cols-2 md:gap-3"
       noValidate
       onSubmit={handleSubmit}
     >
-      <label className="grid gap-2 md:col-span-2">
-        <span className="text-sm font-semibold uppercase tracking-[0.12em] text-deco-muted">
+      <label className="grid gap-1.5 md:col-span-2">
+        <span className={labelCompactClass}>
           Company Name
         </span>
         <Input
           aria-label="Company Name"
+          className={`${fieldSurfaceClass} ${fieldCompactClass}`}
           value={form.companyName}
           onChange={(event) => {
             const value = event.target.value;
@@ -233,12 +240,13 @@ const JobApplicationForm = ({
         ) : null}
       </label>
 
-      <label className="grid gap-2">
-        <span className="text-sm font-semibold uppercase tracking-[0.12em] text-deco-muted">
+      <label className="grid gap-1.5">
+        <span className={labelCompactClass}>
           Position
         </span>
         <Input
           aria-label="Position"
+          className={`${fieldSurfaceClass} ${fieldCompactClass}`}
           value={form.position}
           onChange={(event) => {
             const value = event.target.value;
@@ -258,13 +266,13 @@ const JobApplicationForm = ({
         ) : null}
       </label>
 
-      <label className="grid gap-2">
-        <span className="text-sm font-semibold uppercase tracking-[0.12em] text-deco-muted">
+      <label className="grid gap-1.5">
+        <span className={labelCompactClass}>
           Status
         </span>
         <select
           aria-label="Status"
-          className="deco-frame h-11 border-border-gold-muted bg-deco-input px-3 py-2 text-sm shadow-sm outline-none transition-colors focus:border-primary-gold focus:ring-2 focus:ring-primary-gold-muted"
+          className={`deco-frame h-10 border-border-gold-muted ${fieldSurfaceClass} px-2.5 py-2 text-sm shadow-sm outline-none transition-colors focus:border-primary-gold focus:ring-2 focus:ring-primary-gold-muted`}
           value={form.status}
           onChange={(event) =>
             setForm((current) => ({
@@ -286,12 +294,13 @@ const JobApplicationForm = ({
         </select>
       </label>
 
-      <label className="grid gap-2">
-        <span className="text-sm font-semibold uppercase tracking-[0.12em] text-deco-muted">
+      <label className="grid gap-1.5">
+        <span className={labelCompactClass}>
           Job URL
         </span>
         <Input
           aria-label="Job URL"
+          className={`${fieldSurfaceClass} ${fieldCompactClass}`}
           value={form.jobUrl ?? ""}
           onChange={(event) =>
             setForm((current) => ({
@@ -303,12 +312,13 @@ const JobApplicationForm = ({
         />
       </label>
 
-      <label className="grid gap-2">
-        <span className="text-sm font-semibold uppercase tracking-[0.12em] text-deco-muted">
+      <label className="grid gap-1.5">
+        <span className={labelCompactClass}>
           Location
         </span>
         <Input
           aria-label="Location"
+          className={`${fieldSurfaceClass} ${fieldCompactClass}`}
           value={form.location ?? ""}
           onChange={(event) =>
             setForm((current) => ({
@@ -320,12 +330,13 @@ const JobApplicationForm = ({
         />
       </label>
 
-      <label className="grid gap-2">
-        <span className="text-sm font-semibold uppercase tracking-[0.12em] text-deco-muted">
+      <label className="grid gap-1.5">
+        <span className={labelCompactClass}>
           Salary Range
         </span>
         <Input
           aria-label="Salary Range"
+          className={`${fieldSurfaceClass} ${fieldCompactClass}`}
           value={form.salaryRange ?? ""}
           onChange={(event) =>
             setForm((current) => ({
@@ -337,14 +348,14 @@ const JobApplicationForm = ({
         />
       </label>
 
-      <label className="grid gap-2">
+      <label className="grid gap-1.5">
         <span className="flex items-center justify-between gap-3">
-          <span className="text-sm font-semibold uppercase tracking-[0.12em] text-deco-muted">
+          <span className={labelCompactClass}>
             Interest Level
           </span>
           <span
             aria-live="polite"
-            className="deco-frame border-border-gold-muted bg-deco-surface px-2 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-primary-gold"
+            className={`deco-frame border-border-gold-muted ${fieldSurfaceClass} px-1.5 py-0.5 text-[0.65rem] font-semibold uppercase tracking-[0.1em] text-primary-gold`}
           >
           {form.interestLevel ?? defaultInterestLevel}/5
           </span>
@@ -366,19 +377,19 @@ const JobApplicationForm = ({
         />
       </label>
 
-      <div className="grid gap-2">
-        <span className="text-sm font-semibold uppercase tracking-[0.12em] text-deco-muted">
+      <div className="grid gap-1.5">
+        <span className={labelCompactClass}>
           Technical Stack
         </span>
-        <div className="grid gap-2">
+        <div className="grid gap-1.5">
           {technicalStackSkills.length > 0 ? (
             <div
               aria-label="Selected technical stack"
-              className="deco-frame flex min-h-10 flex-wrap gap-2 border-border-gold-muted bg-deco-surface-soft p-2"
+              className={`deco-frame flex min-h-10 flex-wrap gap-1.5 border-border-gold-muted ${fieldSurfaceClass} p-1.5`}
             >
               {technicalStackSkills.map((skill) => (
                 <span
-                  className="deco-frame inline-flex items-center gap-2 border-border-gold-muted bg-deco-card px-2 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-deco-foreground"
+                  className={chipCompactClass}
                   key={skill}
                 >
                   {skill}
@@ -388,7 +399,7 @@ const JobApplicationForm = ({
                     onClick={() => removeTechnicalStackSkill(skill)}
                     type="button"
                   >
-                    <X aria-hidden="true" className="size-3" />
+                    <X aria-hidden="true" className="size-2.5" />
                   </button>
                 </span>
               ))}
@@ -396,6 +407,7 @@ const JobApplicationForm = ({
           ) : null}
           <Input
             aria-label="Technical Stack"
+            className={`${fieldSurfaceClass} ${fieldCompactClass}`}
             value={technicalStackDraft}
             onBlur={addTechnicalStackSkill}
             onChange={(event) => setTechnicalStackDraft(event.target.value)}
@@ -405,12 +417,13 @@ const JobApplicationForm = ({
         </div>
       </div>
 
-      <label className="grid gap-2">
-        <span className="text-sm font-semibold uppercase tracking-[0.12em] text-deco-muted">
+      <label className="grid gap-1.5">
+        <span className={labelCompactClass}>
           Job Description
         </span>
         <Textarea
           aria-label="Job Description"
+          className={`${fieldSurfaceClass} min-h-[6.5rem]`}
           value={form.jobDescription ?? ""}
           onChange={(event) =>
             setForm((current) => ({
@@ -428,14 +441,14 @@ const JobApplicationForm = ({
         </p>
       ) : null}
 
-      <div className="flex flex-wrap gap-3 pt-2 md:col-span-2">
-        <Button type="submit" disabled={isSubmitting}>
+      <div className="grid gap-1 border-t border-primary-gold-muted pt-2 md:col-span-2">
+        <Button className="h-9 w-full justify-center" size="sm" type="submit" disabled={isSubmitting}>
           {isSubmitting
             ? submittingLabel
             : (submitLabel ??
               (editingApplication ? "Save Changes" : "Add Application"))}
         </Button>
-        <Button variant="ghost" type="button" onClick={onCancelEdit}>
+        <Button className="h-9 w-full justify-center" size="sm" variant="ghost" type="button" onClick={onCancelEdit}>
           {cancelLabel}
         </Button>
       </div>

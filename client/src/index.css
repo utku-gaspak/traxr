@@ -3,48 +3,56 @@
 @import "tailwindcss";
 
 :root {
+  /* UI Scaling - Factor for high-density interface */
   --ui-scale: 0.8;
 
-  /* Everforest Light - Hard Variant */
-  --color-background: #f8efd4;
-  --color-foreground: #5c6a72;
-  --color-primary: #8da101;
-  --color-primary-muted: rgba(141, 161, 1, 0.12);
-  --color-primary-foreground: #f8efd4;
-  --color-primary-soft: rgba(141, 161, 1, 0.08);
+  /* Nordic Frost - High Contrast Light Theme */
+  --color-background: #f1f5f9;
+  --color-foreground: #1e293b;
+  --color-primary: #475569;
+  --color-primary-muted: rgba(71, 85, 105, 0.1);
+  --color-primary-foreground: #ffffff;
+  --color-primary-soft: rgba(71, 85, 105, 0.05);
 
-  --color-surface: #fdf6e3;
-  --color-surface-soft: #f2e9cf;
-  --color-card: #fdf6e3;
-  --color-card-foreground: #5c6a72;
+  /* SURFACE: Consistent with Sidebar Panels */
+  --color-surface: #ffffff; /* Matches Inner Panel Background */
+  --color-surface-soft: #e2e8f0; /* Matches Outer Frame/Sidebar Background */
+  --color-card: #ffffff;
+  --color-card-foreground: #1e293b;
 
-  --color-border: #e6e2cc;
-  --deco-border-gold: #dfa000;
-  --color-border-strong: #d3c6aa;
+  /* BORDERS: Syncing with Bevel Logic */
+  --color-border: #cbd5e1;
+  --deco-border-gold: #94a3b8;
+  --color-border-strong: #64748b;
 
-  --color-input: #fdf6e3;
-  --color-muted: #f2e9cf;
-  --color-muted-foreground: #939f91;
+  --color-input: #ffffff;
+  --color-muted: #f8fafc;
+  --color-muted-foreground: #64748b;
 
-  --color-accent: #35a775;
-  --color-accent-foreground: #f8efd4;
-  --color-ring: rgba(141, 161, 1, 0.25);
+  --color-accent: #0ea5e9;
+  --color-accent-foreground: #ffffff;
+  --color-ring: rgba(14, 165, 233, 0.2);
 
-  --color-danger: #f85552;
-  --color-danger-soft: rgba(248, 85, 82, 0.08);
+  --color-danger: #e11d48;
+  --color-danger-soft: rgba(225, 29, 72, 0.05);
 
-  --color-column-applied: #8da101;
-  --color-column-interviewing: #35a775;
-  --color-column-rejected: #f85552;
-  --color-column-offer: #dfa000;
+  /* Kanban Colors */
+  --color-column-applied: #64748b;
+  --color-column-interviewing: #0ea5e9;
+  --color-column-rejected: #94a3b8;
+  --color-column-offer: #10b981;
 
-  --deco-shadow-panel: 0 4px 20px rgba(92, 106, 114, 0.08);
-  --shadow-card: 0 4px 12px rgba(92, 106, 114, 0.1);
-  --deco-shadow-glow: 0 0 15px rgba(141, 161, 1, 0.1);
+  /* BEVEL LOGIC: High-contrast 3D effect matching Sidebar */
+  --frame-bevel-highlight: #ffffff;
+  --frame-bevel-shadow: #cbd5e1;
+
+  --deco-shadow-panel: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --shadow-card: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --deco-shadow-glow: 0 0 15px rgba(14, 165, 233, 0.1);
 }
 
 .dark {
-  /* Everforest Dark - Hard Variant */
+  /* Everforest Dark - Hard Variant (Unchanged) */
   --color-background: #1e2326;
   --color-foreground: #d3c6aa;
   --color-primary: #a7c080;
@@ -61,7 +69,7 @@
   --deco-border-gold: #dbbc7f;
   --color-border-strong: #414b50;
 
-  --color-input: #1e2326;
+  --color-input: #272e33;
   --color-muted: #2e383c;
   --color-muted-foreground: #859289;
 
@@ -80,6 +88,8 @@
   --deco-shadow-panel: 0 4px 24px rgba(0, 0, 0, 0.4);
   --shadow-card: 0 12px 32px rgba(0, 0, 0, 0.35);
   --deco-shadow-glow: 0 0 15px rgba(167, 192, 128, 0.15);
+  --frame-bevel-highlight: rgba(255, 255, 255, 0.1);
+  --frame-bevel-shadow: rgba(0, 0, 0, 0.45);
 }
 
 @theme inline {
@@ -87,6 +97,7 @@
   --font-heading: "Playfair Display", serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas;
 
+  /* Tailwind Variable Mappings */
   --color-primary-gold: var(--color-primary);
   --color-primary-gold-muted: var(--color-primary-muted);
   --color-primary-soft: var(--color-primary-soft);
@@ -94,21 +105,13 @@
   --color-deco-surface: var(--color-surface);
   --color-deco-surface-soft: var(--color-surface-soft);
   --color-deco-card: var(--color-card);
-  --color-deco-input: var(--color-input);
+  --color-deco-input: var(--color-surface);
   --color-deco-foreground: var(--color-foreground);
   --color-deco-muted: var(--color-muted-foreground);
   --color-border-gold: var(--deco-border-gold);
   --color-border-gold-muted: var(--color-border);
-  --color-accent: var(--color-accent);
-  --color-danger: var(--color-danger);
-  --color-danger-soft: var(--color-danger-soft);
-  --color-column-applied: var(--color-column-applied);
-  --color-column-interviewing: var(--color-column-interviewing);
-  --color-column-rejected: var(--color-column-rejected);
-  --color-column-offer: var(--color-column-offer);
   --shadow-deco-panel: var(--deco-shadow-panel);
   --shadow-deco-card: var(--shadow-card);
-  --shadow-deco-glow: var(--deco-shadow-glow);
 }
 
 @layer base {
@@ -116,32 +119,22 @@
     box-sizing: border-box;
     border-color: var(--color-border);
   }
-
   html {
     background: var(--color-background);
   }
-
   body {
     @apply font-sans antialiased;
     margin: 0;
-    background:
-      radial-gradient(
-        circle at 0% 0%,
-        var(--color-surface-soft),
-        transparent 50%
-      ),
-      var(--color-background);
+    background: var(--color-background);
     color: var(--color-foreground);
     overflow-x: hidden;
   }
-
   #root {
     min-height: calc(100dvh / var(--ui-scale));
     width: calc(100% / var(--ui-scale));
     transform: scale(var(--ui-scale));
     transform-origin: top left;
   }
-
   h1,
   h2,
   h3,
@@ -151,16 +144,16 @@
     @apply font-heading;
     letter-spacing: -0.01em;
   }
-
   input,
   select,
   textarea {
-    background-color: var(--color-input) !important;
+    background-color: var(--color-surface) !important;
     color: var(--color-foreground) !important;
   }
 }
 
 @layer components {
+  /* Tactile Bevel Frames: Top/Left highlight + Bottom/Right shadow */
   .deco-frame {
     border-style: solid;
     border-top-width: 1px;
@@ -168,6 +161,10 @@
     border-right-width: 2px;
     border-bottom-width: 2px;
     border-radius: 6px;
+    border-top-color: var(--frame-bevel-highlight) !important;
+    border-left-color: var(--frame-bevel-highlight) !important;
+    border-right-color: var(--frame-bevel-shadow) !important;
+    border-bottom-color: var(--frame-bevel-shadow) !important;
   }
 
   .deco-frame-thick {
@@ -177,19 +174,17 @@
     border-right-width: 4px;
     border-bottom-width: 4px;
     border-radius: 6px;
+    border-top-color: var(--frame-bevel-highlight) !important;
+    border-left-color: var(--frame-bevel-highlight) !important;
+    border-right-color: var(--frame-bevel-shadow) !important;
+    border-bottom-color: var(--frame-bevel-shadow) !important;
   }
 
+  /* HEADER CLEANUP: Removed fixed bg-color to allow deco-frame classes in JSX */
   header,
   .main-header-bar {
-    background-color: var(--color-background) !important;
-    border-bottom: 2px solid var(--color-border);
-  }
-
-  .header-speed-line {
-    height: 3px;
-    background: var(--color-primary);
     position: relative;
-    overflow: hidden;
+    /* Background and border are now controlled by JSX classes to match Sidebar */
   }
 
   .application-card {
@@ -200,14 +195,15 @@
   }
 
   .application-card:hover {
-    border-color: var(--color-primary);
-    background-color: var(--color-surface-soft);
+    border-color: var(--color-accent);
+    background-color: var(--color-muted);
     transform: scale(1.01);
   }
 
   .kanban-column {
     box-shadow: var(--shadow-panel);
     background-color: var(--color-surface-soft);
-    border-radius: 4px;
+    border-radius: 6px;
+    border: 1px solid var(--color-border);
   }
 }

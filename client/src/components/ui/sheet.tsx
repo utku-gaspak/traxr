@@ -20,13 +20,13 @@ const SheetContent = ({ className, children, ...props }: DialogPrimitive.DialogC
     <SheetOverlay />
     <DialogPrimitive.Content
       className={cn(
-        "deco-frame fixed right-0 top-0 z-50 flex h-full w-[min(92vw,44rem)] flex-col border-primary-gold bg-deco-card shadow-2xl",
+        "deco-frame fixed left-1/2 top-1/2 z-50 flex h-[min(84vh,42rem)] w-[min(94vw,44rem)] -translate-x-1/2 -translate-y-1/2 flex-col border-primary-gold bg-deco-bg shadow-2xl",
         className,
       )}
       {...props}
     >
       {children}
-      <DialogPrimitive.Close className="absolute right-4 top-4 text-primary-gold transition-colors hover:text-deco-foreground">
+      <DialogPrimitive.Close className="absolute right-3 top-3 text-primary-gold transition-colors hover:text-deco-foreground">
         <X className="h-4 w-4" />
         <span className="sr-only">Close</span>
       </DialogPrimitive.Close>
@@ -37,7 +37,7 @@ const SheetContent = ({ className, children, ...props }: DialogPrimitive.DialogC
 const SheetHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      "border-b border-primary-gold bg-primary-gold-muted px-6 py-5",
+      "border-b border-primary-gold bg-primary-gold-muted px-4 py-3",
       className,
     )}
     {...props}
@@ -46,14 +46,14 @@ const SheetHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElemen
 
 const SheetTitle = ({ className, ...props }: DialogPrimitive.DialogTitleProps) => (
   <DialogPrimitive.Title
-    className={cn("font-heading text-2xl font-semibold text-deco-foreground", className)}
+    className={cn("font-heading text-[1rem] font-semibold text-deco-foreground", className)}
     {...props}
   />
 );
 
 const SheetDescription = ({ className, ...props }: DialogPrimitive.DialogDescriptionProps) => (
   <DialogPrimitive.Description
-    className={cn("mt-2 text-sm text-deco-muted", className)}
+    className={cn("mt-1 text-[0.6rem] text-deco-muted", className)}
     {...props}
   />
 );

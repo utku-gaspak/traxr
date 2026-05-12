@@ -20,13 +20,13 @@ const DialogContent = ({ className, children, ...props }: DialogPrimitive.Dialog
     <DialogOverlay />
     <DialogPrimitive.Content
       className={cn(
-        "deco-frame fixed left-1/2 top-1/2 z-50 grid w-[min(92vw,34rem)] -translate-x-1/2 -translate-y-1/2 border-primary-gold bg-deco-card shadow-2xl",
+        "deco-frame fixed left-1/2 top-1/2 z-50 grid w-[min(92vw,27rem)] -translate-x-1/2 -translate-y-1/2 border-primary-gold bg-deco-bg shadow-2xl",
         className,
       )}
       {...props}
     >
       {children}
-      <DialogPrimitive.Close className="absolute right-4 top-4 text-primary-gold transition-colors hover:text-deco-foreground">
+      <DialogPrimitive.Close className="absolute right-3 top-3 text-primary-gold transition-colors hover:text-deco-foreground">
         <X className="h-4 w-4" />
         <span className="sr-only">Close</span>
       </DialogPrimitive.Close>
@@ -37,7 +37,7 @@ const DialogContent = ({ className, children, ...props }: DialogPrimitive.Dialog
 const DialogHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      "border-b border-primary-gold bg-primary-gold-muted px-6 py-5",
+      "border-b border-primary-gold bg-primary-gold-muted px-4 py-3",
       className,
     )}
     {...props}
@@ -46,7 +46,7 @@ const DialogHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivEleme
 
 const DialogTitle = ({ className, ...props }: DialogPrimitive.DialogTitleProps) => (
   <DialogPrimitive.Title
-    className={cn("font-heading text-2xl font-semibold text-deco-foreground", className)}
+    className={cn("font-heading text-xl font-semibold text-deco-foreground", className)}
     {...props}
   />
 );
