@@ -4,7 +4,12 @@ import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { login as loginRequest } from "../api/accountApi";
 import { Button } from "../components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/card";
 import { Input } from "../components/ui/input";
 import { useAuth } from "../context/AuthContext";
 
@@ -48,35 +53,38 @@ const LoginPage = () => {
       setLoading(false);
     }
   };
+
   return (
     <main className="min-h-screen px-4 py-10 md:px-8">
       <div className="mx-auto grid min-h-[calc(100vh-5rem)] max-w-6xl items-center gap-8 lg:grid-cols-[1.1fr_0.9fr]">
+        {/* Left Section: Information */}
         <section className="border border-border-gold-muted bg-deco-surface p-8 shadow-deco-panel">
           <p className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-primary-gold">
             Job Application Tracker
           </p>
-          <h1 className="max-w-[12ch] text-5xl leading-[0.92] text-deco-foreground md:text-6xl">
-            Boutique tracking for a demanding search.
+          <h1 className="max-w-[12ch] text-5xl leading-[0.95] text-deco-foreground md:text-6xl">
+            Organize your job search.
           </h1>
           <p className="mt-5 max-w-xl text-base text-deco-muted">
-            Keep every application, interview, and offer in one refined board built for deliberate work.
+            Manage all your application data in one secure and clean interface.
           </p>
           <div className="mt-8 flex items-center gap-4 text-sm uppercase tracking-[0.14em] text-deco-muted">
             <span className="inline-flex items-center gap-2">
               <BriefcaseBusiness className="h-4 w-4 text-primary-gold" />
-              JWT Auth
+              .NET 10 — REACT CORE
             </span>
             <span className="h-px w-8 bg-border-gold" />
-            <span>Status Board</span>
+            <span>SECURE LOGIN</span>
           </div>
         </section>
 
+        {/* Right Section: Form */}
         <Card className="border-border-gold bg-deco-surface-soft">
           <CardHeader className="border-b border-primary-gold bg-primary-gold-muted">
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary-gold">
-              Secure Access
+              SECURE LOGIN
             </p>
-            <CardTitle>Job Tracker Login</CardTitle>
+            <CardTitle className="mt-1">Access your board</CardTitle>
           </CardHeader>
           <CardContent className="pt-6">
             <form className="grid gap-4" onSubmit={handleSubmit}>
@@ -87,6 +95,7 @@ const LoginPage = () => {
                 <Input
                   type="text"
                   placeholder="Username"
+                  className="rounded-none border-border-gold-muted focus-visible:ring-primary-gold"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   required
@@ -99,17 +108,25 @@ const LoginPage = () => {
                 <Input
                   type="password"
                   placeholder="Password"
+                  className="rounded-none border-border-gold-muted focus-visible:ring-primary-gold"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
                 />
               </div>
-              <Button type="submit" disabled={loading} className="mt-2 w-full">
-                {loading ? "Signing in..." : "Sign In"}
+              <Button
+                type="submit"
+                disabled={loading}
+                className="mt-2 w-full rounded-none tracking-widest"
+              >
+                {loading ? "Signing in..." : "SIGN IN"}
               </Button>
               <p className="text-sm text-deco-muted">
                 Need an account?{" "}
-                <Link className="inline-flex items-center gap-1 text-primary-gold" to="/register">
+                <Link
+                  className="inline-flex items-center gap-1 font-medium text-primary-gold hover:underline"
+                  to="/register"
+                >
                   Create one now
                   <ChevronRight className="h-3.5 w-3.5" />
                 </Link>

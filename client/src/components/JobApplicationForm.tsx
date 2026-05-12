@@ -61,7 +61,9 @@ const JobApplicationForm = ({
   const [form, setForm] = useState<JobApplicationCreateInput>(initialFormState);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
+  const [validationErrors, setValidationErrors] = useState<ValidationErrors>(
+    {},
+  );
   const [technicalStackDraft, setTechnicalStackDraft] = useState("");
 
   useEffect(() => {
@@ -119,7 +121,9 @@ const JobApplicationForm = ({
     );
   };
 
-  const handleTechnicalStackKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+  const handleTechnicalStackKeyDown = (
+    event: KeyboardEvent<HTMLInputElement>,
+  ) => {
     if (event.key !== "Enter") {
       return;
     }
@@ -190,14 +194,20 @@ const JobApplicationForm = ({
       onSuccess();
     } catch (error) {
       console.error("Save job application failed:", error);
-      setErrorMessage("Could not save the application. Check the form and try again.");
+      setErrorMessage(
+        "Could not save the application. Check the form and try again.",
+      );
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <form className="grid gap-5 p-6 md:grid-cols-2" noValidate onSubmit={handleSubmit}>
+    <form
+      className="grid gap-5 p-6 md:grid-cols-2"
+      noValidate
+      onSubmit={handleSubmit}
+    >
       <label className="grid gap-2 md:col-span-2">
         <span className="text-sm font-semibold uppercase tracking-[0.12em] text-deco-muted">
           Company Name
@@ -208,13 +218,18 @@ const JobApplicationForm = ({
           onChange={(event) => {
             const value = event.target.value;
             setForm((current) => ({ ...current, companyName: value }));
-            setValidationErrors((current) => ({ ...current, companyName: undefined }));
+            setValidationErrors((current) => ({
+              ...current,
+              companyName: undefined,
+            }));
           }}
           placeholder="Example: Stripe"
           required
         />
         {validationErrors.companyName ? (
-          <span className="text-sm text-danger">{validationErrors.companyName}</span>
+          <span className="text-sm text-danger">
+            {validationErrors.companyName}
+          </span>
         ) : null}
       </label>
 
@@ -228,13 +243,18 @@ const JobApplicationForm = ({
           onChange={(event) => {
             const value = event.target.value;
             setForm((current) => ({ ...current, position: value }));
-            setValidationErrors((current) => ({ ...current, position: undefined }));
+            setValidationErrors((current) => ({
+              ...current,
+              position: undefined,
+            }));
           }}
           placeholder="Example: Backend Engineer"
           required
         />
         {validationErrors.position ? (
-          <span className="text-sm text-danger">{validationErrors.position}</span>
+          <span className="text-sm text-danger">
+            {validationErrors.position}
+          </span>
         ) : null}
       </label>
 
@@ -254,7 +274,10 @@ const JobApplicationForm = ({
           }
         >
           {Object.values(JobApplicationStatus)
-            .filter((value): value is JobApplicationStatus => typeof value === "number")
+            .filter(
+              (value): value is JobApplicationStatus =>
+                typeof value === "number",
+            )
             .map((value) => (
               <option key={value} value={value}>
                 {jobApplicationStatusLabels[value]}
@@ -293,7 +316,7 @@ const JobApplicationForm = ({
               location: event.target.value,
             }))
           }
-          placeholder="Remote / London"
+          placeholder="Remote / Essen"
         />
       </label>
 
@@ -310,7 +333,7 @@ const JobApplicationForm = ({
               salaryRange: event.target.value,
             }))
           }
-          placeholder="$100k - $120k"
+          placeholder="48k€ - 54k€"
         />
       </label>
 
@@ -377,7 +400,7 @@ const JobApplicationForm = ({
             onBlur={addTechnicalStackSkill}
             onChange={(event) => setTechnicalStackDraft(event.target.value)}
             onKeyDown={handleTechnicalStackKeyDown}
-            placeholder="Type SQL and press Enter"
+            placeholder="Type a skill and press Enter"
           />
         </div>
       </div>
@@ -409,7 +432,8 @@ const JobApplicationForm = ({
         <Button type="submit" disabled={isSubmitting}>
           {isSubmitting
             ? submittingLabel
-            : submitLabel ?? (editingApplication ? "Save Changes" : "Add Application")}
+            : (submitLabel ??
+              (editingApplication ? "Save Changes" : "Add Application"))}
         </Button>
         <Button variant="ghost" type="button" onClick={onCancelEdit}>
           {cancelLabel}
