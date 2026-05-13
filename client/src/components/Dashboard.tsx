@@ -177,21 +177,14 @@ const boardColumns = [
   },
 ] as const;
 
-const buildColumns = (
-  applications: JobApplication[],
-  sortOrder: "newest" | "oldest",
-) =>
+const buildColumns = (applications: JobApplication[]) =>
   jobApplicationStatusOrder.reduce<
     Record<JobApplicationStatus, JobApplication[]>
   >(
     (columns, status) => {
-      columns[status] = applications
-        .filter((application) => application.status === status)
-        .sort((left, right) =>
-          sortOrder === "newest"
-            ? getApplicationSortTime(right) - getApplicationSortTime(left)
-            : getApplicationSortTime(left) - getApplicationSortTime(right),
-        );
+      columns[status] = applications.filter(
+        (application) => application.status === status,
+      );
       return columns;
     },
     {
@@ -206,15 +199,24 @@ const flattenColumns = (
   columns: Record<JobApplicationStatus, JobApplication[]>,
 ) => jobApplicationStatusOrder.flatMap((status) => columns[status]);
 
-const reorderApplications = (
+const sortApplications = (
   applications: JobApplication[],
   sortOrder: "newest" | "oldest",
+) =>
+  [...applications].sort((left, right) =>
+    sortOrder === "newest"
+      ? getApplicationSortTime(right) - getApplicationSortTime(left)
+      : getApplicationSortTime(left) - getApplicationSortTime(right),
+  );
+
+const reorderApplications = (
+  applications: JobApplication[],
   sourceStatus: JobApplicationStatus,
   destinationStatus: JobApplicationStatus,
   sourceIndex: number,
   destinationIndex: number,
 ) => {
-  const columns = buildColumns(applications, sortOrder);
+  const columns = buildColumns(applications);
   const sourceItems = [...columns[sourceStatus]];
   const [movedApplication] = sourceItems.splice(sourceIndex, 1);
 
@@ -296,8 +298,8 @@ const Dashboard = () => {
   );
 
   const columns = useMemo(
-    () => buildColumns(filteredApplications, sortOrder),
-    [filteredApplications, sortOrder],
+    () => buildColumns(filteredApplications),
+    [filteredApplications],
   );
 
   const selectedSkillSet = new Set(
@@ -476,7 +478,6 @@ const Dashboard = () => {
 
     const reordered = reorderApplications(
       applications,
-      sortOrder,
       sourceStatus,
       destinationStatus,
       result.source.index,
@@ -538,7 +539,7 @@ const Dashboard = () => {
         <div className="flex min-w-0 flex-col gap-2 md:flex-row md:items-center md:gap-4">
           <div className="min-w-0">
             <h1 className="font-heading text-[1.75rem] tracking-tight text-deco-foreground md:text-[2.2rem]">
-              Job Application Tracker
+              Traxr - Job Application Tracker
             </h1>
 
             <div className="mt-2 flex items-center">
@@ -707,11 +708,14 @@ const Dashboard = () => {
               <div className="flex items-center gap-2">
                 <Button
                   className="h-10 px-4 text-[0.65rem] uppercase tracking-[0.18em]"
-                  onClick={() =>
-                    setSortOrder((current) =>
-                      current === "newest" ? "oldest" : "newest",
-                    )
-                  }
+                  onClick={() => {
+                    const nextSortOrder =
+                      sortOrder === "newest" ? "oldest" : "newest";
+                    setSortOrder(nextSortOrder);
+                    setApplications((current) =>
+                      sortApplications(current, nextSortOrder),
+                    );
+                  }}
                   type="button"
                   variant={themeButtonVariant}
                 >
@@ -1039,8 +1043,8 @@ const Dashboard = () => {
                                 jobApplicationStatusLabels[
                                   selectedApplication.status
                                 ]
-                                }
-                              </Badge>
+                              }
+                            </Badge>
                           </div>
 
                           <div className="mt-2.5 grid gap-1.5 sm:grid-cols-2">
