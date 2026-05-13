@@ -4,6 +4,8 @@ Job Application Tracker is a full-stack app for managing job applications with J
 
 It supports status tracking, application details, drag-and-drop updates, and a top-of-board filter bar for search, status, interest level, and technical skills. The current test suite includes 70 automated tests across the backend and frontend.
 
+Live site: https://traxr.xyz
+
 ## Screenshots
 
 The main UI flow is shown below.
