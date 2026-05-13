@@ -23,6 +23,9 @@ The main UI flow is shown below.
 - Kanban status tracking for `Applied`, `Interviewing`, `Rejected`, and `Offer`
 - Optional application details, including job URL, location, salary range, job description, notes, interest level, and technical stack
 - Compact filter bar above the board with search, status, interest level, and skill transfer controls
+- Drag-and-drop card movement with manual board ordering
+- Light and dark mode with a theme-aware favicon
+- Sort toggle for newest or oldest applications first
 - Protected dashboard routes with persisted login state
 - Error handling for validation, authorization, server, and connection failures
 - OpenAPI and generated TypeScript client support for keeping the backend and frontend in sync
