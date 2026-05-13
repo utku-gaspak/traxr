@@ -3,6 +3,7 @@ using api.Data;
 using api.Dto;
 using api.Exceptions;
 using api.Models;
+using Npgsql;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Services;
@@ -39,10 +40,17 @@ public class JobApplicationService(AppDbContext dbContext) : IJobApplicationServ
     {
         ValidateUserId(userId);
 
-        return await dbContext
-            .JobApplications.Where(jobApplication => jobApplication.UserId == userId)
-            .OrderByDescending(jobApplication => jobApplication.DateApplied)
-            .ToListAsync();
+        try
+        {
+            return await dbContext
+                .JobApplications.Where(jobApplication => jobApplication.UserId == userId)
+                .OrderByDescending(jobApplication => jobApplication.DateApplied)
+                .ToListAsync();
+        }
+        catch (PostgresException ex) when (IsMissingNotesColumn(ex))
+        {
+            return await LoadJobApplicationsWithoutNotesAsync(userId);
+        }
     }
 
     public async Task<JobApplication> GetByIdAsync(string id, string userId)
@@ -50,9 +58,16 @@ public class JobApplicationService(AppDbContext dbContext) : IJobApplicationServ
         ValidateId(id);
         ValidateUserId(userId);
 
-        return await dbContext.JobApplications.FirstOrDefaultAsync(jobApplication =>
-                jobApplication.Id == id && jobApplication.UserId == userId
-            ) ?? throw new NotFoundException("Job application could not be found");
+        try
+        {
+            return await dbContext.JobApplications.FirstOrDefaultAsync(jobApplication =>
+                    jobApplication.Id == id && jobApplication.UserId == userId
+                ) ?? throw new NotFoundException("Job application could not be found");
+        }
+        catch (PostgresException ex) when (IsMissingNotesColumn(ex))
+        {
+            return await LoadJobApplicationWithoutNotesAsync(id, userId);
+        }
     }
 
     public async Task UpdateAsync(string id, JobApplicationUpdateDto dto, string userId)
@@ -149,4 +164,57 @@ public class JobApplicationService(AppDbContext dbContext) : IJobApplicationServ
         if (interestLevel is < 1 or > 5)
             throw new ValidationException("InterestLevel must be between 1 and 5.");
     }
+
+    private async Task<List<JobApplication>> LoadJobApplicationsWithoutNotesAsync(string userId) =>
+        await dbContext
+            .JobApplications.Where(jobApplication => jobApplication.UserId == userId)
+            .OrderByDescending(jobApplication => jobApplication.DateApplied)
+            .Select(jobApplication => new JobApplication
+            {
+                Id = jobApplication.Id,
+                CompanyName = jobApplication.CompanyName,
+                Position = jobApplication.Position,
+                JobUrl = jobApplication.JobUrl,
+                Location = jobApplication.Location,
+                SalaryRange = jobApplication.SalaryRange,
+                JobDescription = jobApplication.JobDescription,
+                InterestLevel = jobApplication.InterestLevel,
+                TechnicalStack = jobApplication.TechnicalStack,
+                Status = jobApplication.Status,
+                DateApplied = jobApplication.DateApplied,
+                UserId = jobApplication.UserId,
+            })
+            .ToListAsync();
+
+    private async Task<JobApplication> LoadJobApplicationWithoutNotesAsync(
+        string id,
+        string userId
+    )
+    {
+        return await dbContext
+                .JobApplications.Where(jobApplication =>
+                    jobApplication.Id == id && jobApplication.UserId == userId
+                )
+                .Select(jobApplication => new JobApplication
+                {
+                    Id = jobApplication.Id,
+                    CompanyName = jobApplication.CompanyName,
+                    Position = jobApplication.Position,
+                    JobUrl = jobApplication.JobUrl,
+                    Location = jobApplication.Location,
+                    SalaryRange = jobApplication.SalaryRange,
+                    JobDescription = jobApplication.JobDescription,
+                    InterestLevel = jobApplication.InterestLevel,
+                    TechnicalStack = jobApplication.TechnicalStack,
+                    Status = jobApplication.Status,
+                    DateApplied = jobApplication.DateApplied,
+                    UserId = jobApplication.UserId,
+                })
+                .FirstOrDefaultAsync()
+            ?? throw new NotFoundException("Job application could not be found");
+    }
+
+    private static bool IsMissingNotesColumn(PostgresException exception) =>
+        exception.SqlState == PostgresErrorCodes.UndefinedColumn
+        && exception.MessageText.Contains("Notes", StringComparison.OrdinalIgnoreCase);
 }
