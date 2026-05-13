@@ -36,7 +36,7 @@ public class JobApplicationService(AppDbContext dbContext) : IJobApplicationServ
         {
             await dbContext.SaveChangesAsync();
         }
-        catch (PostgresException ex) when (IsMissingNotesColumn(ex))
+        catch (DbUpdateException ex) when (IsMissingNotesColumn(ex))
         {
             dbContext.ChangeTracker.Clear();
             await EnsureNotesColumnExistsAsync();
@@ -106,7 +106,7 @@ public class JobApplicationService(AppDbContext dbContext) : IJobApplicationServ
         {
             await dbContext.SaveChangesAsync();
         }
-        catch (PostgresException ex) when (IsMissingNotesColumn(ex))
+        catch (DbUpdateException ex) when (IsMissingNotesColumn(ex))
         {
             await EnsureNotesColumnExistsAsync();
             await dbContext.SaveChangesAsync();
@@ -184,62 +184,113 @@ public class JobApplicationService(AppDbContext dbContext) : IJobApplicationServ
             throw new ValidationException("InterestLevel must be between 1 and 5.");
     }
 
-    private async Task<List<JobApplication>> LoadJobApplicationsWithoutNotesAsync(string userId) =>
-        await dbContext
+    private async Task<List<JobApplication>> LoadJobApplicationsWithoutNotesAsync(string userId)
+    {
+        var jobApplications = await dbContext
             .JobApplications.Where(jobApplication => jobApplication.UserId == userId)
             .OrderByDescending(jobApplication => jobApplication.DateApplied)
-            .Select(jobApplication => new JobApplication
-            {
-                Id = jobApplication.Id,
-                CompanyName = jobApplication.CompanyName,
-                Position = jobApplication.Position,
-                JobUrl = jobApplication.JobUrl,
-                Location = jobApplication.Location,
-                SalaryRange = jobApplication.SalaryRange,
-                JobDescription = jobApplication.JobDescription,
-                InterestLevel = jobApplication.InterestLevel,
-                TechnicalStack = jobApplication.TechnicalStack,
-                Status = jobApplication.Status,
-                DateApplied = jobApplication.DateApplied,
-                UserId = jobApplication.UserId,
-            })
+            .Select(jobApplication => new JobApplicationWithoutNotesData(
+                jobApplication.Id,
+                jobApplication.CompanyName,
+                jobApplication.Position,
+                jobApplication.JobUrl,
+                jobApplication.Location,
+                jobApplication.SalaryRange,
+                jobApplication.JobDescription,
+                jobApplication.InterestLevel,
+                jobApplication.TechnicalStack,
+                jobApplication.Status,
+                jobApplication.DateApplied,
+                jobApplication.UserId
+            ))
             .ToListAsync();
+
+        return jobApplications.Select(jobApplication => new JobApplication
+        {
+            Id = jobApplication.Id,
+            CompanyName = jobApplication.CompanyName,
+            Position = jobApplication.Position,
+            JobUrl = jobApplication.JobUrl,
+            Location = jobApplication.Location,
+            SalaryRange = jobApplication.SalaryRange,
+            JobDescription = jobApplication.JobDescription,
+            InterestLevel = jobApplication.InterestLevel,
+            TechnicalStack = jobApplication.TechnicalStack,
+            Status = jobApplication.Status,
+            DateApplied = jobApplication.DateApplied,
+            UserId = jobApplication.UserId,
+        }).ToList();
+    }
 
     private async Task<JobApplication> LoadJobApplicationWithoutNotesAsync(
         string id,
         string userId
     )
     {
-        return await dbContext
+        var jobApplication = await dbContext
                 .JobApplications.Where(jobApplication =>
                     jobApplication.Id == id && jobApplication.UserId == userId
                 )
-                .Select(jobApplication => new JobApplication
-                {
-                    Id = jobApplication.Id,
-                    CompanyName = jobApplication.CompanyName,
-                    Position = jobApplication.Position,
-                    JobUrl = jobApplication.JobUrl,
-                    Location = jobApplication.Location,
-                    SalaryRange = jobApplication.SalaryRange,
-                    JobDescription = jobApplication.JobDescription,
-                    InterestLevel = jobApplication.InterestLevel,
-                    TechnicalStack = jobApplication.TechnicalStack,
-                    Status = jobApplication.Status,
-                    DateApplied = jobApplication.DateApplied,
-                    UserId = jobApplication.UserId,
-                })
+                .Select(jobApplication => new JobApplicationWithoutNotesData(
+                    jobApplication.Id,
+                    jobApplication.CompanyName,
+                    jobApplication.Position,
+                    jobApplication.JobUrl,
+                    jobApplication.Location,
+                    jobApplication.SalaryRange,
+                    jobApplication.JobDescription,
+                    jobApplication.InterestLevel,
+                    jobApplication.TechnicalStack,
+                    jobApplication.Status,
+                    jobApplication.DateApplied,
+                    jobApplication.UserId
+                ))
                 .FirstOrDefaultAsync()
             ?? throw new NotFoundException("Job application could not be found");
+
+        return new JobApplication
+        {
+            Id = jobApplication.Id,
+            CompanyName = jobApplication.CompanyName,
+            Position = jobApplication.Position,
+            JobUrl = jobApplication.JobUrl,
+            Location = jobApplication.Location,
+            SalaryRange = jobApplication.SalaryRange,
+            JobDescription = jobApplication.JobDescription,
+            InterestLevel = jobApplication.InterestLevel,
+            TechnicalStack = jobApplication.TechnicalStack,
+            Status = jobApplication.Status,
+            DateApplied = jobApplication.DateApplied,
+            UserId = jobApplication.UserId,
+        };
     }
 
     private static bool IsMissingNotesColumn(PostgresException exception) =>
         exception.SqlState == PostgresErrorCodes.UndefinedColumn
         && exception.MessageText.Contains("Notes", StringComparison.OrdinalIgnoreCase);
 
+    private static bool IsMissingNotesColumn(DbUpdateException exception) =>
+        exception.InnerException is PostgresException postgresException
+        && IsMissingNotesColumn(postgresException);
+
     private async Task EnsureNotesColumnExistsAsync() =>
         await dbContext.Database.ExecuteSqlRawAsync("""
             ALTER TABLE "JobApplications"
             ADD COLUMN IF NOT EXISTS "Notes" text NULL;
             """);
+
+    private sealed record JobApplicationWithoutNotesData(
+        string Id,
+        string CompanyName,
+        string Position,
+        string? JobUrl,
+        string? Location,
+        string? SalaryRange,
+        string? JobDescription,
+        int? InterestLevel,
+        string? TechnicalStack,
+        JobApplicationStatus Status,
+        DateTime DateApplied,
+        string UserId
+    );
 }

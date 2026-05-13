@@ -353,6 +353,10 @@
             "type": "string",
             "nullable": true
           },
+          "notes": {
+            "type": "string",
+            "nullable": true
+          },
           "interestLevel": {
             "type": "integer",
             "format": "int32",
@@ -512,6 +516,10 @@
             "type": "string",
             "nullable": true
           },
+          "notes": {
+            "type": "string",
+            "nullable": true
+          },
           "interestLevel": {
             "type": "integer",
             "format": "int32",
@@ -549,6 +557,10 @@
             "nullable": true
           },
           "jobDescription": {
+            "type": "string",
+            "nullable": true
+          },
+          "notes": {
             "type": "string",
             "nullable": true
           },
