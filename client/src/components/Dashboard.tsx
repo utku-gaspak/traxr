@@ -259,6 +259,13 @@ const detailRows = (application: JobApplication) =>
 
 const interestLevelOptions = [1, 2, 3, 4, 5] as const;
 
+const mobileAccordionDefaults: Record<JobApplicationStatus, boolean> = {
+  [JobApplicationStatus.Applied]: true,
+  [JobApplicationStatus.Interviewing]: false,
+  [JobApplicationStatus.Rejected]: false,
+  [JobApplicationStatus.Offer]: false,
+};
+
 const Dashboard = () => {
   const { logout, username } = useAuth();
   const { theme, toggleTheme } = useTheme();
@@ -278,6 +285,9 @@ const Dashboard = () => {
   >("all");
   const [interestFilter, setInterestFilter] = useState<number | "all">("all");
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+  const [mobileExpandedColumns, setMobileExpandedColumns] = useState<
+    Record<JobApplicationStatus, boolean>
+  >(mobileAccordionDefaults);
 
   const availableSkills = useMemo(
     () => getUniqueTechnicalSkills(applications),
@@ -309,6 +319,13 @@ const Dashboard = () => {
     (skill) => !selectedSkillSet.has(skill.toLowerCase()),
   );
 
+  const toggleMobileColumn = (status: JobApplicationStatus) => {
+    setMobileExpandedColumns((current) => ({
+      ...current,
+      [status]: !current[status],
+    }));
+  };
+
   const profileStats = useMemo(() => {
     const totalApplications = applications.length;
     const interviewCount = applications.filter(
@@ -328,6 +345,22 @@ const Dashboard = () => {
       offerRate: formatRate(offerCount),
     };
   }, [applications]);
+
+  const renderApplicationCardContent = (application: JobApplication) => (
+    <div className="grid min-w-0 gap-1">
+      <span className="truncate text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-deco-foreground">
+        {application.companyName}
+      </span>
+      <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
+        <span className="truncate text-left text-[0.72rem] tracking-[0.02em] text-deco-muted">
+          {application.position}
+        </span>
+        <span className="shrink-0 text-right text-[0.68rem] tabular-nums tracking-[0.04em] text-deco-muted">
+          {formatAppliedDate(application.dateApplied)}
+        </span>
+      </div>
+    </div>
+  );
 
   useEffect(() => {
     const loadApplications = async () => {
@@ -533,8 +566,8 @@ const Dashboard = () => {
   };
 
   return (
-    <main className="mx-auto flex h-[calc(100dvh/var(--ui-scale))] max-w-[1600px] flex-col overflow-x-hidden px-3 py-3 lg:px-5">
-      <header className="deco-frame-thick mb-4 flex flex-col gap-3 px-6 py-4 shadow-deco-panel bg-deco-surface-soft md:flex-row md:items-center md:justify-between">
+    <main className="mx-auto flex h-[calc(100dvh/var(--ui-scale))] w-full max-w-[1600px] flex-col overflow-x-hidden px-3 py-3 lg:px-5">
+      <header className="deco-frame-thick mb-4 flex w-full flex-col gap-3 px-4 py-4 shadow-deco-panel bg-deco-surface-soft sm:px-6 md:flex-row md:items-center md:justify-between">
         {" "}
         <div className="flex min-w-0 flex-col gap-2 md:flex-row md:items-center md:gap-4">
           <div className="min-w-0">
@@ -581,7 +614,7 @@ const Dashboard = () => {
         </div>
       </header>
       <div className="grid min-h-0 flex-1 gap-5 lg:grid-cols-[260px_minmax(0,1fr)] lg:items-stretch">
-        <aside className="deco-frame flex min-h-0 flex-col items-stretch overflow-hidden border-border-gold bg-deco-surface-soft p-5 shadow-deco-panel backdrop-blur md:p-6">
+        <aside className="deco-frame flex min-h-0 w-full flex-col items-stretch overflow-hidden border-border-gold bg-deco-surface-soft p-5 shadow-deco-panel backdrop-blur md:p-6">
           <section className="deco-frame border-border-gold bg-deco-surface p-4 shadow-sm">
             <p className="text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-primary-gold">
               Profile
@@ -633,7 +666,7 @@ const Dashboard = () => {
         </aside>
 
         <section className="flex min-h-0 flex-1 flex-col gap-3">
-          <section className="deco-frame border-border-gold bg-deco-surface-soft p-4 shadow-deco-panel">
+          <section className="deco-frame w-full border-border-gold bg-deco-surface-soft p-4 shadow-deco-panel">
             <div className="flex flex-col gap-3 xl:flex-row xl:items-end xl:justify-between">
               <div className="grid flex-1 gap-3 xl:grid-cols-[minmax(0,2.2fr)_repeat(2,minmax(0,1fr))]">
                 <label className="grid gap-2">
@@ -705,9 +738,9 @@ const Dashboard = () => {
                 </label>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex w-full flex-wrap items-stretch gap-2 md:w-auto md:items-center">
                 <Button
-                  className="h-10 px-4 text-[0.65rem] uppercase tracking-[0.18em]"
+                  className="h-10 w-full px-4 text-[0.65rem] uppercase tracking-[0.18em] sm:w-auto"
                   onClick={() => {
                     const nextSortOrder =
                       sortOrder === "newest" ? "oldest" : "newest";
@@ -723,7 +756,7 @@ const Dashboard = () => {
                   {sortOrder === "newest" ? "Newest first" : "Oldest first"}
                 </Button>
                 <Button
-                  className="h-10 px-4 text-[0.65rem] uppercase tracking-[0.18em]"
+                  className="h-10 w-full px-4 text-[0.65rem] uppercase tracking-[0.18em] sm:w-auto"
                   onClick={clearAllFilters}
                   type="button"
                   variant={themeButtonVariant}
@@ -732,7 +765,7 @@ const Dashboard = () => {
                 </Button>
                 <Button
                   aria-expanded={isFilterOpen}
-                  className="h-10 px-4 text-[0.65rem] uppercase tracking-[0.18em]"
+                  className="h-10 w-full px-4 text-[0.65rem] uppercase tracking-[0.18em] sm:w-auto"
                   onClick={() => setIsFilterOpen((current) => !current)}
                   type="button"
                   variant={themeButtonVariant}
@@ -861,104 +894,148 @@ const Dashboard = () => {
           ) : null}
 
           {!isLoading && filteredApplications.length > 0 ? (
-            <DragDropContext onDragEnd={(result) => void handleDragEnd(result)}>
-              <div className="grid min-h-0 flex-1 gap-5 xl:grid-cols-4">
-                {boardColumns.map((column) => (
+            <div className="w-full space-y-4 md:hidden">
+              {boardColumns.map((column) => {
+                const isExpanded = mobileExpandedColumns[column.status];
+
+                return (
                   <section
-                    className={`kanban-column ${column.frameClass} bg-deco-surface-soft p-4`}
+                    className={`kanban-column w-full ${column.frameClass} bg-deco-surface-soft p-4`}
                     id={`column-${column.title.toLowerCase()}`}
                     key={column.status}
                   >
-                    <div className="border-b border-primary-gold pb-3">
-                      <div className="flex items-end justify-between gap-3">
-                        <div>
-                          <h3 className="text-2xl text-deco-foreground">
-                            {column.title}
-                          </h3>
-                          <p className="mt-1 text-sm text-deco-muted">
-                            {column.subtitle}
-                          </p>
-                        </div>
+                    <button
+                      aria-expanded={isExpanded}
+                      className="flex w-full items-start justify-between gap-3 text-left"
+                      onClick={() => toggleMobileColumn(column.status)}
+                      type="button"
+                    >
+                      <div>
+                        <h3 className="text-2xl text-deco-foreground">
+                          {column.title}
+                        </h3>
+                        <p className="mt-1 text-sm text-deco-muted">
+                          {column.subtitle}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2">
                         <span className={column.accentClass}>
                           {columns[column.status].length}
                         </span>
-                      </div>
-                    </div>
-
-                    <Droppable droppableId={String(column.status)}>
-                      {(droppableProvided, droppableSnapshot) => (
-                        <div
-                          className={`mt-4 flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto pb-2 transition-colors ${
-                            droppableSnapshot.isDraggingOver
-                              ? "bg-primary-gold-muted"
-                              : ""
+                        <ChevronDown
+                          className={`h-4 w-4 text-deco-muted transition-transform ${
+                            isExpanded ? "rotate-180" : ""
                           }`}
-                          ref={droppableProvided.innerRef}
-                          {...droppableProvided.droppableProps}
-                        >
-                          {columns[column.status].map((application, index) => (
-                            <Draggable
-                              draggableId={application.id}
-                              index={index}
-                              key={application.id}
-                            >
-                              {(draggableProvided, draggableSnapshot) => {
-                                const { style, ...draggableProps } =
-                                  draggableProvided.draggableProps;
-                                const draggableCard = (
-                                  <article
-                                    className={`application-card ${column.borderClass} deco-frame cursor-grab select-none border-border-gold-muted bg-deco-card px-3 py-2 font-sans text-deco-foreground shadow-sm transition-shadow hover:shadow-deco-glow active:cursor-grabbing ${
-                                      draggableSnapshot.isDragging
-                                        ? "shadow-deco-glow"
-                                        : ""
-                                    }`}
-                                    key={application.id}
-                                    ref={draggableProvided.innerRef}
-                                    {...draggableProps}
-                                    {...draggableProvided.dragHandleProps}
-                                    style={style}
-                                    onClick={() => openDetails(application)}
-                                  >
-                                    <div className="grid min-w-0 gap-1">
-                                      <span className="truncate text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-deco-foreground">
-                                        {application.companyName}
-                                      </span>
-                                      <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
-                                        <span className="truncate text-left text-[0.72rem] tracking-[0.02em] text-deco-muted">
-                                          {application.position}
-                                        </span>
-                                        <span className="shrink-0 text-right text-[0.68rem] tabular-nums tracking-[0.04em] text-deco-muted">
-                                          {formatAppliedDate(
-                                            application.dateApplied,
-                                          )}
-                                        </span>
-                                      </div>
-                                    </div>
-                                  </article>
-                                );
+                        />
+                      </div>
+                    </button>
 
-                                if (
-                                  draggableSnapshot.isDragging &&
-                                  typeof document !== "undefined"
-                                ) {
-                                  return createPortal(
-                                    draggableCard,
-                                    document.body,
-                                  );
-                                }
-
-                                return draggableCard;
-                              }}
-                            </Draggable>
-                          ))}
-                          {droppableProvided.placeholder}
-                        </div>
-                      )}
-                    </Droppable>
+                    {isExpanded ? (
+                      <div className="mt-4 flex flex-col gap-2">
+                        {columns[column.status].map((application) => (
+                          <article
+                            className={`application-card ${column.borderClass} deco-frame cursor-default select-none border-border-gold-muted bg-deco-card px-3 py-2 font-sans text-deco-foreground shadow-sm transition-shadow hover:shadow-deco-glow`}
+                            key={application.id}
+                            onClick={() => openDetails(application)}
+                          >
+                            {renderApplicationCardContent(application)}
+                          </article>
+                        ))}
+                      </div>
+                    ) : null}
                   </section>
-                ))}
-              </div>
-            </DragDropContext>
+                );
+              })}
+            </div>
+          ) : null}
+
+          {!isLoading && filteredApplications.length > 0 ? (
+            <div className="hidden md:block">
+              <DragDropContext onDragEnd={(result) => void handleDragEnd(result)}>
+                <div className="grid min-h-0 flex-1 gap-5 md:grid-cols-4">
+                  {boardColumns.map((column) => (
+                    <section
+                    className={`kanban-column w-full ${column.frameClass} bg-deco-surface-soft p-4`}
+                      id={`column-${column.title.toLowerCase()}`}
+                      key={column.status}
+                    >
+                      <div className="border-b border-primary-gold pb-3">
+                        <div className="flex items-end justify-between gap-3">
+                          <div>
+                            <h3 className="text-2xl text-deco-foreground">
+                              {column.title}
+                            </h3>
+                            <p className="mt-1 text-sm text-deco-muted">
+                              {column.subtitle}
+                            </p>
+                          </div>
+                          <span className={column.accentClass}>
+                            {columns[column.status].length}
+                          </span>
+                        </div>
+                      </div>
+
+                      <Droppable droppableId={String(column.status)}>
+                        {(droppableProvided, droppableSnapshot) => (
+                          <div
+                            className={`mt-4 flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto pb-2 transition-colors ${
+                              droppableSnapshot.isDraggingOver
+                                ? "bg-primary-gold-muted"
+                                : ""
+                            }`}
+                            ref={droppableProvided.innerRef}
+                            {...droppableProvided.droppableProps}
+                          >
+                            {columns[column.status].map((application, index) => (
+                              <Draggable
+                                draggableId={application.id}
+                                index={index}
+                                key={application.id}
+                              >
+                                {(draggableProvided, draggableSnapshot) => {
+                                  const { style, ...draggableProps } =
+                                    draggableProvided.draggableProps;
+                                  const draggableCard = (
+                                    <article
+                                      className={`application-card ${column.borderClass} deco-frame cursor-grab select-none border-border-gold-muted bg-deco-card px-3 py-2 font-sans text-deco-foreground shadow-sm transition-shadow hover:shadow-deco-glow active:cursor-grabbing ${
+                                        draggableSnapshot.isDragging
+                                          ? "shadow-deco-glow"
+                                          : ""
+                                      }`}
+                                      key={application.id}
+                                      ref={draggableProvided.innerRef}
+                                      {...draggableProps}
+                                      {...draggableProvided.dragHandleProps}
+                                      style={style}
+                                      onClick={() => openDetails(application)}
+                                    >
+                                      {renderApplicationCardContent(application)}
+                                    </article>
+                                  );
+
+                                  if (
+                                    draggableSnapshot.isDragging &&
+                                    typeof document !== "undefined"
+                                  ) {
+                                    return createPortal(
+                                      draggableCard,
+                                      document.body,
+                                    );
+                                  }
+
+                                  return draggableCard;
+                                }}
+                              </Draggable>
+                            ))}
+                            {droppableProvided.placeholder}
+                          </div>
+                        )}
+                      </Droppable>
+                    </section>
+                  ))}
+                </div>
+              </DragDropContext>
+            </div>
           ) : null}
 
           <Dialog

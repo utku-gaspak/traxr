@@ -20,40 +20,42 @@ const RouteFallback = () => (
 
 function App() {
   return (
-    <BrowserRouter>
+    <div className="min-h-screen overflow-x-hidden">
+      <BrowserRouter>
         <Toaster
-        position="top-right"
-        toastOptions={{
-          className:
-            "deco-frame border-primary-gold bg-deco-card text-deco-foreground shadow-lg",
-          descriptionClassName: "text-deco-muted",
-        }}
-      />
-      <Suspense fallback={<RouteFallback />}>
-        <Routes>
-          <Route path="/login" element={<LoginPage />} />
-          <Route
-            path="/"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
-          {/* Keep unknown routes flowing through the protected root instead of rendering a dead end. */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-          <Route path="/register" element={<RegisterPage />} />
-        </Routes>
-      </Suspense>
-    </BrowserRouter>
+          position="top-right"
+          toastOptions={{
+            className:
+              "deco-frame border-primary-gold bg-deco-card text-deco-foreground shadow-lg",
+            descriptionClassName: "text-deco-muted",
+          }}
+        />
+        <Suspense fallback={<RouteFallback />}>
+          <Routes>
+            <Route path="/login" element={<LoginPage />} />
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            {/* Keep unknown routes flowing through the protected root instead of rendering a dead end. */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+            <Route path="/register" element={<RegisterPage />} />
+          </Routes>
+        </Suspense>
+      </BrowserRouter>
+    </div>
   );
 }
 
