@@ -33,6 +33,67 @@ describe('Dashboard', () => {
     })
   })
 
+  it('Dashboard_SortToggle_SortsApplicationsByDateAcrossColumns', async () => {
+    mockApiState.jobApplications = [
+      {
+        id: 'job-1',
+        companyName: 'Oldest Co',
+        position: 'Backend Engineer',
+        jobUrl: null,
+        location: null,
+        salaryRange: null,
+        jobDescription: null,
+        notes: null,
+        interestLevel: 3,
+        technicalStack: null,
+        status: JobApplicationStatus.Applied,
+        dateApplied: '2026-05-01T12:00:00.000Z',
+        userId: 'user-1',
+      },
+      {
+        id: 'job-2',
+        companyName: 'Newest Co',
+        position: 'Frontend Engineer',
+        jobUrl: null,
+        location: null,
+        salaryRange: null,
+        jobDescription: null,
+        notes: null,
+        interestLevel: 4,
+        technicalStack: null,
+        status: JobApplicationStatus.Applied,
+        dateApplied: '2026-05-12T12:00:00.000Z',
+        userId: 'user-1',
+      },
+    ]
+
+    const { container } = renderDashboard()
+
+    await screen.findByText('Newest Co')
+
+    const appliedCards = container.querySelectorAll(
+      '#column-applied article.application-card',
+    )
+
+    expect(appliedCards).toHaveLength(2)
+    expect(appliedCards[0]).toHaveTextContent('Newest Co')
+    expect(appliedCards[1]).toHaveTextContent('Oldest Co')
+
+    fireEvent.click(screen.getByRole('button', { name: 'Newest first' }))
+
+    await waitFor(() => {
+      const sortedAppliedCards = container.querySelectorAll(
+        '#column-applied article.application-card',
+      )
+
+      expect(sortedAppliedCards[0]).toHaveTextContent('Oldest Co')
+      expect(sortedAppliedCards[1]).toHaveTextContent('Newest Co')
+      expect(
+        screen.getByRole('button', { name: 'Oldest first' }),
+      ).toBeInTheDocument()
+    })
+  })
+
   it('Dashboard_ThemeToggle_SwitchesThemeMode', async () => {
     const { container } = renderDashboard()
 

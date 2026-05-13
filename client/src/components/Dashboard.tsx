@@ -7,6 +7,7 @@ import {
 } from "@hello-pangea/dnd";
 import {
   BadgePlus,
+  ArrowUpDown,
   ChevronDown,
   Diamond,
   ExternalLink,
@@ -63,6 +64,9 @@ const formatAppliedDate = (isoDate: string) =>
     month: "2-digit",
     year: "2-digit",
   }).format(new Date(isoDate));
+
+const getApplicationSortTime = (application: JobApplication) =>
+  new Date(application.dateApplied).getTime();
 
 const splitTechnicalStack = (value?: string | null) =>
   value
@@ -172,14 +176,21 @@ const boardColumns = [
   },
 ] as const;
 
-const buildColumns = (applications: JobApplication[]) =>
+const buildColumns = (
+  applications: JobApplication[],
+  sortOrder: "newest" | "oldest",
+) =>
   jobApplicationStatusOrder.reduce<
     Record<JobApplicationStatus, JobApplication[]>
   >(
     (columns, status) => {
-      columns[status] = applications.filter(
-        (application) => application.status === status,
-      );
+      columns[status] = applications
+        .filter((application) => application.status === status)
+        .sort((left, right) =>
+          sortOrder === "newest"
+            ? getApplicationSortTime(right) - getApplicationSortTime(left)
+            : getApplicationSortTime(left) - getApplicationSortTime(right),
+        );
       return columns;
     },
     {
@@ -196,12 +207,13 @@ const flattenColumns = (
 
 const reorderApplications = (
   applications: JobApplication[],
+  sortOrder: "newest" | "oldest",
   sourceStatus: JobApplicationStatus,
   destinationStatus: JobApplicationStatus,
   sourceIndex: number,
   destinationIndex: number,
 ) => {
-  const columns = buildColumns(applications);
+  const columns = buildColumns(applications, sortOrder);
   const sourceItems = [...columns[sourceStatus]];
   const [movedApplication] = sourceItems.splice(sourceIndex, 1);
 
@@ -256,6 +268,7 @@ const Dashboard = () => {
     useState<JobApplication | null>(null);
   const [isDetailEditing, setIsDetailEditing] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [sortOrder, setSortOrder] = useState<"newest" | "oldest">("newest");
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<
     JobApplicationStatus | "all"
@@ -282,8 +295,8 @@ const Dashboard = () => {
   );
 
   const columns = useMemo(
-    () => buildColumns(filteredApplications),
-    [filteredApplications],
+    () => buildColumns(filteredApplications, sortOrder),
+    [filteredApplications, sortOrder],
   );
 
   const selectedSkillSet = new Set(
@@ -292,6 +305,26 @@ const Dashboard = () => {
   const visibleAvailableSkills = availableSkills.filter(
     (skill) => !selectedSkillSet.has(skill.toLowerCase()),
   );
+
+  const profileStats = useMemo(() => {
+    const totalApplications = applications.length;
+    const interviewCount = applications.filter(
+      (application) => application.status === JobApplicationStatus.Interviewing,
+    ).length;
+    const offerCount = applications.filter(
+      (application) => application.status === JobApplicationStatus.Offer,
+    ).length;
+
+    const formatRate = (count: number) =>
+      totalApplications === 0
+        ? 0
+        : Math.round((count / totalApplications) * 100);
+
+    return {
+      interviewRate: formatRate(interviewCount),
+      offerRate: formatRate(offerCount),
+    };
+  }, [applications]);
 
   useEffect(() => {
     const loadApplications = async () => {
@@ -442,6 +475,7 @@ const Dashboard = () => {
 
     const reordered = reorderApplications(
       applications,
+      sortOrder,
       sourceStatus,
       destinationStatus,
       result.source.index,
@@ -568,6 +602,10 @@ const Dashboard = () => {
                 Total Applications
               </p>
             </div>
+            <div className="mt-3 space-y-1 text-[0.6rem] uppercase tracking-[0.15em] text-deco-muted">
+              <p>{profileStats.interviewRate}% interview rate</p>
+              <p>{profileStats.offerRate}% offer rate</p>
+            </div>
           </section>
 
           <div className="mt-4 flex w-full flex-col gap-3">
@@ -666,6 +704,19 @@ const Dashboard = () => {
               </div>
 
               <div className="flex items-center gap-2">
+                <Button
+                  className="h-10 px-4 text-[0.65rem] uppercase tracking-[0.18em]"
+                  onClick={() =>
+                    setSortOrder((current) =>
+                      current === "newest" ? "oldest" : "newest",
+                    )
+                  }
+                  type="button"
+                  variant={themeButtonVariant}
+                >
+                  <ArrowUpDown className="mr-2 h-4 w-4" />
+                  {sortOrder === "newest" ? "Newest first" : "Oldest first"}
+                </Button>
                 <Button
                   className="h-10 px-4 text-[0.65rem] uppercase tracking-[0.18em]"
                   onClick={clearAllFilters}
@@ -934,11 +985,11 @@ const Dashboard = () => {
                 className={`min-h-0 flex-1 px-3 py-2.5 ${
                   isDetailEditing
                     ? "overflow-y-auto lg:overflow-hidden"
-                    : "overflow-hidden"
+                    : "overflow-y-auto"
                 }`}
               >
                 {selectedApplication ? (
-                  <div className="flex min-h-full flex-col">
+                  <div className="flex min-h-full flex-col pb-2">
                     {isDetailEditing ? (
                       <JobApplicationForm
                         editingApplication={selectedApplication}
@@ -951,7 +1002,7 @@ const Dashboard = () => {
                         cancelLabel="Discard"
                       />
                     ) : (
-                      <div className="grid h-full min-h-0 gap-3 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
+                      <div className="grid min-h-0 gap-3 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
                         <section className="deco-frame flex h-full min-h-0 flex-col border-border-gold-muted bg-deco-surface px-2.5 py-2.5 shadow-sm">
                           <div className="flex items-start justify-between gap-3">
                             <div className="min-w-0">

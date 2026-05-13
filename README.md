@@ -2,16 +2,16 @@
 
 Job Application Tracker is a full-stack app for managing job applications with JWT authentication, per-user data isolation, and a compact React dashboard, Built to track my own job applications while learning ASP.NET Core because spreadsheets weren't cutting it.
 
-It supports status tracking, application details, drag-and-drop updates, and a top-of-board filter bar for search, status, interest level, and technical skills. The current test suite includes 67 automated tests across the backend and frontend.
+It supports status tracking, application details, drag-and-drop updates, and a top-of-board filter bar for search, status, interest level, and technical skills. The current test suite includes 70 automated tests across the backend and frontend.
 
 ## Screenshots
 
 The main UI flow is shown below.
 
-![Login screen](docs/screenshots/login.png)
-![Dashboard](docs/screenshots/application-dashboard-v2.png)
-![Create application](docs/screenshots/create-application.png)
-![Application details](docs/screenshots/application-details.png)
+![Login screen](docs/screenshots/login1.png)
+![Dashboard](docs/screenshots/dashboard1.png)
+![Application details](docs/screenshots/details.png)
+![Edit application](docs/screenshots/edit.png)
 
 ## Core Features
 
@@ -19,7 +19,7 @@ The main UI flow is shown below.
 - Per-user job application data
 - CRUD operations for job applications
 - Kanban status tracking for `Applied`, `Interviewing`, `Rejected`, and `Offer`
-- Optional application details, including job URL, location, salary range, job description, interest level, and technical stack
+- Optional application details, including job URL, location, salary range, job description, notes, interest level, and technical stack
 - Compact filter bar above the board with search, status, interest level, and skill transfer controls
 - Protected dashboard routes with persisted login state
 - Error handling for validation, authorization, server, and connection failures
