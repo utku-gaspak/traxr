@@ -24,6 +24,7 @@ The main UI flow is shown below.
 - Optional application details, including job URL, location, salary range, job description, notes, interest level, and technical stack
 - Compact filter bar above the board with search, status, interest level, and skill transfer controls
 - Drag-and-drop card movement with manual board ordering
+- Mobile accordion view for Kanban columns on small screens
 - Light and dark mode with a theme-aware favicon
 - Sort toggle for newest or oldest applications first
 - Protected dashboard routes with persisted login state
