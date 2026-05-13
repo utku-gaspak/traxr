@@ -771,7 +771,7 @@ const Dashboard = () => {
                   variant={themeButtonVariant}
                 >
                   <Filter className="mr-2 h-4 w-4" />
-                  More
+                  {isFilterOpen ? "Less" : "More"}
                   <ChevronDown
                     className={`ml-2 h-4 w-4 transition-transform ${
                       isFilterOpen ? "rotate-180" : ""
