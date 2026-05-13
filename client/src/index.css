@@ -201,10 +201,12 @@
   .application-card:hover {
     border-color: var(--color-accent);
     background-color: var(--color-muted);
-    transform: scale(1.01);
   }
 
   .kanban-column {
+    display: flex;
+    min-height: 0;
+    flex-direction: column;
     box-shadow: var(--shadow-panel);
     background-color: var(--color-surface-soft);
     border-radius: 6px;

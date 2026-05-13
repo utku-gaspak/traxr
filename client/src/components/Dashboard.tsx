@@ -21,6 +21,7 @@ import {
   User,
   X,
 } from "lucide-react";
+import { createPortal } from "react-dom";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { useAuth } from "../context/AuthContext";
@@ -630,7 +631,7 @@ const Dashboard = () => {
           </div>
         </aside>
 
-        <section className="flex min-h-0 flex-col gap-3">
+        <section className="flex min-h-0 flex-1 flex-col gap-3">
           <section className="deco-frame border-border-gold bg-deco-surface-soft p-4 shadow-deco-panel">
             <div className="flex flex-col gap-3 xl:flex-row xl:items-end xl:justify-between">
               <div className="grid flex-1 gap-3 xl:grid-cols-[minmax(0,2.2fr)_repeat(2,minmax(0,1fr))]">
@@ -883,7 +884,7 @@ const Dashboard = () => {
                     <Droppable droppableId={String(column.status)}>
                       {(droppableProvided, droppableSnapshot) => (
                         <div
-                          className={`mt-4 flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto transition-colors ${
+                          className={`mt-4 flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto pb-2 transition-colors ${
                             droppableSnapshot.isDraggingOver
                               ? "bg-primary-gold-muted"
                               : ""
@@ -897,36 +898,53 @@ const Dashboard = () => {
                               index={index}
                               key={application.id}
                             >
-                              {(draggableProvided, draggableSnapshot) => (
-                                <article
-                                  className={`application-card ${column.borderClass} deco-frame cursor-pointer border-border-gold-muted bg-deco-card px-3 py-2 font-sans text-deco-foreground shadow-sm transition-shadow hover:shadow-deco-glow ${
-                                    draggableSnapshot.isDragging
-                                      ? "shadow-deco-glow"
-                                      : ""
-                                  }`}
-                                  key={application.id}
-                                  ref={draggableProvided.innerRef}
-                                  {...draggableProvided.draggableProps}
-                                  {...draggableProvided.dragHandleProps}
-                                  onClick={() => openDetails(application)}
-                                >
-                                  <div className="grid min-w-0 gap-1">
-                                    <span className="truncate text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-deco-foreground">
-                                      {application.companyName}
-                                    </span>
-                                    <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
-                                      <span className="truncate text-left text-[0.72rem] tracking-[0.02em] text-deco-muted">
-                                        {application.position}
+                              {(draggableProvided, draggableSnapshot) => {
+                                const { style, ...draggableProps } =
+                                  draggableProvided.draggableProps;
+                                const draggableCard = (
+                                  <article
+                                    className={`application-card ${column.borderClass} deco-frame cursor-grab select-none border-border-gold-muted bg-deco-card px-3 py-2 font-sans text-deco-foreground shadow-sm transition-shadow hover:shadow-deco-glow active:cursor-grabbing ${
+                                      draggableSnapshot.isDragging
+                                        ? "shadow-deco-glow"
+                                        : ""
+                                    }`}
+                                    key={application.id}
+                                    ref={draggableProvided.innerRef}
+                                    {...draggableProps}
+                                    {...draggableProvided.dragHandleProps}
+                                    style={style}
+                                    onClick={() => openDetails(application)}
+                                  >
+                                    <div className="grid min-w-0 gap-1">
+                                      <span className="truncate text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-deco-foreground">
+                                        {application.companyName}
                                       </span>
-                                      <span className="shrink-0 text-right text-[0.68rem] tabular-nums tracking-[0.04em] text-deco-muted">
-                                        {formatAppliedDate(
-                                          application.dateApplied,
-                                        )}
-                                      </span>
+                                      <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
+                                        <span className="truncate text-left text-[0.72rem] tracking-[0.02em] text-deco-muted">
+                                          {application.position}
+                                        </span>
+                                        <span className="shrink-0 text-right text-[0.68rem] tabular-nums tracking-[0.04em] text-deco-muted">
+                                          {formatAppliedDate(
+                                            application.dateApplied,
+                                          )}
+                                        </span>
+                                      </div>
                                     </div>
-                                  </div>
-                                </article>
-                              )}
+                                  </article>
+                                );
+
+                                if (
+                                  draggableSnapshot.isDragging &&
+                                  typeof document !== "undefined"
+                                ) {
+                                  return createPortal(
+                                    draggableCard,
+                                    document.body,
+                                  );
+                                }
+
+                                return draggableCard;
+                              }}
                             </Draggable>
                           ))}
                           {droppableProvided.placeholder}
