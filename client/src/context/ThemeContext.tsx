@@ -35,11 +35,23 @@ const applyThemeToDocument = (theme: ThemeMode) => {
   document.documentElement.style.colorScheme = theme;
 };
 
+const applyFaviconToDocument = (theme: ThemeMode) => {
+  const favicon = document.getElementById("app-favicon");
+
+  if (favicon) {
+    favicon.setAttribute(
+      "href",
+      theme === "dark" ? "/favicon-dark.svg" : "/favicon-light.svg",
+    );
+  }
+};
+
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const [theme, setTheme] = useState<ThemeMode>(getInitialTheme);
 
   useEffect(() => {
     applyThemeToDocument(theme);
+    applyFaviconToDocument(theme);
     localStorage.setItem(THEME_STORAGE_KEY, theme);
   }, [theme]);
 

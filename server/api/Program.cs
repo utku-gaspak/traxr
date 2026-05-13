@@ -22,6 +22,16 @@ if (builder.Environment.IsDevelopment())
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
 var defaultConnection = RequiredConfiguration.GetDefaultConnection(builder.Configuration);
+var allowedOrigins =
+    builder.Configuration
+        .GetSection("Cors:AllowedOrigins")
+        .Get<string[]>()
+    ?? [
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "https://traxr.xyz",
+        "https://www.traxr.xyz",
+    ];
 
 builder.Services.AddCors(options =>
 {
@@ -29,11 +39,7 @@ builder.Services.AddCors(options =>
         "AllowReactApp",
         policy =>
         {
-            policy
-                .WithOrigins("http://localhost:5173")
-                .AllowAnyHeader()
-                .AllowAnyMethod()
-                .AllowCredentials();
+            policy.WithOrigins(allowedOrigins).AllowAnyHeader().AllowAnyMethod().AllowCredentials();
         }
     );
 });
