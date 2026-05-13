@@ -566,7 +566,7 @@ const Dashboard = () => {
   };
 
   return (
-    <main className="mx-auto flex h-[calc(100dvh/var(--ui-scale))] w-full max-w-[1600px] flex-col overflow-x-hidden px-3 py-3 lg:px-5">
+    <main className="mx-auto flex min-h-[calc(100dvh/var(--ui-scale))] w-full max-w-[1600px] flex-col overflow-x-hidden px-3 py-3 md:h-[calc(100dvh/var(--ui-scale))] lg:px-5">
       <header className="deco-frame-thick mb-4 flex w-full flex-col gap-3 px-4 py-4 shadow-deco-panel bg-deco-surface-soft sm:px-6 md:flex-row md:items-center md:justify-between">
         {" "}
         <div className="flex min-w-0 flex-col gap-2 md:flex-row md:items-center md:gap-4">
@@ -613,8 +613,8 @@ const Dashboard = () => {
           </Button>
         </div>
       </header>
-      <div className="grid min-h-0 flex-1 gap-5 lg:grid-cols-[260px_minmax(0,1fr)] lg:items-stretch">
-        <aside className="deco-frame flex min-h-0 w-full flex-col items-stretch overflow-hidden border-border-gold bg-deco-surface-soft p-5 shadow-deco-panel backdrop-blur md:p-6">
+      <div className="grid gap-5 lg:grid-cols-[360px_minmax(0,1fr)] lg:items-stretch lg:min-h-0 lg:flex-1">
+        <aside className="deco-frame flex h-auto min-h-0 w-full flex-col items-stretch overflow-visible border-border-gold bg-deco-surface-soft p-5 shadow-deco-panel backdrop-blur lg:h-full lg:overflow-hidden lg:p-6">
           <section className="deco-frame border-border-gold bg-deco-surface p-4 shadow-sm">
             <p className="text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-primary-gold">
               Profile
@@ -658,14 +658,14 @@ const Dashboard = () => {
               </div>
             </Button>
 
-            <p className="flex items-center gap-2 px-1 text-[0.65rem] font-medium uppercase tracking-[0.2em] text-deco-muted">
+            <p className="hidden items-center gap-2 px-1 text-[0.65rem] font-medium uppercase tracking-[0.2em] text-deco-muted md:flex">
               <span className="h-1 w-1 rounded-full bg-primary-gold" />
               Drag to update status
             </p>
           </div>
         </aside>
 
-        <section className="flex min-h-0 flex-1 flex-col gap-3">
+        <section className="flex min-h-0 flex-col gap-3 lg:flex-1">
           <section className="deco-frame w-full border-border-gold bg-deco-surface-soft p-4 shadow-deco-panel">
             <div className="flex flex-col gap-3 xl:flex-row xl:items-end xl:justify-between">
               <div className="grid flex-1 gap-3 xl:grid-cols-[minmax(0,2.2fr)_repeat(2,minmax(0,1fr))]">
@@ -951,11 +951,13 @@ const Dashboard = () => {
 
           {!isLoading && filteredApplications.length > 0 ? (
             <div className="hidden md:block">
-              <DragDropContext onDragEnd={(result) => void handleDragEnd(result)}>
+              <DragDropContext
+                onDragEnd={(result) => void handleDragEnd(result)}
+              >
                 <div className="grid min-h-0 flex-1 gap-5 md:grid-cols-4">
                   {boardColumns.map((column) => (
                     <section
-                    className={`kanban-column w-full ${column.frameClass} bg-deco-surface-soft p-4`}
+                      className={`kanban-column w-full ${column.frameClass} bg-deco-surface-soft p-4`}
                       id={`column-${column.title.toLowerCase()}`}
                       key={column.status}
                     >
@@ -986,47 +988,51 @@ const Dashboard = () => {
                             ref={droppableProvided.innerRef}
                             {...droppableProvided.droppableProps}
                           >
-                            {columns[column.status].map((application, index) => (
-                              <Draggable
-                                draggableId={application.id}
-                                index={index}
-                                key={application.id}
-                              >
-                                {(draggableProvided, draggableSnapshot) => {
-                                  const { style, ...draggableProps } =
-                                    draggableProvided.draggableProps;
-                                  const draggableCard = (
-                                    <article
-                                      className={`application-card ${column.borderClass} deco-frame cursor-grab select-none border-border-gold-muted bg-deco-card px-3 py-2 font-sans text-deco-foreground shadow-sm transition-shadow hover:shadow-deco-glow active:cursor-grabbing ${
-                                        draggableSnapshot.isDragging
-                                          ? "shadow-deco-glow"
-                                          : ""
-                                      }`}
-                                      key={application.id}
-                                      ref={draggableProvided.innerRef}
-                                      {...draggableProps}
-                                      {...draggableProvided.dragHandleProps}
-                                      style={style}
-                                      onClick={() => openDetails(application)}
-                                    >
-                                      {renderApplicationCardContent(application)}
-                                    </article>
-                                  );
-
-                                  if (
-                                    draggableSnapshot.isDragging &&
-                                    typeof document !== "undefined"
-                                  ) {
-                                    return createPortal(
-                                      draggableCard,
-                                      document.body,
+                            {columns[column.status].map(
+                              (application, index) => (
+                                <Draggable
+                                  draggableId={application.id}
+                                  index={index}
+                                  key={application.id}
+                                >
+                                  {(draggableProvided, draggableSnapshot) => {
+                                    const { style, ...draggableProps } =
+                                      draggableProvided.draggableProps;
+                                    const draggableCard = (
+                                      <article
+                                        className={`application-card ${column.borderClass} deco-frame cursor-grab select-none border-border-gold-muted bg-deco-card px-3 py-2 font-sans text-deco-foreground shadow-sm transition-shadow hover:shadow-deco-glow active:cursor-grabbing ${
+                                          draggableSnapshot.isDragging
+                                            ? "shadow-deco-glow"
+                                            : ""
+                                        }`}
+                                        key={application.id}
+                                        ref={draggableProvided.innerRef}
+                                        {...draggableProps}
+                                        {...draggableProvided.dragHandleProps}
+                                        style={style}
+                                        onClick={() => openDetails(application)}
+                                      >
+                                        {renderApplicationCardContent(
+                                          application,
+                                        )}
+                                      </article>
                                     );
-                                  }
 
-                                  return draggableCard;
-                                }}
-                              </Draggable>
-                            ))}
+                                    if (
+                                      draggableSnapshot.isDragging &&
+                                      typeof document !== "undefined"
+                                    ) {
+                                      return createPortal(
+                                        draggableCard,
+                                        document.body,
+                                      );
+                                    }
+
+                                    return draggableCard;
+                                  }}
+                                </Draggable>
+                              ),
+                            )}
                             {droppableProvided.placeholder}
                           </div>
                         )}
