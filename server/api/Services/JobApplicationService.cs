@@ -32,7 +32,18 @@ public class JobApplicationService(AppDbContext dbContext) : IJobApplicationServ
         };
 
         dbContext.JobApplications.Add(jobApplication);
-        await dbContext.SaveChangesAsync();
+        try
+        {
+            await dbContext.SaveChangesAsync();
+        }
+        catch (PostgresException ex) when (IsMissingNotesColumn(ex))
+        {
+            dbContext.ChangeTracker.Clear();
+            await EnsureNotesColumnExistsAsync();
+            dbContext.JobApplications.Add(jobApplication);
+            await dbContext.SaveChangesAsync();
+        }
+
         return jobApplication;
     }
 
@@ -91,7 +102,15 @@ public class JobApplicationService(AppDbContext dbContext) : IJobApplicationServ
         jobApplication.Status = dto.Status;
         jobApplication.DateApplied = dto.DateApplied;
 
-        await dbContext.SaveChangesAsync();
+        try
+        {
+            await dbContext.SaveChangesAsync();
+        }
+        catch (PostgresException ex) when (IsMissingNotesColumn(ex))
+        {
+            await EnsureNotesColumnExistsAsync();
+            await dbContext.SaveChangesAsync();
+        }
     }
 
     public async Task<bool> DeleteAsync(string id, string userId)
@@ -217,4 +236,10 @@ public class JobApplicationService(AppDbContext dbContext) : IJobApplicationServ
     private static bool IsMissingNotesColumn(PostgresException exception) =>
         exception.SqlState == PostgresErrorCodes.UndefinedColumn
         && exception.MessageText.Contains("Notes", StringComparison.OrdinalIgnoreCase);
+
+    private async Task EnsureNotesColumnExistsAsync() =>
+        await dbContext.Database.ExecuteSqlRawAsync("""
+            ALTER TABLE "JobApplications"
+            ADD COLUMN IF NOT EXISTS "Notes" text NULL;
+            """);
 }
