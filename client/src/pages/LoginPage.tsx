@@ -71,10 +71,10 @@ const LoginPage = () => {
           <div className="mt-8 flex items-center gap-4 text-sm uppercase tracking-[0.14em] text-deco-muted">
             <span className="inline-flex items-center gap-2">
               <BriefcaseBusiness className="h-4 w-4 text-primary-gold" />
-              .NET 10 — REACT CORE
+              APPLY — LOG
             </span>
             <span className="h-px w-8 bg-border-gold" />
-            <span>SECURE LOGIN</span>
+            <span>TRACK</span>
           </div>
         </section>
 
