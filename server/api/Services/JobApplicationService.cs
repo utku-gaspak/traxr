@@ -22,6 +22,7 @@ public class JobApplicationService(AppDbContext dbContext) : IJobApplicationServ
             Location = NormalizeOptionalText(dto.Location),
             SalaryRange = NormalizeOptionalText(dto.SalaryRange),
             JobDescription = NormalizeOptionalText(dto.JobDescription),
+            Notes = NormalizeOptionalText(dto.Notes),
             InterestLevel = dto.InterestLevel,
             TechnicalStack = NormalizeOptionalText(dto.TechnicalStack),
             Status = dto.Status,
@@ -69,6 +70,7 @@ public class JobApplicationService(AppDbContext dbContext) : IJobApplicationServ
         jobApplication.Location = NormalizeOptionalText(dto.Location);
         jobApplication.SalaryRange = NormalizeOptionalText(dto.SalaryRange);
         jobApplication.JobDescription = NormalizeOptionalText(dto.JobDescription);
+        jobApplication.Notes = NormalizeOptionalText(dto.Notes);
         jobApplication.InterestLevel = dto.InterestLevel;
         jobApplication.TechnicalStack = NormalizeOptionalText(dto.TechnicalStack);
         jobApplication.Status = dto.Status;

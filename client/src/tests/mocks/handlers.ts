@@ -14,6 +14,7 @@ interface CreateJobApplicationBody {
   location?: string | null
   salaryRange?: string | null
   jobDescription?: string | null
+  notes?: string | null
   interestLevel?: number | null
   technicalStack?: string | null
   status: JobApplicationStatus
@@ -102,6 +103,7 @@ export const handlers = [
       location: body.location ?? null,
       salaryRange: body.salaryRange ?? null,
       jobDescription: body.jobDescription ?? null,
+      notes: body.notes ?? null,
       interestLevel: body.interestLevel ?? null,
       technicalStack: body.technicalStack ?? null,
       status: body.status,
@@ -128,6 +130,7 @@ export const handlers = [
             location: body.location ?? null,
             salaryRange: body.salaryRange ?? null,
             jobDescription: body.jobDescription ?? null,
+            notes: body.notes ?? null,
             interestLevel: body.interestLevel ?? null,
             technicalStack: body.technicalStack ?? null,
             status: body.status,

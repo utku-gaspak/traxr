@@ -96,6 +96,7 @@ public class JobApplicationsControllerTests
             "Remote",
             "$100k - $120k",
             "Full role description",
+            "Private note",
             4,
             "C#, React",
             JobApplicationStatus.Applied
@@ -109,6 +110,7 @@ public class JobApplicationsControllerTests
             Location = dto.Location,
             SalaryRange = dto.SalaryRange,
             JobDescription = dto.JobDescription,
+            Notes = dto.Notes,
             InterestLevel = dto.InterestLevel,
             TechnicalStack = dto.TechnicalStack,
             Status = dto.Status,
@@ -145,6 +147,7 @@ public class JobApplicationsControllerTests
             "London",
             null,
             "Updated role description",
+            "Updated note",
             3,
             "TypeScript, .NET",
             JobApplicationStatus.Interviewing,

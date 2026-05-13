@@ -30,6 +30,9 @@ public class JobApplication
     [Column(TypeName = "text")]
     public string? JobDescription { get; set; }
 
+    [Column(TypeName = "text")]
+    public string? Notes { get; set; }
+
     public int? InterestLevel { get; set; }
 
     public string? TechnicalStack { get; set; }

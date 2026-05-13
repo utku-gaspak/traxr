@@ -236,6 +236,9 @@ namespace api.Migrations
                     b.Property<string>("JobDescription")
                         .HasColumnType("text");
 
+                    b.Property<string>("Notes")
+                        .HasColumnType("text");
+
                     b.Property<string>("JobUrl")
                         .HasColumnType("text");
 

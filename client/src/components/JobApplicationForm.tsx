@@ -34,6 +34,7 @@ const initialFormState: JobApplicationCreateInput = {
   location: "",
   salaryRange: "",
   jobDescription: "",
+  notes: "",
   interestLevel: null,
   technicalStack: "",
   status: JobApplicationStatus.Applied,
@@ -75,6 +76,7 @@ const JobApplicationForm = ({
         location: editingApplication.location ?? "",
         salaryRange: editingApplication.salaryRange ?? "",
         jobDescription: editingApplication.jobDescription ?? "",
+        notes: editingApplication.notes ?? "",
         interestLevel: editingApplication.interestLevel ?? null,
         technicalStack: editingApplication.technicalStack ?? "",
         status: editingApplication.status,
@@ -183,6 +185,7 @@ const JobApplicationForm = ({
           location: form.location,
           salaryRange: form.salaryRange,
           jobDescription: form.jobDescription,
+          notes: form.notes,
           interestLevel: form.interestLevel,
           technicalStack: nextTechnicalStack,
           status: form.status,
@@ -210,247 +213,241 @@ const JobApplicationForm = ({
 
   return (
     <form
-      className="grid gap-3 p-4 md:grid-cols-2 md:gap-3"
+      className="grid h-full min-h-0 gap-3 p-4 lg:grid-cols-[minmax(0,420px)_minmax(0,1fr)] lg:gap-4"
       noValidate
       onSubmit={handleSubmit}
     >
-      <label className="grid gap-1.5 md:col-span-2">
-        <span className={labelCompactClass}>
-          Company Name
-        </span>
-        <Input
-          aria-label="Company Name"
-          className={`${fieldSurfaceClass} ${fieldCompactClass}`}
-          value={form.companyName}
-          onChange={(event) => {
-            const value = event.target.value;
-            setForm((current) => ({ ...current, companyName: value }));
-            setValidationErrors((current) => ({
-              ...current,
-              companyName: undefined,
-            }));
-          }}
-          placeholder="Example: Stripe"
-          required
-        />
-        {validationErrors.companyName ? (
-          <span className="text-sm text-danger">
-            {validationErrors.companyName}
-          </span>
-        ) : null}
-      </label>
-
-      <label className="grid gap-1.5">
-        <span className={labelCompactClass}>
-          Position
-        </span>
-        <Input
-          aria-label="Position"
-          className={`${fieldSurfaceClass} ${fieldCompactClass}`}
-          value={form.position}
-          onChange={(event) => {
-            const value = event.target.value;
-            setForm((current) => ({ ...current, position: value }));
-            setValidationErrors((current) => ({
-              ...current,
-              position: undefined,
-            }));
-          }}
-          placeholder="Example: Backend Engineer"
-          required
-        />
-        {validationErrors.position ? (
-          <span className="text-sm text-danger">
-            {validationErrors.position}
-          </span>
-        ) : null}
-      </label>
-
-      <label className="grid gap-1.5">
-        <span className={labelCompactClass}>
-          Status
-        </span>
-        <select
-          aria-label="Status"
-          className={`deco-frame h-10 border-border-gold-muted ${fieldSurfaceClass} px-2.5 py-2 text-sm shadow-sm outline-none transition-colors focus:border-primary-gold focus:ring-2 focus:ring-primary-gold-muted`}
-          value={form.status}
-          onChange={(event) =>
-            setForm((current) => ({
-              ...current,
-              status: Number(event.target.value) as JobApplicationStatus,
-            }))
-          }
-        >
-          {Object.values(JobApplicationStatus)
-            .filter(
-              (value): value is JobApplicationStatus =>
-                typeof value === "number",
-            )
-            .map((value) => (
-              <option key={value} value={value}>
-                {jobApplicationStatusLabels[value]}
-              </option>
-            ))}
-        </select>
-      </label>
-
-      <label className="grid gap-1.5">
-        <span className={labelCompactClass}>
-          Job URL
-        </span>
-        <Input
-          aria-label="Job URL"
-          className={`${fieldSurfaceClass} ${fieldCompactClass}`}
-          value={form.jobUrl ?? ""}
-          onChange={(event) =>
-            setForm((current) => ({
-              ...current,
-              jobUrl: event.target.value,
-            }))
-          }
-          placeholder="https://..."
-        />
-      </label>
-
-      <label className="grid gap-1.5">
-        <span className={labelCompactClass}>
-          Location
-        </span>
-        <Input
-          aria-label="Location"
-          className={`${fieldSurfaceClass} ${fieldCompactClass}`}
-          value={form.location ?? ""}
-          onChange={(event) =>
-            setForm((current) => ({
-              ...current,
-              location: event.target.value,
-            }))
-          }
-          placeholder="Remote / Essen"
-        />
-      </label>
-
-      <label className="grid gap-1.5">
-        <span className={labelCompactClass}>
-          Salary Range
-        </span>
-        <Input
-          aria-label="Salary Range"
-          className={`${fieldSurfaceClass} ${fieldCompactClass}`}
-          value={form.salaryRange ?? ""}
-          onChange={(event) =>
-            setForm((current) => ({
-              ...current,
-              salaryRange: event.target.value,
-            }))
-          }
-          placeholder="48k€ - 54k€"
-        />
-      </label>
-
-      <label className="grid gap-1.5">
-        <span className="flex items-center justify-between gap-3">
-          <span className={labelCompactClass}>
-            Interest Level
-          </span>
-          <span
-            aria-live="polite"
-            className={`deco-frame border-border-gold-muted ${fieldSurfaceClass} px-1.5 py-0.5 text-[0.65rem] font-semibold uppercase tracking-[0.1em] text-primary-gold`}
-          >
-          {form.interestLevel ?? defaultInterestLevel}/5
-          </span>
-        </span>
-        <input
-          aria-label="Interest Level"
-          className="deco-range-slider"
-          max={5}
-          min={1}
-          step={1}
-          type="range"
-          value={form.interestLevel ?? defaultInterestLevel}
-          onChange={(event) =>
-            setForm((current) => ({
-              ...current,
-              interestLevel: Number(event.target.value),
-            }))
-          }
-        />
-      </label>
-
-      <div className="grid gap-1.5">
-        <span className={labelCompactClass}>
-          Technical Stack
-        </span>
-        <div className="grid gap-1.5">
-          {technicalStackSkills.length > 0 ? (
-            <div
-              aria-label="Selected technical stack"
-              className={`deco-frame flex min-h-10 flex-wrap gap-1.5 border-border-gold-muted ${fieldSurfaceClass} p-1.5`}
-            >
-              {technicalStackSkills.map((skill) => (
-                <span
-                  className={chipCompactClass}
-                  key={skill}
-                >
-                  {skill}
-                  <button
-                    aria-label={`Remove ${skill}`}
-                    className="text-deco-muted transition-colors hover:text-danger focus:outline-none focus:ring-2 focus:ring-primary-gold-muted"
-                    onClick={() => removeTechnicalStackSkill(skill)}
-                    type="button"
-                  >
-                    <X aria-hidden="true" className="size-2.5" />
-                  </button>
-                </span>
-              ))}
-            </div>
-          ) : null}
+      <div className="flex min-h-0 flex-col gap-1.5 lg:h-full">
+        <label className="grid gap-1">
+          <span className={labelCompactClass}>Company Name</span>
           <Input
-            aria-label="Technical Stack"
+            aria-label="Company Name"
             className={`${fieldSurfaceClass} ${fieldCompactClass}`}
-            value={technicalStackDraft}
-            onBlur={addTechnicalStackSkill}
-            onChange={(event) => setTechnicalStackDraft(event.target.value)}
-            onKeyDown={handleTechnicalStackKeyDown}
-            placeholder="Type a skill and press Enter"
+            value={form.companyName}
+            onChange={(event) => {
+              const value = event.target.value;
+              setForm((current) => ({ ...current, companyName: value }));
+              setValidationErrors((current) => ({
+                ...current,
+                companyName: undefined,
+              }));
+            }}
+            placeholder="Example: Stripe"
+            required
           />
+          {validationErrors.companyName ? (
+            <span className="text-[0.65rem] text-danger">
+              {validationErrors.companyName}
+            </span>
+          ) : null}
+        </label>
+
+        <label className="grid gap-1">
+          <span className={labelCompactClass}>Position</span>
+          <Input
+            aria-label="Position"
+            className={`${fieldSurfaceClass} ${fieldCompactClass}`}
+            value={form.position}
+            onChange={(event) => {
+              const value = event.target.value;
+              setForm((current) => ({ ...current, position: value }));
+              setValidationErrors((current) => ({
+                ...current,
+                position: undefined,
+              }));
+            }}
+            placeholder="Example: Backend Engineer"
+            required
+          />
+          {validationErrors.position ? (
+            <span className="text-[0.65rem] text-danger">
+              {validationErrors.position}
+            </span>
+          ) : null}
+        </label>
+
+        <label className="grid gap-1">
+          <span className={labelCompactClass}>Status</span>
+          <select
+            aria-label="Status"
+            className={`deco-frame h-9 border-border-gold-muted ${fieldSurfaceClass} px-2.5 py-1.5 text-sm shadow-sm outline-none transition-colors focus:border-primary-gold focus:ring-2 focus:ring-primary-gold-muted`}
+            value={form.status}
+            onChange={(event) =>
+              setForm((current) => ({
+                ...current,
+                status: Number(event.target.value) as JobApplicationStatus,
+              }))
+            }
+          >
+            {Object.values(JobApplicationStatus)
+              .filter(
+                (value): value is JobApplicationStatus =>
+                  typeof value === "number",
+              )
+              .map((value) => (
+                <option key={value} value={value}>
+                  {jobApplicationStatusLabels[value]}
+                </option>
+              ))}
+          </select>
+        </label>
+
+        <label className="grid gap-1">
+          <span className={labelCompactClass}>Location</span>
+          <Input
+            aria-label="Location"
+            className={`${fieldSurfaceClass} ${fieldCompactClass}`}
+            value={form.location ?? ""}
+            onChange={(event) =>
+              setForm((current) => ({
+                ...current,
+                location: event.target.value,
+              }))
+            }
+            placeholder="Remote / Essen"
+          />
+        </label>
+
+        <label className="grid gap-1">
+          <span className={labelCompactClass}>Salary Range</span>
+          <Input
+            aria-label="Salary Range"
+            className={`${fieldSurfaceClass} ${fieldCompactClass}`}
+            value={form.salaryRange ?? ""}
+            onChange={(event) =>
+              setForm((current) => ({
+                ...current,
+                salaryRange: event.target.value,
+              }))
+            }
+            placeholder="48k€ - 54k€"
+          />
+        </label>
+
+        <label className="grid gap-1">
+          <span className="flex items-center justify-between gap-3">
+            <span className={labelCompactClass}>Interest Level</span>
+            <span
+              aria-live="polite"
+              className={`deco-frame border-border-gold-muted ${fieldSurfaceClass} px-1.5 py-0.5 text-[0.65rem] font-semibold uppercase tracking-[0.1em] text-primary-gold`}
+            >
+              {form.interestLevel ?? defaultInterestLevel}/5
+            </span>
+          </span>
+          <input
+            aria-label="Interest Level"
+            className="deco-range-slider"
+            max={5}
+            min={1}
+            step={1}
+            type="range"
+            value={form.interestLevel ?? defaultInterestLevel}
+            onChange={(event) =>
+              setForm((current) => ({
+                ...current,
+                interestLevel: Number(event.target.value),
+              }))
+            }
+          />
+        </label>
+
+        {errorMessage ? (
+          <p className="deco-frame border-danger bg-danger-soft px-3 py-2 text-[0.68rem] text-danger">
+            {errorMessage}
+          </p>
+        ) : null}
+
+        <div className="mt-auto grid gap-1 border-t border-primary-gold-muted pt-2">
+          <Button
+            className="h-9 w-full justify-center"
+            size="sm"
+            type="submit"
+            disabled={isSubmitting}
+          >
+            {isSubmitting
+              ? submittingLabel
+              : (submitLabel ??
+                (editingApplication ? "Save Changes" : "Add Application"))}
+          </Button>
+          <Button
+            className="h-9 w-full justify-center"
+            size="sm"
+            variant="ghost"
+            type="button"
+            onClick={onCancelEdit}
+          >
+            {cancelLabel}
+          </Button>
         </div>
       </div>
 
-      <label className="grid gap-1.5">
-        <span className={labelCompactClass}>
-          Job Description
-        </span>
-        <Textarea
-          aria-label="Job Description"
-          className={`${fieldSurfaceClass} min-h-[6.5rem]`}
-          value={form.jobDescription ?? ""}
-          onChange={(event) =>
-            setForm((current) => ({
-              ...current,
-              jobDescription: event.target.value,
-            }))
-          }
-          placeholder="Paste the full job post here for future reference..."
-        />
-      </label>
+      <div className="flex min-h-0 flex-col gap-1.5 lg:h-full">
+        <div className="grid gap-1.5">
+          <span className={labelCompactClass}>Technical Stack</span>
+          <div className="grid gap-1.5">
+            {technicalStackSkills.length > 0 ? (
+              <div
+                aria-label="Selected technical stack"
+                className={`deco-frame flex min-h-10 flex-wrap gap-1.5 border-border-gold-muted ${fieldSurfaceClass} p-1.5`}
+              >
+                {technicalStackSkills.map((skill) => (
+                  <span className={chipCompactClass} key={skill}>
+                    {skill}
+                    <button
+                      aria-label={`Remove ${skill}`}
+                      className="text-deco-muted transition-colors hover:text-danger focus:outline-none focus:ring-2 focus:ring-primary-gold-muted"
+                      onClick={() => removeTechnicalStackSkill(skill)}
+                      type="button"
+                    >
+                      <X aria-hidden="true" className="size-2.5" />
+                    </button>
+                  </span>
+                ))}
+              </div>
+            ) : null}
+            <Input
+              aria-label="Technical Stack"
+              className={`${fieldSurfaceClass} ${fieldCompactClass}`}
+              value={technicalStackDraft}
+              onBlur={addTechnicalStackSkill}
+              onChange={(event) => setTechnicalStackDraft(event.target.value)}
+              onKeyDown={handleTechnicalStackKeyDown}
+              placeholder="Type a skill and press Enter"
+            />
+          </div>
+        </div>
 
-      {errorMessage ? (
-        <p className="deco-frame border-danger bg-danger-soft px-3 py-2 text-sm text-danger md:col-span-2">
-          {errorMessage}
-        </p>
-      ) : null}
+        <label className="flex min-h-0 flex-1 flex-col gap-1">
+          <span className={labelCompactClass}>Job Description</span>
+          <Textarea
+            aria-label="Job Description"
+            className={`${fieldSurfaceClass} min-h-0 flex-1 resize-none`}
+            value={form.jobDescription ?? ""}
+            onChange={(event) =>
+              setForm((current) => ({
+                ...current,
+                jobDescription: event.target.value,
+              }))
+            }
+            placeholder="Paste the full job post here for future reference..."
+          />
+        </label>
 
-      <div className="grid gap-1 border-t border-primary-gold-muted pt-2 md:col-span-2">
-        <Button className="h-9 w-full justify-center" size="sm" type="submit" disabled={isSubmitting}>
-          {isSubmitting
-            ? submittingLabel
-            : (submitLabel ??
-              (editingApplication ? "Save Changes" : "Add Application"))}
-        </Button>
-        <Button className="h-9 w-full justify-center" size="sm" variant="ghost" type="button" onClick={onCancelEdit}>
-          {cancelLabel}
-        </Button>
+        <label className="flex flex-col gap-1">
+          <span className={labelCompactClass}>Notes</span>
+          <Textarea
+            aria-label="Notes"
+            className={`${fieldSurfaceClass} min-h-[5.5rem] resize-none`}
+            value={form.notes ?? ""}
+            onChange={(event) =>
+              setForm((current) => ({
+                ...current,
+                notes: event.target.value,
+              }))
+            }
+            placeholder="Add private notes for later reference..."
+          />
+        </label>
       </div>
     </form>
   );

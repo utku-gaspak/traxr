@@ -20,7 +20,7 @@ const SheetContent = ({ className, children, ...props }: DialogPrimitive.DialogC
     <SheetOverlay />
     <DialogPrimitive.Content
       className={cn(
-        "deco-frame fixed left-1/2 top-1/2 z-50 flex h-[min(84vh,42rem)] w-[min(94vw,44rem)] -translate-x-1/2 -translate-y-1/2 flex-col border-primary-gold bg-deco-bg shadow-2xl",
+        "deco-frame fixed left-1/2 top-1/2 z-50 flex h-[min(86vh,48rem)] w-[min(96vw,65rem)] -translate-x-1/2 -translate-y-1/2 flex-col overflow-hidden border-primary-gold bg-deco-bg shadow-2xl",
         className,
       )}
       {...props}

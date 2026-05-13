@@ -400,6 +400,7 @@ const Dashboard = () => {
           location: input.location ?? null,
           salaryRange: input.salaryRange ?? null,
           jobDescription: input.jobDescription ?? null,
+          notes: input.notes ?? null,
           interestLevel: input.interestLevel ?? null,
           technicalStack: input.technicalStack ?? null,
           status: input.status,
@@ -471,6 +472,7 @@ const Dashboard = () => {
         location: reordered.movedApplication.location ?? undefined,
         salaryRange: reordered.movedApplication.salaryRange ?? undefined,
         jobDescription: reordered.movedApplication.jobDescription ?? undefined,
+        notes: reordered.movedApplication.notes ?? undefined,
         interestLevel: reordered.movedApplication.interestLevel ?? undefined,
         technicalStack: reordered.movedApplication.technicalStack ?? undefined,
         status: reordered.movedApplication.status,
@@ -892,7 +894,7 @@ const Dashboard = () => {
               setIsCreateDialogOpen(open);
             }}
           >
-            <DialogContent className="max-h-[92vh] w-[min(94vw,44rem)] overflow-y-auto p-0">
+            <DialogContent className="max-h-[92vh] w-[min(96vw,65rem)] overflow-y-auto lg:overflow-hidden p-0">
               <DialogHeader>
                 <DialogTitle>Add Application</DialogTitle>
                 <DialogDescription>
@@ -928,7 +930,13 @@ const Dashboard = () => {
                   {selectedApplication?.position ?? "Application details"}
                 </SheetDescription>
               </SheetHeader>
-              <div className="min-h-0 flex-1 overflow-y-auto px-3 py-2.5">
+              <div
+                className={`min-h-0 flex-1 px-3 py-2.5 ${
+                  isDetailEditing
+                    ? "overflow-y-auto lg:overflow-hidden"
+                    : "overflow-hidden"
+                }`}
+              >
                 {selectedApplication ? (
                   <div className="flex min-h-full flex-col">
                     {isDetailEditing ? (
@@ -943,8 +951,8 @@ const Dashboard = () => {
                         cancelLabel="Discard"
                       />
                     ) : (
-                      <>
-                        <section className="border-b border-primary-gold-muted pb-2.5">
+                      <div className="grid h-full min-h-0 gap-3 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
+                        <section className="deco-frame flex h-full min-h-0 flex-col border-border-gold-muted bg-deco-surface px-2.5 py-2.5 shadow-sm">
                           <div className="flex items-start justify-between gap-3">
                             <div className="min-w-0">
                               <p className="text-[0.52rem] font-semibold uppercase tracking-[0.16em] text-primary-gold">
@@ -962,25 +970,25 @@ const Dashboard = () => {
                                 jobApplicationStatusLabels[
                                   selectedApplication.status
                                 ]
-                              }
-                            </Badge>
+                                }
+                              </Badge>
                           </div>
 
                           <div className="mt-2.5 grid gap-1.5 sm:grid-cols-2">
                             {detailRows(selectedApplication).map((row) => (
                               <div
                                 key={row.label}
-                                className="deco-frame min-w-0 border-border-gold-muted bg-deco-surface px-2.5 py-1.5"
+                                className="deco-frame min-w-0 border-border-gold-muted bg-deco-surface-soft px-2 py-1.5"
                               >
                                 <p className="text-[0.45rem] font-semibold uppercase tracking-[0.1em] text-primary-gold">
                                   {row.label}
                                 </p>
-                                <p className="mt-0.5 truncate text-[0.7rem] leading-4 text-deco-foreground">
+                                <p className="mt-0.5 truncate text-[0.68rem] leading-4 text-deco-foreground">
                                   {row.value}
                                 </p>
                               </div>
                             ))}
-                            <div className="deco-frame min-w-0 border-border-gold-muted bg-deco-surface px-2.5 py-1.5 sm:col-span-2">
+                            <div className="deco-frame min-w-0 border-border-gold-muted bg-deco-surface-soft px-2 py-1.5 sm:col-span-2">
                               <p className="text-[0.45rem] font-semibold uppercase tracking-[0.1em] text-primary-gold">
                                 Technical Stack
                               </p>
@@ -992,7 +1000,7 @@ const Dashboard = () => {
                                     selectedApplication.technicalStack,
                                   ).map((skill) => (
                                     <span
-                                      className="deco-frame max-w-full break-words border-border-gold-muted bg-deco-card px-1.5 py-0.5 text-[0.6rem] font-semibold uppercase tracking-[0.08em] text-deco-foreground"
+                                      className="deco-frame max-w-full break-words border-border-gold-muted bg-deco-card px-1.5 py-0.5 text-[0.58rem] font-semibold uppercase tracking-[0.08em] text-deco-foreground"
                                       key={skill}
                                     >
                                       {skill}
@@ -1000,12 +1008,12 @@ const Dashboard = () => {
                                   ))}
                                 </div>
                               ) : (
-                                <p className="mt-1 text-[0.7rem] leading-4 text-deco-foreground">
+                                <p className="mt-1 text-[0.68rem] leading-4 text-deco-foreground">
                                   Not provided
                                 </p>
                               )}
                             </div>
-                            <div className="deco-frame border-border-gold-muted bg-deco-surface px-2.5 py-1.5">
+                            <div className="deco-frame border-border-gold-muted bg-deco-surface-soft px-2 py-1.5">
                               <p className="text-[0.45rem] font-semibold uppercase tracking-[0.1em] text-primary-gold">
                                 Interest Level
                               </p>
@@ -1023,13 +1031,13 @@ const Dashboard = () => {
                                 ))}
                               </div>
                             </div>
-                            <div className="deco-frame min-w-0 border-border-gold-muted bg-deco-surface px-2.5 py-1.5">
+                            <div className="deco-frame min-w-0 border-border-gold-muted bg-deco-surface-soft px-2 py-1.5">
                               <p className="text-[0.45rem] font-semibold uppercase tracking-[0.1em] text-primary-gold">
                                 Job URL
                               </p>
                               {selectedApplication.jobUrl ? (
                                 <a
-                                  className="inline-flex items-center gap-1.5 text-[0.7rem] text-deco-foreground underline decoration-primary-gold underline-offset-4 transition-colors hover:text-primary-gold"
+                                  className="inline-flex items-center gap-1.5 text-[0.68rem] text-deco-foreground underline decoration-primary-gold underline-offset-4 transition-colors hover:text-primary-gold"
                                   href={selectedApplication.jobUrl}
                                   rel="noreferrer"
                                   target="_blank"
@@ -1038,29 +1046,14 @@ const Dashboard = () => {
                                   <span className="truncate">Open posting</span>
                                 </a>
                               ) : (
-                                <p className="mt-1 text-[0.7rem] leading-4 text-deco-foreground">
+                                <p className="mt-1 text-[0.68rem] leading-4 text-deco-foreground">
                                   Not provided
                                 </p>
                               )}
                             </div>
                           </div>
-                        </section>
 
-                        <section className="mt-3 flex min-h-0 flex-1 flex-col space-y-1.5 pb-3">
-                          <div className="flex items-center gap-2">
-                            <FileText className="h-3 w-3 text-primary-gold" />
-                            <h4 className="text-[0.9rem] text-deco-foreground">
-                              Job Description
-                            </h4>
-                          </div>
-                          <div className="deco-frame min-h-[12rem] flex-1 overflow-y-auto border-border-gold-muted bg-deco-surface-soft p-3 shadow-sm">
-                            <pre className="whitespace-pre-wrap break-words font-mono text-[0.7rem] leading-5 text-deco-foreground">
-                              {selectedApplication.jobDescription?.trim()
-                                ? selectedApplication.jobDescription
-                                : "No job description saved."}
-                            </pre>
-                          </div>
-                          <div className="mt-2 grid gap-1.5 border-t border-primary-gold-muted pt-2">
+                          <div className="mt-auto grid gap-1.5 border-t border-primary-gold-muted pt-2">
                             <Button
                               className="w-full justify-center"
                               size="sm"
@@ -1081,7 +1074,35 @@ const Dashboard = () => {
                             </Button>
                           </div>
                         </section>
-                      </>
+
+                        <section className="deco-frame flex h-full min-h-0 flex-col border-border-gold-muted bg-deco-surface-soft p-3 shadow-sm">
+                          <div className="flex items-center gap-2 border-b border-primary-gold-muted pb-2">
+                            <FileText className="h-3.5 w-3.5 text-primary-gold" />
+                            <h4 className="text-[0.9rem] text-deco-foreground">
+                              Job Description
+                            </h4>
+                          </div>
+                          <div className="mt-3 min-h-0 flex-1 overflow-y-auto">
+                            <pre className="whitespace-pre-wrap break-words font-mono text-[0.68rem] leading-5 text-deco-foreground">
+                              {selectedApplication.jobDescription?.trim()
+                                ? selectedApplication.jobDescription
+                                : "No job description saved."}
+                            </pre>
+                          </div>
+                          <div className="mt-3 border-t border-primary-gold-muted pt-3">
+                            <h4 className="text-[0.75rem] font-semibold uppercase tracking-[0.14em] text-primary-gold">
+                              Notes
+                            </h4>
+                            <div className="deco-frame mt-2 min-h-[7rem] border-border-gold-muted bg-deco-surface-soft p-3">
+                              <pre className="whitespace-pre-wrap break-words font-mono text-[0.68rem] leading-5 text-deco-foreground">
+                                {selectedApplication.notes?.trim()
+                                  ? selectedApplication.notes
+                                  : "No notes saved."}
+                              </pre>
+                            </div>
+                          </div>
+                        </section>
+                      </div>
                     )}
                   </div>
                 ) : null}
