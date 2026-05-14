@@ -613,8 +613,8 @@ const Dashboard = () => {
           </Button>
         </div>
       </header>
-      <div className="grid gap-5 lg:grid-cols-[360px_minmax(0,1fr)] lg:items-stretch lg:min-h-0 lg:flex-1">
-        <aside className="deco-frame flex h-auto min-h-0 w-full flex-col items-stretch overflow-visible border-border-gold bg-deco-surface-soft p-5 shadow-deco-panel backdrop-blur lg:h-full lg:overflow-hidden lg:p-6">
+      <div className="grid gap-5 lg:grid-cols-[260px_minmax(0,1fr)] lg:items-stretch md:min-h-0 md:flex-1">
+        <aside className="deco-frame flex h-auto min-h-0 w-full flex-col items-stretch overflow-visible border-border-gold bg-deco-surface-soft p-5 shadow-deco-panel backdrop-blur md:h-full md:overflow-hidden md:p-6">
           <section className="deco-frame border-border-gold bg-deco-surface p-4 shadow-sm">
             <p className="text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-primary-gold">
               Profile
@@ -665,7 +665,7 @@ const Dashboard = () => {
           </div>
         </aside>
 
-        <section className="flex min-h-0 flex-col gap-3 lg:flex-1">
+        <section className="flex min-h-0 flex-col gap-3 md:flex-1">
           <section className="deco-frame w-full border-border-gold bg-deco-surface-soft p-4 shadow-deco-panel">
             <div className="flex flex-col gap-3 xl:flex-row xl:items-end xl:justify-between">
               <div className="grid flex-1 gap-3 xl:grid-cols-[minmax(0,2.2fr)_repeat(2,minmax(0,1fr))]">
@@ -714,7 +714,7 @@ const Dashboard = () => {
 
                 <label className="grid gap-2">
                   <span className="text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-deco-muted">
-                    Interest Level
+                    Interest
                   </span>
                   <select
                     aria-label="Filter interest level"
